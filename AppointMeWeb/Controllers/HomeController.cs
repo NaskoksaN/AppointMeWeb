@@ -2,6 +2,7 @@ using AppointMeWeb.Models;
 using Microsoft.AspNetCore.Mvc;
 using System.Diagnostics;
 
+
 namespace AppointMeWeb.Controllers
 {
     public class HomeController : Controller
@@ -15,13 +16,10 @@ namespace AppointMeWeb.Controllers
 
         public IActionResult Index()
         {
+           
             return View();
         }
 
-        public IActionResult Privacy()
-        {
-            return View();
-        }
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Error()
