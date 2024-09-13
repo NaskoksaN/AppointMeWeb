@@ -32,6 +32,6 @@ namespace AppointMeWeb.Infrastrucure.Data.Models
         public TimeSpan AppointmentDuration { get; set; } = TimeSpan.FromMinutes(30);
 
         [ForeignKey(nameof(BusinessServiceProviderId))]
-        public virtual BusinessServiceProvider BusinessServiceProvider { get; set; } = null!;
+        public  BusinessServiceProvider BusinessServiceProvider { get; set; } = null!;
     }
 }
