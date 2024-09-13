@@ -1,6 +1,9 @@
-﻿using AppointMeWeb.Data;
+﻿
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+
+using AppointMeWeb.Infrastrucure.Data.Models;
+using AppointMeWeb.Infrastrucure.Data;
 
 namespace Microsoft.Extensions.DependencyInjection
 {
@@ -14,7 +17,7 @@ namespace Microsoft.Extensions.DependencyInjection
         public static IServiceCollection AddApplicationIdentity(this IServiceCollection services, IConfiguration config)
         {
             services
-                .AddDefaultIdentity<IdentityUser>(options => {
+                .AddDefaultIdentity<ApplicationUser>(options => {
                     options.SignIn.RequireConfirmedAccount = true;
 
                     options.Password.RequireNonAlphanumeric=false;
@@ -22,6 +25,7 @@ namespace Microsoft.Extensions.DependencyInjection
                     options.Password.RequireUppercase=false;
                     options.Password.RequireDigit=false;
                 })
+                .AddRoles<IdentityRole<string>>()
                  .AddEntityFrameworkStores<ApplicationDbContext>();
 
             return services;
@@ -34,6 +38,7 @@ namespace Microsoft.Extensions.DependencyInjection
             services
                 .AddDbContext<ApplicationDbContext>(options =>
                     options.UseSqlServer(connectionString));
+
             services.AddDatabaseDeveloperPageExceptionFilter();
 
             return services;
