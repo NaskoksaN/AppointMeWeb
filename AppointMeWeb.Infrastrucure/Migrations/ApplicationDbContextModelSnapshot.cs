@@ -80,8 +80,8 @@ namespace AppointMeWeb.Infrastrucure.Migrations
 
                     b.Property<string>("Phone")
                         .IsRequired()
-                        .HasMaxLength(30)
-                        .HasColumnType("nvarchar(30)")
+                        .HasMaxLength(20)
+                        .HasColumnType("nvarchar(20)")
                         .HasComment("Application phone");
 
                     b.Property<string>("PhoneNumber")
@@ -143,8 +143,8 @@ namespace AppointMeWeb.Infrastrucure.Migrations
                         .HasComment("End of appointment");
 
                     b.Property<string>("Message")
-                        .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)")
+                        .HasMaxLength(150)
+                        .HasColumnType("nvarchar(150)")
                         .HasComment("Message to BusinessServiceProvider");
 
                     b.Property<TimeSpan>("StartTime")
@@ -188,12 +188,13 @@ namespace AppointMeWeb.Infrastrucure.Migrations
                         .HasComment("Buinsess address");
 
                     b.Property<int>("BusinessType")
-                        .HasColumnType("int");
+                        .HasColumnType("int")
+                        .HasComment("Type of buinsess section");
 
                     b.Property<string>("Description")
                         .IsRequired()
-                        .HasMaxLength(100)
-                        .HasColumnType("nvarchar(100)")
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)")
                         .HasComment("Buinsess description");
 
                     b.Property<string>("Email")
@@ -204,25 +205,26 @@ namespace AppointMeWeb.Infrastrucure.Migrations
 
                     b.Property<string>("Name")
                         .IsRequired()
-                        .HasMaxLength(40)
-                        .HasColumnType("nvarchar(40)")
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)")
                         .HasComment("Buinsess name");
 
                     b.Property<string>("Phone")
                         .IsRequired()
-                        .HasMaxLength(15)
-                        .HasColumnType("nvarchar(15)")
+                        .HasMaxLength(20)
+                        .HasColumnType("nvarchar(20)")
                         .HasComment("Buinsess phone");
 
                     b.Property<string>("Town")
                         .IsRequired()
-                        .HasMaxLength(30)
-                        .HasColumnType("nvarchar(30)")
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)")
                         .HasComment("Buinsess town");
 
                     b.Property<string>("Url")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)")
+                        .HasMaxLength(250)
+                        .HasColumnType("nvarchar(250)")
                         .HasComment("Buinsess web-link");
 
                     b.HasKey("Id");

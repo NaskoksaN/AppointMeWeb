@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace AppointMeWeb.Infrastrucure.Migrations
 {
     /// <inheritdoc />
-    public partial class InitalTables : Migration
+    public partial class Initialtables : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -51,8 +51,8 @@ namespace AppointMeWeb.Infrastrucure.Migrations
             migrationBuilder.AddColumn<string>(
                 name: "Phone",
                 table: "AspNetUsers",
-                type: "nvarchar(30)",
-                maxLength: 30,
+                type: "nvarchar(20)",
+                maxLength: 20,
                 nullable: false,
                 defaultValue: "",
                 comment: "Application phone");
@@ -63,14 +63,14 @@ namespace AppointMeWeb.Infrastrucure.Migrations
                 {
                     Id = table.Column<int>(type: "int", nullable: false, comment: "Buinsess identifier")
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    BusinessType = table.Column<int>(type: "int", nullable: false),
-                    Name = table.Column<string>(type: "nvarchar(40)", maxLength: 40, nullable: false, comment: "Buinsess name"),
-                    Description = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false, comment: "Buinsess description"),
+                    BusinessType = table.Column<int>(type: "int", nullable: false, comment: "Type of buinsess section"),
+                    Name = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false, comment: "Buinsess name"),
+                    Description = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false, comment: "Buinsess description"),
                     Email = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false, comment: "Buinsess E-mail"),
-                    Phone = table.Column<string>(type: "nvarchar(15)", maxLength: 15, nullable: false, comment: "Buinsess phone"),
-                    Town = table.Column<string>(type: "nvarchar(30)", maxLength: 30, nullable: false, comment: "Buinsess town"),
+                    Phone = table.Column<string>(type: "nvarchar(20)", maxLength: 20, nullable: false, comment: "Buinsess phone"),
+                    Town = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false, comment: "Buinsess town"),
                     Address = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false, comment: "Buinsess address"),
-                    Url = table.Column<string>(type: "nvarchar(max)", nullable: false, comment: "Buinsess web-link")
+                    Url = table.Column<string>(type: "nvarchar(250)", maxLength: 250, nullable: false, comment: "Buinsess web-link")
                 },
                 constraints: table =>
                 {
@@ -84,13 +84,13 @@ namespace AppointMeWeb.Infrastrucure.Migrations
                 {
                     Id = table.Column<int>(type: "int", nullable: false, comment: "Appoinment identifier")
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    Message = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: true, comment: "Message to BusinessServiceProvider"),
+                    Message = table.Column<string>(type: "nvarchar(150)", maxLength: 150, nullable: true, comment: "Message to BusinessServiceProvider"),
                     Status = table.Column<int>(type: "int", nullable: false, comment: "Appoinment confirmation"),
                     UserId = table.Column<string>(type: "nvarchar(max)", nullable: false, comment: "User Identifier"),
-                    BusinessServiceProviderId = table.Column<int>(type: "int", nullable: false, comment: "BusinessServiceProvider Identifier"),
                     Day = table.Column<int>(type: "int", nullable: false, comment: "Day of the week"),
                     StartTime = table.Column<TimeSpan>(type: "time", nullable: false, comment: "Start of appointment"),
                     EndTime = table.Column<TimeSpan>(type: "time", nullable: false, comment: "End of appointment"),
+                    BusinessServiceProviderId = table.Column<int>(type: "int", nullable: false, comment: "BusinessServiceProvider Identifier"),
                     ApplicationUserId = table.Column<string>(type: "nvarchar(450)", nullable: true)
                 },
                 constraints: table =>

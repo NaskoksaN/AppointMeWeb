@@ -1,7 +1,10 @@
-﻿using AppointMeWeb.Infrastrucure.Data.Enum;
+﻿
 using Microsoft.EntityFrameworkCore;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+
+using static AppointMeWeb.Infrastrucure.Constants.DataConstants;
+using AppointMeWeb.Infrastrucure.Data.Enum;
 
 namespace AppointMeWeb.Infrastrucure.Data.Models
 {
@@ -13,7 +16,7 @@ namespace AppointMeWeb.Infrastrucure.Data.Models
         public int Id {  get; set; }
 
        
-        [StringLength(50)]
+        [MaxLength(AppointmentMessageMaxLength)]
         [Comment("Message to BusinessServiceProvider")]
         public string? Message { get; set; }
 
@@ -26,10 +29,6 @@ namespace AppointMeWeb.Infrastrucure.Data.Models
         public string UserId {  get; set; }=string.Empty;
 
         [Required]
-        [Comment("BusinessServiceProvider Identifier")]
-        public int BusinessServiceProviderId {  get; set; }
-
-        [Required]
         [Comment("Day of the week")]
         public DayOfWeek Day { get; set; }
 
@@ -40,6 +39,10 @@ namespace AppointMeWeb.Infrastrucure.Data.Models
         [Required]
         [Comment("End of appointment")]
         public TimeSpan EndTime { get; set; }
+
+        [Required]
+        [Comment("BusinessServiceProvider Identifier")]
+        public int BusinessServiceProviderId { get; set; }
 
 
         [ForeignKey(nameof(BusinessServiceProviderId))]

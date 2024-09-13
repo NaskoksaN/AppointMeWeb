@@ -1,6 +1,9 @@
-﻿using AppointMeWeb.Infrastrucure.Data.Enum;
+﻿
 using Microsoft.EntityFrameworkCore;
 using System.ComponentModel.DataAnnotations;
+
+using AppointMeWeb.Infrastrucure.Data.Enum;
+using static AppointMeWeb.Infrastrucure.Constants.DataConstants;
 
 namespace AppointMeWeb.Infrastrucure.Data.Models
 {
@@ -13,46 +16,46 @@ namespace AppointMeWeb.Infrastrucure.Data.Models
         public int Id { get; set; }
 
         [Required]
+        [Comment("Type of buinsess section")]
         public BusinessType BusinessType { get; set; }
 
         [Required]
-        [MaxLength(40)]
+        [MaxLength(BusinessServiceProviderNameMaxLength)]
         [Comment("Buinsess name")]
         public string Name { get; set; }=string.Empty;
 
         [Required]
-        [MaxLength(100)]
+        [MaxLength(BusinessServiceProviderDescriptionMaxLength)]
         [Comment("Buinsess description")]
         public string Description {  get; set; }=string.Empty;
 
         [Required]
-        [EmailAddress]
-        [MaxLength(50)]
+        [MaxLength(BusinessServiceProviderEmailMaxLength)]
         [Comment("Buinsess E-mail")]
         public string Email {  get; set; }=string.Empty;
 
         [Required]
-        [MaxLength(15)]
+        [MaxLength(UserPhoneMaxLength)]
         [Comment("Buinsess phone")]
         public string Phone {  get; set; }=string.Empty;
 
         [Required]
-        [MaxLength(30)]
+        [MaxLength(BusinessServiceProviderTownMaxLength)]
         [Comment("Buinsess town")]
         public string Town { get; set; } = string.Empty;
 
         [Required]
-        [MaxLength(50)]
+        [MaxLength(BusinessServiceProviderAddressMaxLength)]
         [Comment("Buinsess address")]
         public string Address { get; set; } = string.Empty;
 
         [Required]
-        [Url]
         [Comment("Buinsess web-link")]
+        [MaxLength(BusinessServiceProviderUrlMaxLength)]
         public string Url { get; set; } = string.Empty;
 
-        public virtual ICollection<Appointment> Appointments { get; set; } = [];
-        public virtual ICollection<WorkingSchedule> WorkingSchedules { get; set; } = [];
+        public ICollection<Appointment> Appointments { get; set; } = [];
+        public ICollection<WorkingSchedule> WorkingSchedules { get; set; } = [];
     }
 }
 
