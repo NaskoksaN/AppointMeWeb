@@ -1,9 +1,12 @@
+using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
+using AppointMeWeb.Infrastrucure.Data;
 var builder = WebApplication.CreateBuilder(args);
-
 
 builder.Services.AddAplicationDbContext(builder.Configuration);
 builder.Services.AddApplicationIdentity(builder.Configuration);
-builder.Services.AddControllersWithViews();
+
+//builder.Services.AddControllersWithViews();
 builder.Services.AddApplicationService();
 
 var app = builder.Build();
