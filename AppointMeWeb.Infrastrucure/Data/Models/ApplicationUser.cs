@@ -27,7 +27,7 @@ namespace AppointMeWeb.Infrastrucure.Data.Models
 
         [Required]
         [Comment("User date of birth")]
-        public DateTime DateOfBirth { get; set; }
+        public DateTime DateOfBirth { get; set; } 
         
         [Comment("Associated business service provider")]
         public int? BusinessServiceProviderId { get; set; }
