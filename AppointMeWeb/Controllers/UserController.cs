@@ -31,12 +31,9 @@ namespace AppointMeWeb.Controllers
             MyProfileViewModel model = new()
             {
                 LoginFormModel = new LoginFormModel(),
-                RegisterUser = new RegisterUser
-                {
-                    RegisterFormModel = new RegisterFormModel(),
-                    RegisterBusinessFormModel = new RegisterBusinessFormModel()
-                }
-            };
+                RegisterFormModel = new RegisterFormModel()
+
+            }; 
             return View(model);
         }
 
@@ -52,21 +49,12 @@ namespace AppointMeWeb.Controllers
                 Roles = roles
             };
 
-            RegisterBusinessFormModel businessForm = new()
+            RegisterFormModel registerFormModel = new()
             {
                 Roles = roles
             };
 
-            MyProfileViewModel model = new()
-            {
-                RegisterUser = new RegisterUser
-                {
-                    RegisterFormModel = formModel,
-                    RegisterBusinessFormModel = businessForm
-                }
-            };
-
-            return View(model);
+            return View(registerFormModel);
         }
 
         [AllowAnonymous]
