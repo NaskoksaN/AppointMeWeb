@@ -12,13 +12,14 @@ namespace AppointMeWeb.Core.Services
 {
     public class CustomUserService : ICustomUserService
     {
-        private readonly RoleManager<IdentityRole> roleManager;
-        public CustomUserService(RoleManager<IdentityRole> _roleManager)
+        private readonly RoleManager<IdentityRole<string>> roleManager;
+        public CustomUserService(RoleManager<IdentityRole<string>> _roleManager)
         {
             roleManager = _roleManager;
         }
         public async Task<IEnumerable<RoleViewModel>> GetRolesAsync()
         {
+            var temp = roleManager.Roles;
             return await roleManager
                 .Roles
                 .Select(r => new RoleViewModel()
