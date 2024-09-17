@@ -34,8 +34,13 @@ namespace AppointMeWeb.Core.Models.ApplicationUser
         [Display(Name = "Confirm password")]
         [Compare("Password", ErrorMessage = "The password and confirmation password do not match.")]
         public string ConfirmPassword { get; set; } = string.Empty;
+
+        // Remaining API warnings ommited.
+        public string? ReturnUrl { get; set; }
+
+
         /// <summary>
-        /// Employee full name
+        ///User first name
         /// </summary>
         [Required(ErrorMessage = RequiredMessage)]
         [Display(Name = "User first name")]
