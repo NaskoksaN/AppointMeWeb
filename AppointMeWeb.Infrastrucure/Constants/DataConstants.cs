@@ -14,15 +14,18 @@
         public const int AppointmentMessageMaxLength = 150;
 
         public const int BusinessServiceProviderNameMaxLength = 50;
-
+        public const int BusinessServiceProviderNameMinLength = 1;
 
         public const int BusinessServiceProviderDescriptionMaxLength = 50;
+        public const int BusinessServiceProviderDescriptionMinLength = 50;
 
         public const int BusinessServiceProviderEmailMaxLength = 50;
 
         public const int BusinessServiceProviderTownMaxLength = 50;
+        public const int BusinessServiceProviderTownMinLength = 2;
 
         public const int BusinessServiceProviderAddressMaxLength = 50;
+        public const int BusinessServiceProviderAddressMinLength = 5;
 
         public const int BusinessServiceProviderUrlMaxLength = 250;
     }
