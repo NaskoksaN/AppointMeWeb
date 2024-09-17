@@ -39,6 +39,10 @@ namespace AppointMeWeb.Core.Models.ApplicationUser
         // Remaining API warnings ommited.
         public string? ReturnUrl { get; set; }
 
+        /// <summary>
+        /// Indicates whether the user is registering as a business provider.
+        /// </summary>
+        public bool IsBusinessProvider { get; set; }
 
         /// <summary>
         ///User first name
@@ -71,8 +75,7 @@ namespace AppointMeWeb.Core.Models.ApplicationUser
 
         public string SelectedRole { get; set; } = string.Empty;
 
-        public string? EMail { get; set; }
-        public IEnumerable<RoleViewModel> Roles { get; set; } = new List<RoleViewModel>();
+       
 
         [Required(ErrorMessage = RequiredMessage)]
         [Display(Name = "Business Type")]
@@ -109,6 +112,8 @@ namespace AppointMeWeb.Core.Models.ApplicationUser
         //[Required(ErrorMessage = RequiredMessage)]
         [Url(ErrorMessage = UrlErrMsg)]
         [Display(Name = "Business URL")]
-        public string? Url { get; set; } 
+        public string? Url { get; set; }
+
+        public IEnumerable<RoleViewModel> Roles { get; set; } = new List<RoleViewModel>();
     }
 }

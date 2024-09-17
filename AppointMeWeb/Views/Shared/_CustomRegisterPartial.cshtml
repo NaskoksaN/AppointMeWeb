@@ -1,6 +1,6 @@
 ﻿@model RegisterFormModel
 
-<form id="registerForm" asp-route-returnUrl="@Model.ReturnUrl" method="post">
+<form id="registerForm" asp-action="Register" method="post">
     <h2>Create a new account.</h2>
     <hr />
     <div asp-validation-summary="ModelOnly" class="text-danger"></div>
@@ -48,7 +48,7 @@
     </div>
 
     <div class="form-check mb-2">
-        <input type="checkbox" class="form-check-input" id="registerAsBusinessProvider" onclick="Check()" />
+        <input asp-for="IsBusinessProvider"  type="checkbox" class="form-check-input" id="registerAsBusinessProvider" onclick="Check()" />
         <label class="form-check-label" for="registerAsBusinessProvider">Register as Business Provider</label>
     </div>
 
