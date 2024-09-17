@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using AppointMeWeb.Infrastrucure.Data.Enum;
+using System.ComponentModel.DataAnnotations;
 
 using static AppointMeWeb.Core.Constants.MessageConstants;
 using static AppointMeWeb.Infrastrucure.Constants.DataConstants;
@@ -72,5 +73,42 @@ namespace AppointMeWeb.Core.Models.ApplicationUser
 
         public string? EMail { get; set; }
         public IEnumerable<RoleViewModel> Roles { get; set; } = new List<RoleViewModel>();
+
+        [Required(ErrorMessage = RequiredMessage)]
+        [Display(Name = "Business Type")]
+        public BusinessType BusinessType { get; set; }
+
+        //[Required(ErrorMessage = RequiredMessage)]
+        [StringLength(BusinessServiceProviderNameMaxLength,
+            ErrorMessage = LengthMessage,
+            MinimumLength = BusinessServiceProviderNameMinLength)]
+        [Display(Name = "Business Name")]
+        public string? Name { get; set; } 
+
+        //[Required(ErrorMessage = RequiredMessage)]
+        [Display(Name = "Business Description")]
+        [StringLength(BusinessServiceProviderDescriptionMaxLength,
+            ErrorMessage = LengthMessage,
+            MinimumLength = BusinessServiceProviderDescriptionMinLength)]
+        public string? Description { get; set; } 
+
+        //[Required(ErrorMessage = RequiredMessage)]
+        [Display(Name = "Business Town")]
+        [StringLength(BusinessServiceProviderTownMaxLength,
+            ErrorMessage = LengthMessage,
+            MinimumLength = BusinessServiceProviderTownMinLength)]
+        public string? Town { get; set; } 
+
+        //[Required(ErrorMessage = RequiredMessage)]
+        [Display(Name = "Business Address")]
+        [StringLength(BusinessServiceProviderAddressMaxLength,
+            ErrorMessage = LengthMessage,
+            MinimumLength = BusinessServiceProviderAddressMinLength)]
+        public string? Address { get; set; } 
+
+        //[Required(ErrorMessage = RequiredMessage)]
+        [Url(ErrorMessage = UrlErrMsg)]
+        [Display(Name = "Business URL")]
+        public string? Url { get; set; } 
     }
 }

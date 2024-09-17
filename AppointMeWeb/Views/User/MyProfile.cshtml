@@ -1,8 +1,8 @@
 ﻿@model MyProfileViewModel
 
-<div class="container mt-5">
+<div class="container mt-4">
     <div class="row justify-content-center">
-        <div class="col-md-8">
+        <div class="col-md-4">
             <div class="card">
                 <div class="card-body">
                     <!-- Nav tabs -->
@@ -24,7 +24,7 @@
 
                         <!-- Register -->
                         <div class="tab-pane fade" id="register" role="tabpanel" aria-labelledby="register-tab">
-                            <partial name="_CustomRegisterPartial" model="Model.RegisterUser" />
+                            <partial name="_CustomRegisterPartial" model="Model.RegisterFormModel" />
                         </div>
                     </div>
                 </div>
@@ -40,9 +40,19 @@
         const businessDiv = document.getElementById("businessProviderFields");
 
         if (checkBox.checked) {
-            businessDiv.style.display = 'block';
-        } else {
-            businessDiv.style.display = 'none';
-        }
+        businessDiv.style.display = 'block';
+        document
+                .querySelectorAll('#businessProviderFields .form-control')
+                .forEach(input => {
+                                input.setAttribute('required', 'true');
+                });
+    } else {
+        businessDiv.style.display = 'none';
+        document
+                .querySelectorAll('#businessProviderFields .form-control')
+                .forEach(input => {
+                        input.removeAttribute('required');
+                });
+    }
     }
 </script>
