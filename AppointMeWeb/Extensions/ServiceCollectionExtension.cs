@@ -4,6 +4,8 @@ using Microsoft.EntityFrameworkCore;
 
 using AppointMeWeb.Infrastrucure.Data.Models;
 using AppointMeWeb.Infrastrucure.Data;
+using AppointMeWeb.Core.Contracts;
+using AppointMeWeb.Core.Services;
 
 namespace Microsoft.Extensions.DependencyInjection
 {
@@ -11,6 +13,8 @@ namespace Microsoft.Extensions.DependencyInjection
     {
         public static IServiceCollection AddApplicationService(this IServiceCollection services)
         {
+            services.AddScoped<ICustomUserService, CustomUserService>();
+
             return services;
         }
 
