@@ -3,10 +3,12 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
+#pragma warning disable CA1814 // Prefer jagged arrays over multidimensional
+
 namespace AppointMeWeb.Infrastrucure.Migrations
 {
     /// <inheritdoc />
-    public partial class Initialtables : Migration
+    public partial class InitialTables : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -57,6 +59,14 @@ namespace AppointMeWeb.Infrastrucure.Migrations
                 defaultValue: "",
                 comment: "Application phone");
 
+            migrationBuilder.AddColumn<string>(
+                name: "Discriminator",
+                table: "AspNetRoles",
+                type: "nvarchar(21)",
+                maxLength: 21,
+                nullable: false,
+                defaultValue: "");
+
             migrationBuilder.CreateTable(
                 name: "BusinessServiceProviders",
                 columns: table => new
@@ -65,16 +75,21 @@ namespace AppointMeWeb.Infrastrucure.Migrations
                         .Annotation("SqlServer:Identity", "1, 1"),
                     BusinessType = table.Column<int>(type: "int", nullable: false, comment: "Type of buinsess section"),
                     Name = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false, comment: "Buinsess name"),
-                    Description = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false, comment: "Buinsess description"),
-                    Email = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false, comment: "Buinsess E-mail"),
-                    Phone = table.Column<string>(type: "nvarchar(20)", maxLength: 20, nullable: false, comment: "Buinsess phone"),
+                    BusinessDescription = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false, comment: "Buinsess description"),
                     Town = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false, comment: "Buinsess town"),
                     Address = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false, comment: "Buinsess address"),
-                    Url = table.Column<string>(type: "nvarchar(250)", maxLength: 250, nullable: false, comment: "Buinsess web-link")
+                    Url = table.Column<string>(type: "nvarchar(250)", maxLength: 250, nullable: false, comment: "Buinsess web-link"),
+                    ApplicationUserId = table.Column<string>(type: "nvarchar(450)", nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_BusinessServiceProviders", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_BusinessServiceProviders_AspNetUsers_ApplicationUserId",
+                        column: x => x.ApplicationUserId,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
                 },
                 comment: "Details of service providers");
 
@@ -134,6 +149,16 @@ namespace AppointMeWeb.Infrastrucure.Migrations
                 },
                 comment: "Working schedule for each service provider");
 
+            migrationBuilder.InsertData(
+                table: "AspNetRoles",
+                columns: new[] { "Id", "ConcurrencyStamp", "Discriminator", "Name", "NormalizedName" },
+                values: new object[,]
+                {
+                    { "adminRoleId", null, "IdentityRole", "Admin", "ADMIN" },
+                    { "businessRoleId", null, "IdentityRole", "Business", "BUSINESS" },
+                    { "webUserRoleId", null, "IdentityRole", "WebUser", "WEBUSER" }
+                });
+
             migrationBuilder.CreateIndex(
                 name: "IX_AspNetUsers_BusinessServiceProviderId",
                 table: "AspNetUsers",
@@ -148,6 +173,11 @@ namespace AppointMeWeb.Infrastrucure.Migrations
                 name: "IX_Appointments_BusinessServiceProviderId",
                 table: "Appointments",
                 column: "BusinessServiceProviderId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_BusinessServiceProviders_ApplicationUserId",
+                table: "BusinessServiceProviders",
+                column: "ApplicationUserId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_WorkingSchedules_BusinessServiceProviderId",
@@ -182,6 +212,21 @@ namespace AppointMeWeb.Infrastrucure.Migrations
                 name: "IX_AspNetUsers_BusinessServiceProviderId",
                 table: "AspNetUsers");
 
+            migrationBuilder.DeleteData(
+                table: "AspNetRoles",
+                keyColumn: "Id",
+                keyValue: "adminRoleId");
+
+            migrationBuilder.DeleteData(
+                table: "AspNetRoles",
+                keyColumn: "Id",
+                keyValue: "businessRoleId");
+
+            migrationBuilder.DeleteData(
+                table: "AspNetRoles",
+                keyColumn: "Id",
+                keyValue: "webUserRoleId");
+
             migrationBuilder.DropColumn(
                 name: "BusinessServiceProviderId",
                 table: "AspNetUsers");
@@ -201,6 +246,10 @@ namespace AppointMeWeb.Infrastrucure.Migrations
             migrationBuilder.DropColumn(
                 name: "Phone",
                 table: "AspNetUsers");
+
+            migrationBuilder.DropColumn(
+                name: "Discriminator",
+                table: "AspNetRoles");
 
             migrationBuilder.AlterTable(
                 name: "AspNetUsers",

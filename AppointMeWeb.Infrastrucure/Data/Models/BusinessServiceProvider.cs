@@ -4,6 +4,7 @@ using System.ComponentModel.DataAnnotations;
 
 using AppointMeWeb.Infrastrucure.Data.Enum;
 using static AppointMeWeb.Infrastrucure.Constants.DataConstants;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace AppointMeWeb.Infrastrucure.Data.Models
 {
@@ -17,7 +18,7 @@ namespace AppointMeWeb.Infrastrucure.Data.Models
 
         [Required]
         [Comment("Type of buinsess section")]
-        public BusinessType BusinessType { get; set; }
+        public BusinessType? BusinessType { get; set; }
 
         [Required]
         [MaxLength(BusinessServiceProviderNameMaxLength)]
@@ -27,17 +28,7 @@ namespace AppointMeWeb.Infrastrucure.Data.Models
         [Required]
         [MaxLength(BusinessServiceProviderDescriptionMaxLength)]
         [Comment("Buinsess description")]
-        public string Description {  get; set; }=string.Empty;
-
-        [Required]
-        [MaxLength(BusinessServiceProviderEmailMaxLength)]
-        [Comment("Buinsess E-mail")]
-        public string Email {  get; set; }=string.Empty;
-
-        [Required]
-        [MaxLength(UserPhoneMaxLength)]
-        [Comment("Buinsess phone")]
-        public string Phone {  get; set; }=string.Empty;
+        public string BusinessDescription {  get; set; }=string.Empty;
 
         [Required]
         [MaxLength(BusinessServiceProviderTownMaxLength)]
@@ -53,6 +44,12 @@ namespace AppointMeWeb.Infrastrucure.Data.Models
         [Comment("Buinsess web-link")]
         [MaxLength(BusinessServiceProviderUrlMaxLength)]
         public string Url { get; set; } = string.Empty;
+
+        [Required]
+        public string ApplicationUserId {  get; set; } = string.Empty;
+        [Required]
+        [ForeignKey(nameof(ApplicationUserId))]
+        public ApplicationUser ApplicationUser { get; set; } = null!;
 
         public ICollection<Appointment> Appointments { get; set; } = [];
         public ICollection<WorkingSchedule> WorkingSchedules { get; set; } = [];

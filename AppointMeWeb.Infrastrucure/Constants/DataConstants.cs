@@ -28,5 +28,9 @@
         public const int BusinessServiceProviderAddressMinLength = 5;
 
         public const int BusinessServiceProviderUrlMaxLength = 250;
+
+        public const string WebUserRole = "WebUser";
+        public const string BusinessRole = "Business";
+        public const string AdminRole = "Admin";
     }
 }
