@@ -126,16 +126,6 @@ namespace AppointMeWeb.Infrastrucure.Data.Common
         }
 
         /// <summary>
-        /// Disposing the context when it is not neede
-        /// Don't have to call this method explicitely
-        /// Leave it to the IoC container
-        /// </summary>
-        public void Dispose()
-        {
-            this.Context.Dispose();
-        }
-
-        /// <summary>
         /// Gets specific record from database by primary key
         /// </summary>
         /// <param name="id">record identificator</param>

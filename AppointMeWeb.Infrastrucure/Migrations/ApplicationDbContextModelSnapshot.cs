@@ -187,33 +187,25 @@ namespace AppointMeWeb.Infrastrucure.Migrations
                         .HasColumnType("nvarchar(50)")
                         .HasComment("Buinsess address");
 
-                    b.Property<int>("BusinessType")
-                        .HasColumnType("int")
-                        .HasComment("Type of buinsess section");
+                    b.Property<string>("ApplicationUserId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
 
-                    b.Property<string>("Description")
+                    b.Property<string>("BusinessDescription")
                         .IsRequired()
                         .HasMaxLength(50)
                         .HasColumnType("nvarchar(50)")
                         .HasComment("Buinsess description");
 
-                    b.Property<string>("Email")
-                        .IsRequired()
-                        .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)")
-                        .HasComment("Buinsess E-mail");
+                    b.Property<int>("BusinessType")
+                        .HasColumnType("int")
+                        .HasComment("Type of buinsess section");
 
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasMaxLength(50)
                         .HasColumnType("nvarchar(50)")
                         .HasComment("Buinsess name");
-
-                    b.Property<string>("Phone")
-                        .IsRequired()
-                        .HasMaxLength(20)
-                        .HasColumnType("nvarchar(20)")
-                        .HasComment("Buinsess phone");
 
                     b.Property<string>("Town")
                         .IsRequired()
@@ -228,6 +220,8 @@ namespace AppointMeWeb.Infrastrucure.Migrations
                         .HasComment("Buinsess web-link");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("ApplicationUserId");
 
                     b.ToTable("BusinessServiceProviders", t =>
                         {
@@ -469,6 +463,17 @@ namespace AppointMeWeb.Infrastrucure.Migrations
                         .IsRequired();
 
                     b.Navigation("BusinessServiceProvider");
+                });
+
+            modelBuilder.Entity("AppointMeWeb.Infrastrucure.Data.Models.BusinessServiceProvider", b =>
+                {
+                    b.HasOne("AppointMeWeb.Infrastrucure.Data.Models.ApplicationUser", "ApplicationUser")
+                        .WithMany()
+                        .HasForeignKey("ApplicationUserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("ApplicationUser");
                 });
 
             modelBuilder.Entity("AppointMeWeb.Infrastrucure.Data.Models.WorkingSchedule", b =>

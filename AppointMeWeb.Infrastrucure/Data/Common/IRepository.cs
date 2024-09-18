@@ -5,7 +5,7 @@ namespace AppointMeWeb.Infrastrucure.Data.Common
     /// <summary>
     /// Abstraction of repository access methods
     /// </summary>
-    public interface IRepository : IDisposable
+    public interface IRepository 
     {
         /// <summary>
         /// All records from table

@@ -15,14 +15,14 @@ namespace AppointMeWeb.Infrastrucure.Data
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options, bool _seedDb=true)
             : base(options)
         {
-            if (Database.IsRelational())
-            {
-                Database.Migrate();
-            }
-            else
-            {
-                Database.EnsureCreated();
-            }
+            //if (Database.IsRelational())
+            //{
+            //    Database.Migrate();
+            //}
+            //else
+            //{
+            //    Database.EnsureCreated();
+            //}
 
             seedDb = _seedDb;
         }
