@@ -6,6 +6,7 @@ using AppointMeWeb.Infrastrucure.Data.Models;
 using AppointMeWeb.Infrastrucure.Data;
 using AppointMeWeb.Core.Contracts;
 using AppointMeWeb.Core.Services;
+using AppointMeWeb.Infrastrucure.Data.Common;
 
 namespace Microsoft.Extensions.DependencyInjection
 {
@@ -14,6 +15,8 @@ namespace Microsoft.Extensions.DependencyInjection
         public static IServiceCollection AddApplicationService(this IServiceCollection services)
         {
             services.AddScoped<ICustomUserService, CustomUserService>();
+            services.AddScoped<IFactory, Factory> ();
+            services.AddScoped<IRepository, SqlRepository>();
 
             return services;
         }
