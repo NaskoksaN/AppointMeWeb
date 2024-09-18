@@ -73,9 +73,8 @@ namespace AppointMeWeb.Core.Models.ApplicationUser
             ErrorMessage = LengthMessage)]
         public string PhoneNumber { get; set; }=string.Empty;
 
-        public string SelectedRole { get; set; } = string.Empty;
-
-       
+        [Required]
+        public string SelectedRole { get; set; } = WebUserRole;
 
         [Required(ErrorMessage = RequiredMessage)]
         [Display(Name = "Business Type")]
