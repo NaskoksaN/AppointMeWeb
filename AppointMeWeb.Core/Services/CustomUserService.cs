@@ -1,21 +1,34 @@
-﻿using AppointMeWeb.Core.Contracts;
-using AppointMeWeb.Core.Models.ApplicationUser;
+﻿
+
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+
+using AppointMeWeb.Core.Contracts;
+using AppointMeWeb.Core.Models.ApplicationUser;
+using AppointMeWeb.Infrastrucure.Data.Common;
+using AppointMeWeb.Infrastrucure.Data.Models;
+using static AppointMeWeb.Infrastrucure.Constants.DataConstants;
 
 namespace AppointMeWeb.Core.Services
 {
     public class CustomUserService : ICustomUserService
     {
         private readonly RoleManager<IdentityRole<string>> roleManager;
-        public CustomUserService(RoleManager<IdentityRole<string>> _roleManager)
+        private readonly UserManager<ApplicationUser> userManager;
+        private readonly SignInManager<ApplicationUser> signInManager;
+        private readonly IFactory factory;
+        private IRepository sqlService;
+        public CustomUserService(RoleManager<IdentityRole<string>> _roleManager
+                , UserManager<ApplicationUser> _userManager
+                , SignInManager<ApplicationUser> _signInManager
+                , IFactory _factory
+                , IRepository _sqlService)
         {
-            roleManager = _roleManager;
+            this.userManager = _userManager;
+            this.signInManager = _signInManager;
+            this.roleManager = _roleManager;
+            this.factory = _factory;
+            this.sqlService = _sqlService;
         }
         public async Task<IEnumerable<RoleViewModel>> GetRolesAsync()
         {
@@ -29,5 +42,62 @@ namespace AppointMeWeb.Core.Services
                 })
                 .ToListAsync();
         }
+
+        public async Task<bool> RegisterUserAsync(RegisterFormModel model)
+        {
+            if (model == null)
+            {
+               throw new ArgumentNullException(nameof(model));
+            }
+            var tempUser = await userManager.FindByEmailAsync(model.Email);
+            if (tempUser != null)
+            {
+                throw new ArgumentException($"Employee with email: {model.Email} already exists!");
+            }
+            string tempUsername = $"{model.FirstName} {model.LastName}";
+            var user = new ApplicationUser()
+            {
+                FirstName = model.FirstName,
+                LastName = model.LastName,
+                DateOfBirth = model.DOB,
+                PhoneNumber = model.PhoneNumber,
+                Email = model.Email,
+                UserName = model.Email,
+            };
+                 
+            var userResult = await userManager.CreateAsync(user, model.Password);
+
+            string roleName = model.IsBusinessProvider
+                            ? BusinessRole
+                            : WebUserRole;
+            var role = await roleManager.FindByNameAsync(roleName);
+            if (role == null)
+            {
+                throw new ArgumentNullException(nameof(role));
+            }
+
+            var roleResult = await userManager.AddToRoleAsync(user, role.Name );
+
+            if (userResult.Succeeded && roleResult.Succeeded) 
+            {
+                int businessId = await factory.CreateBusinessUserAndReturnId(model, user.Id);
+                try
+                {
+                    user.BusinessServiceProviderId = businessId;
+                    sqlService.Update<ApplicationUser>(user);
+                    await sqlService.SaveChangesAsync();
+                }
+                catch (Exception ex)
+                {
+                    throw new ApplicationException("Database failed to save info", ex);
+                }
+                
+
+                return true;
+            }
+            return false;
+        }
+
+        
     }
 }

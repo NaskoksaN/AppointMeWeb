@@ -10,5 +10,6 @@ namespace AppointMeWeb.Core.Contracts
     public interface ICustomUserService
     {
         Task<IEnumerable<RoleViewModel>> GetRolesAsync();
+        Task<bool> RegisterUserAsync(RegisterFormModel model);
     }
 }
