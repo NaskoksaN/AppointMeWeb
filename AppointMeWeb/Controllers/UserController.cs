@@ -1,58 +1,42 @@
-﻿
-using Microsoft.AspNetCore.Identity;
+﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
-using AppointMeWeb.Infrastrucure.Data.Models;
 using AppointMeWeb.Core.Contracts;
 using AppointMeWeb.Core.Models.ApplicationUser;
-using Newtonsoft.Json;
-using Microsoft.AspNetCore.Authorization;
 
 namespace AppointMeWeb.Controllers
 {
     public class UserController : Controller
     {
-        private readonly UserManager<ApplicationUser> userManager;
-        private readonly SignInManager<ApplicationUser> signInManager;
+        private readonly ILogger logger;
         private readonly ICustomUserService customUserService;
 
-        public UserController(UserManager<ApplicationUser> _userManager
-                , SignInManager<ApplicationUser> _signInManager
-                ,ICustomUserService _customUserService )
+        public UserController(ICustomUserService _customUserService
+            , ILogger<IFactory> _logger)
         {
-            this.userManager = _userManager;
-            this.signInManager = _signInManager;
             this.customUserService = _customUserService;
+            this.logger = _logger;
         }
-        [AllowAnonymous]
+        
         [HttpGet]
+        [AllowAnonymous]
         public IActionResult MyProfile()
         {
-            MyProfileViewModel model = new()
-            {
-                LoginFormModel = new LoginFormModel(),
-                RegisterFormModel = new RegisterFormModel()
-
-            }; 
+            MyProfileViewModel model = new ();
             return View(model);
         }
-
-        [AllowAnonymous]
+        
         [HttpGet]
+        [AllowAnonymous]
         public async Task<IActionResult> Register()
         {
             
             IEnumerable<RoleViewModel> roles = await customUserService.GetRolesAsync();
 
-            RegisterFormModel formModel = new()
-            {
-                Roles = roles
-            };
-
             RegisterFormModel registerFormModel = new()
             {
                 Roles = roles
-            };
+            }; 
 
             return View(registerFormModel);
         }
@@ -85,12 +69,34 @@ namespace AppointMeWeb.Controllers
                 }
             }
 
-            if (ModelState.IsValid)
+            if (!ModelState.IsValid)
             {
-                // Process the registration
+                model.Roles = await customUserService.GetRolesAsync();
+                return RedirectToAction("MyProfile", new { tab = "register" });
             }
 
-            return RedirectToAction("UserProfile", model);
+            try
+            {
+                bool registrationStatus = await customUserService.RegisterUserAsync(model);
+                if (registrationStatus)
+                {
+                    return RedirectToAction(nameof(HomeController)); 
+                }
+                else
+                {
+                    ModelState.AddModelError("", "Registration failed. Please try again.");
+                    model.Roles = await customUserService.GetRolesAsync();
+                    return RedirectToAction("MyProfile", new { tab = "register" });
+                }
+            }
+            catch(Exception ex) 
+            {
+                logger.LogError(nameof(Register), ex);
+                ModelState.AddModelError("", "An error occurred during registration. Please try again.");
+                model.Roles = await customUserService.GetRolesAsync();
+                return RedirectToAction("MyProfile", new { tab = "register" });
+            }
+            
         }
     }
 }

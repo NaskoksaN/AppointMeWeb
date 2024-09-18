@@ -18,7 +18,7 @@
     </div>
 
     <div class="form-floating mb-2">
-        <input asp-for="@Model.DOB" class="form-control" type="date" value="@DateTime.Today"/>
+        <input asp-for="@Model.DOB" class="form-control" type="date" value="@DateTime.Today.ToString("dd-MM-yyyy")" />
         <label asp-for="@Model.DOB"></label>
         <span asp-validation-for="@Model.DOB" class="text-danger"></span>
     </div>
@@ -104,8 +104,6 @@
 
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />
-
-   
 }
 
 
