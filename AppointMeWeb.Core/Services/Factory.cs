@@ -20,20 +20,22 @@ namespace AppointMeWeb.Core.Services
 
         public async Task<int> CreateBusinessUserAndReturnId(RegisterFormModel model, string userId)
         {
-            BusinessServiceProvider businessProvider = new()
-            {
-                BusinessType = model.BusinessType,
-                Name = model.Name = null!,
-                BusinessDescription = model.Description = null!,
-                Town = model.Town = null!,
-                Address = model.Address = null!,
-                Url = model.Url = null!,
-                ApplicationUserId = userId,
-            };
+            
             try
             {
+                BusinessServiceProvider businessProvider = new()
+                {
+                    BusinessType = model.BusinessType,
+                    Name = model.Name,
+                    BusinessDescription = model.Description ,
+                    Town = model.Town ,
+                    Address = model.Address ,
+                    Url = model.Url,
+                    ApplicationUserId = userId,
+                };
                 await sqlRepository.AddAsync<BusinessServiceProvider>(businessProvider);
                 await sqlRepository.SaveChangesAsync();
+                return businessProvider.Id;
             }
             catch (Exception ex)
             {
@@ -41,7 +43,6 @@ namespace AppointMeWeb.Core.Services
                 throw new ApplicationException("Database failed to save info", ex);
             }
 
-            return businessProvider.Id;
         }
 
         
