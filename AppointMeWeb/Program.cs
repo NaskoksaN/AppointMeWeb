@@ -1,6 +1,3 @@
-using Microsoft.AspNetCore.Identity;
-using Microsoft.EntityFrameworkCore;
-using AppointMeWeb.Infrastrucure.Data;
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddAplicationDbContext(builder.Configuration);
@@ -8,6 +5,12 @@ builder.Services.AddApplicationIdentity(builder.Configuration);
 
 builder.Services.AddControllersWithViews();
 builder.Services.AddApplicationService();
+
+builder.Services.ConfigureApplicationCookie(options =>
+{
+    options.LoginPath = "/User/Login";
+    options.LogoutPath = "/User/Logout";
+});
 
 var app = builder.Build();
 
@@ -26,24 +29,16 @@ app.UseStaticFiles();
 
 app.UseRouting();
 
+app.UseAuthentication();
 app.UseAuthorization();
 
-
-app.UseEndpoints(endpoints =>
-{
-    endpoints.MapControllerRoute(
-        name: "logout",
-        pattern: "logout",
-        defaults: new { controller = "User", action = "Logout" }
+app.MapControllerRoute(
+    name: "default",
+    pattern: "{controller=Home}/{action=Index}/{id?}");
+app.MapControllerRoute(
+    name: "areas",
+    pattern: "{area:exists}/{controller=Home}/{action=Index}/{id?}"
     );
-
-    endpoints.MapControllerRoute(
-        name: "areas",
-        pattern: "{area:exists}/{controller=Home}/{action=Index}/{id?}"
-    );
-
-    endpoints.MapDefaultControllerRoute();
-    endpoints.MapRazorPages();
-});
+app.MapRazorPages();
 
 await app.RunAsync();
