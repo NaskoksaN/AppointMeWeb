@@ -1,10 +1,10 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 
-namespace AppointMeWeb.Areas.UserArea.Controller
+namespace AppointMeWeb.Areas.AdminArea.Controllers
 {
     public class HomeController : BaseController
     {
-        public IActionResult UserHomeIndex()
+        public IActionResult AdminArea()
         {
             return View();
         }
