@@ -1,8 +1,8 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 
-namespace AppointMeWeb.Areas.BusinessArea.Controller
+namespace AppointMeWeb.Areas.BusinessArea.Controllers
 {
-    public class HomeController : BaseController
+    public class HomeController : Controller
     {
         public IActionResult BusinessHomeIndex()
         {
