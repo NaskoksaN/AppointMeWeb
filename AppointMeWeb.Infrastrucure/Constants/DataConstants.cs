@@ -17,7 +17,7 @@
         public const int BusinessServiceProviderNameMinLength = 1;
 
         public const int BusinessServiceProviderDescriptionMaxLength = 50;
-        public const int BusinessServiceProviderDescriptionMinLength = 50;
+        public const int BusinessServiceProviderDescriptionMinLength = 1;
 
         public const int BusinessServiceProviderEmailMaxLength = 50;
 
