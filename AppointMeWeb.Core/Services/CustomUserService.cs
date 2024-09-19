@@ -1,5 +1,4 @@
 ﻿
-
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
@@ -7,6 +6,7 @@ using AppointMeWeb.Core.Contracts;
 using AppointMeWeb.Core.Models.ApplicationUser;
 using AppointMeWeb.Infrastrucure.Data.Common;
 using AppointMeWeb.Infrastrucure.Data.Models;
+
 using static AppointMeWeb.Infrastrucure.Constants.DataConstants;
 
 namespace AppointMeWeb.Core.Services
@@ -17,7 +17,7 @@ namespace AppointMeWeb.Core.Services
         private readonly UserManager<ApplicationUser> userManager;
         private readonly SignInManager<ApplicationUser> signInManager;
         private readonly IFactory factory;
-        private IRepository sqlService;
+        private readonly IRepository sqlService;
         public CustomUserService(RoleManager<IdentityRole<string>> _roleManager
                 , UserManager<ApplicationUser> _userManager
                 , SignInManager<ApplicationUser> _signInManager
@@ -38,9 +38,26 @@ namespace AppointMeWeb.Core.Services
                 .Select(r => new RoleViewModel()
                 {
                     Id = r.Id,
-                    Name =r.Name != null ? r.Name : "",
+                    Name =r.Name ?? "",
                 })
                 .ToListAsync();
+        }
+
+        public async Task<IList<string>> GetUserRoleAsync(ApplicationUser user)
+        {
+            return await userManager.GetRolesAsync(user);
+        }
+
+        public async Task<ApplicationUser> LoginUserAsync(LoginFormModel model)
+        {
+            Microsoft.AspNetCore.Identity.SignInResult result =
+                await signInManager.PasswordSignInAsync(model.Email, model.Password, false, false);
+            if (result.Succeeded)
+            {
+                return await userManager.FindByEmailAsync(model.Email);
+            }
+
+            return null;
         }
 
         public async Task<bool> RegisterUserAsync(RegisterFormModel model)
@@ -54,7 +71,7 @@ namespace AppointMeWeb.Core.Services
             {
                 throw new ArgumentException($"Employee with email: {model.Email} already exists!");
             }
-            string tempUsername = $"{model.FirstName} {model.LastName}";
+            
             var user = new ApplicationUser()
             {
                 FirstName = model.FirstName,
@@ -92,12 +109,9 @@ namespace AppointMeWeb.Core.Services
                     throw new ApplicationException("Database failed to save info", ex);
                 }
                 
-
                 return true;
             }
             return false;
         }
-
-        
     }
 }
