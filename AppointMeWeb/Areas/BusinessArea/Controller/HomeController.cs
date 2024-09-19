@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 
-namespace AppointMeWeb.Areas.BusinessArea
+namespace AppointMeWeb.Areas.BusinessArea.Controller
 {
     public class HomeController : BaseController
     {

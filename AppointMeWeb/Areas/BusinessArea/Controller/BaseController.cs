@@ -3,15 +3,12 @@ using Microsoft.AspNetCore.Mvc;
 
 using static AppointMeWeb.Infrastrucure.Constants.DataConstants;
 
-namespace AppointMeWeb.Areas.AdminArea
+namespace AppointMeWeb.Areas.BusinessArea.Controller
 {
-    [Area("BusinessArea")]
+    [Area("AdminArea")]
     [Authorize(Roles = BusinessRole)]
     public class BaseController : Controller
     {
-        public IActionResult Index()
-        {
-            return View();
-        }
+
     }
 }
