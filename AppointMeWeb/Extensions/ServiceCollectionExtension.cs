@@ -19,8 +19,10 @@ namespace Microsoft.Extensions.DependencyInjection
             services.AddScoped<ICustomUserService, CustomUserService>();
             services.AddScoped<IFactory, Factory> ();
             services.AddScoped<IRepository, SqlRepository>();
-            services.AddSingleton<IActionContextAccessor, ActionContextAccessor>();
+            services.AddScoped<IBusinessService, BusinessService>();
 
+            services.AddSingleton<IActionContextAccessor, ActionContextAccessor>();
+            
             return services;
         }
 
