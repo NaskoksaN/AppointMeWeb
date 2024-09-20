@@ -1,14 +1,14 @@
-﻿using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Mvc;
-
-using AppointMeWeb.Core.Contracts;
+﻿using AppointMeWeb.Core.Contracts;
 using AppointMeWeb.Core.Models.ApplicationUser;
-using Microsoft.AspNetCore.Authentication;
-using Microsoft.AspNetCore.Identity;
-using AppointMeWeb.Infrastrucure.Data.Models;
-using System.Security.Claims;
 using AppointMeWeb.Extensions;
+using AppointMeWeb.Infrastrucure.Data.Models;
+using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.ModelBinding;
+using System.Security.Claims;
 
 namespace AppointMeWeb.Controllers
 {
@@ -17,16 +17,19 @@ namespace AppointMeWeb.Controllers
         private readonly ILogger logger;
         private readonly SignInManager<ApplicationUser> signInManager;
         private readonly ICustomUserService customUserService;
+        private readonly IBusinessService businessService;
 
         public UserController(ICustomUserService _customUserService
             , ILogger<IFactory> _logger
-            , SignInManager<ApplicationUser> _signInManager)
+            , SignInManager<ApplicationUser> _signInManager
+            , IBusinessService _businessService)
         {
             this.customUserService = _customUserService;
             this.logger = _logger;
             this.signInManager = _signInManager;
+            this.businessService = _businessService;
         }
-        
+
         [HttpGet]
         [AllowAnonymous]
         public IActionResult MyProfile()
@@ -47,29 +50,38 @@ namespace AppointMeWeb.Controllers
                 }
             }
 
-            MyProfileViewModel model = new ();
+            MyProfileViewModel model = new();
             return View(model);
         }
-        
+
         [HttpGet]
         [AllowAnonymous]
         public async Task<IActionResult> Register()
         {
-            
-            IEnumerable<RoleViewModel> roles = await customUserService.GetRolesAsync();
 
-            RegisterFormModel registerFormModel = new()
+            try
             {
-                Roles = roles
-            }; 
+                IEnumerable<RoleViewModel> roles = await customUserService.GetRolesAsync();
 
-            return View(registerFormModel);
+                RegisterFormModel registerFormModel = new()
+                {
+                    Roles = roles
+                };
+
+                return View(registerFormModel);
+            }
+            catch (Exception ex)
+            {
+                logger.LogError(ex, "Error during user registration.");
+                return View();
+            }
         }
-        
+
         [HttpPost]
         [AllowAnonymous]
         public async Task<IActionResult> Register(RegisterFormModel model)
         {
+
             if (model.IsBusinessProvider)
             {
                 if (string.IsNullOrWhiteSpace(model.Name))
@@ -96,67 +108,70 @@ namespace AppointMeWeb.Controllers
 
             if (!ModelState.IsValid)
             {
-                foreach (var error in ModelState.Values.SelectMany(v => v.Errors))
-                {
-                    Console.WriteLine(error.ErrorMessage);
-                }
                 model.Roles = await customUserService.GetRolesAsync();
                 return RedirectToAction("MyProfile", new { tab = "register" });
             }
 
+            bool registrationStatus;
             try
             {
-                bool registrationStatus = await customUserService.RegisterUserAsync(model);
-                if (registrationStatus)
-                {
-                    return RedirectToAction("MyProfile", new { tab = "login" }); 
-                }
-                else
-                {
-                    ModelState.AddModelError("", "Registration failed. Please try again.");
-                    model.Roles = await customUserService.GetRolesAsync();
-                    return RedirectToAction("MyProfile", new { tab = "register" });
-                }
+                registrationStatus = await customUserService.RegisterUserAsync(model);
             }
-            catch(Exception ex) 
+            catch (Exception ex)
             {
-                logger.LogError("Error in register controller",  ex);
+                logger.LogError("Error in register controller", ex);
                 ModelState.AddModelError("", "An error occurred during registration. Please try again.");
-                model.Roles = await customUserService.GetRolesAsync();
                 return RedirectToAction("MyProfile", new { tab = "register" });
             }
-            
+
+            if (registrationStatus)
+            {
+                return RedirectToAction("MyProfile", new { tab = "login" });
+            }
+
+            ModelState.AddModelError("", "Registration failed. Please try again.");
+            return RedirectToAction("MyProfile", new { tab = "register" });
         }
 
         [HttpGet]
         [AllowAnonymous]
         public async Task<IActionResult> Login(string? returnUrl = null)
         {
-            if (User?.Identity?.IsAuthenticated ?? false)
+            try
             {
-                return RedirectToAction("Index", "Home");
+                if (User?.Identity?.IsAuthenticated ?? false)
+                {
+                    return RedirectToAction("Index", "Home");
+                }
+
+                await HttpContext.SignOutAsync(IdentityConstants.ExternalScheme);
+
+                LoginFormModel model = new()
+                {
+                    ReturnUrl = returnUrl,
+                };
+                return View(model);
             }
-
-            await HttpContext.SignOutAsync(IdentityConstants.ExternalScheme);
-
-            LoginFormModel model = new ()
+            catch (Exception ex)
             {
-                ReturnUrl = returnUrl,
-            };
-            return View(model);
+                logger.LogError(ex, "Error during Login GET request");
+
+                ModelState.AddModelError(string.Empty, "An error occurred while processing your request.");
+                return View(new LoginFormModel { ReturnUrl = returnUrl });
+            }
         }
         [HttpPost]
         [AllowAnonymous]
-        public async Task<IActionResult> Login (LoginFormModel model)
+        public async Task<IActionResult> Login(LoginFormModel model)
         {
+
+            if (!ModelState.IsValid)
+            {
+                return RedirectToAction(nameof(MyProfile), model);
+            }
             try
             {
-                if (!ModelState.IsValid)
-                {
-                    return RedirectToAction(nameof(MyProfile), model);
-                }
-
-                ApplicationUser user = await customUserService.LoginUserAsync(model);
+                ApplicationUser? user = await customUserService.LoginUserAsync(model);
                 if (user != null)
                 {
                     var role = await customUserService.GetUserRoleAsync(user);
@@ -164,43 +179,45 @@ namespace AppointMeWeb.Controllers
                     var identity = (ClaimsIdentity?)User.Identity;
                     identity?.AddClaims(roleClaims);
 
-                    if (user != null && User.IsAdmin())
+                    return user switch
                     {
-                        return RedirectToAction("AdminHomeIndex", "Home", new { area = "AdminArea" });
-                    }
-                    else if (user != null && User.IsUser())
-                    {
-                        return RedirectToAction("UserHomeIndex", "Home", new { area = "UserArea" });
-                    }
-                    else if (user != null && User.IsBusinessProvider())
-                    {
-                        return RedirectToAction("BusinessHomeIndex", "Home", new { area = "BusinessArea" });
-                    }
-                    else
-                    {
-                        return RedirectToAction(nameof(Index));
-                    }
+                        _ when User.IsAdmin() 
+                            => RedirectToAction("AdminHomeIndex", "Home", new { area = "AdminArea" }),
+                        _ when User.IsUser() 
+                            => RedirectToAction("UserHomeIndex", "Home", new { area = "UserArea" }),
+                        _ when User.IsBusinessProvider() 
+                            => RedirectToAction("BusinessHomeIndex", "Home", new { area = "BusinessArea" }),
+                        _ => RedirectToAction(nameof(Index)),
+                    };
                 }
                 else
                 {
                     ModelState.AddModelError(string.Empty, "Invalid login attempt. Please check your email and password.");
-                    return View(model); 
+                    return View(model);
                 }
             }
             catch (Exception ex)
             {
                 logger.LogError(ex, "Error during login");
-                LoginFormModel modelForm = new ();
+                LoginFormModel modelForm = new();
                 return RedirectToAction(nameof(MyProfile));
             }
-            
+
         }
 
         [HttpPost]
-        [AllowAnonymous]  
+        [AllowAnonymous]
         public async Task<IActionResult> Logout()
         {
-            HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
+            try
+            {
+                await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
+            }
+            catch (Exception ex)
+            {
+                logger.LogError(ex, "Error during logout");
+            }
+
             return RedirectToAction("Index", "Home");
         }
 
