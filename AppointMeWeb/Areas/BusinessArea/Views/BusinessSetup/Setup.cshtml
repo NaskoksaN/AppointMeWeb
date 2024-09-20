@@ -1,8 +1,6 @@
 ﻿@model BusinessProviderFormModel
 
-{
-    @ViewBag.Title="stres";
-}
+
 <div class="container mt-5">
     <h5 class="mb-4 text-center">Manage Working Hours</h5>
     <form asp-action="Setup" method="post" id="workingHoursForm">
@@ -47,7 +45,9 @@
                     </div>
                 </div>
             }
-            <button type="submit" class="btn btn-primary mt-3">Save Working Hours</button>
+            <div class="d-inline-block text-center">
+                <button type="submit" class="btn btn-primary btn-lg mt-3">Save Working Hours</button>
+            </div>
         </div>
     
     </form>
