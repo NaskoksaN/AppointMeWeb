@@ -107,10 +107,8 @@ namespace AppointMeWeb.Core.Services
         /// <exception cref="ApplicationException">Thrown when the database operation fails while saving the business ID.</exception>
         public async Task<bool> RegisterUserAsync(RegisterFormModel model)
         {
-            if (model == null)
-            {
-               throw new ArgumentNullException(nameof(model));
-            }
+            ArgumentNullException.ThrowIfNull(model);
+
             var tempUser = await userManager.FindByEmailAsync(model.Email);
             if (tempUser != null)
             {
@@ -128,11 +126,9 @@ namespace AppointMeWeb.Core.Services
                             ? BusinessRole
                             : WebUserRole;
             var role = await roleManager.FindByNameAsync(roleName);
-            if (role == null)
-            {
-                throw new ArgumentNullException(nameof(role));
-            }
             
+            ArgumentNullException.ThrowIfNull(role);
+
             var roleResult = await userManager.AddToRoleAsync(user, role.Name );
             if (!roleResult.Succeeded)
             {
@@ -173,10 +169,9 @@ namespace AppointMeWeb.Core.Services
                         .All<BusinessServiceProvider>()
                         .Where(b => b.ApplicationUserId == userId)
                         .FirstOrDefaultAsync();
-                if(businessUser == null)
-                {
-                    throw new ArgumentNullException("Not valid business user");
-                }
+
+                ArgumentNullException.ThrowIfNull(businessUser);
+
                 businessUser.AppointmentDuration = appointmentDuration;
                 sqlService.Update<BusinessServiceProvider>(businessUser);
                 await sqlService.SaveChangesAsync();
