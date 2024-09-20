@@ -8,7 +8,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace AppointMeWeb.Infrastrucure.Migrations
 {
     /// <inheritdoc />
-    public partial class InitialTables : Migration
+    public partial class AddEntityClassAndSees : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -79,6 +79,7 @@ namespace AppointMeWeb.Infrastrucure.Migrations
                     Town = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false, comment: "Buinsess town"),
                     Address = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false, comment: "Buinsess address"),
                     Url = table.Column<string>(type: "nvarchar(250)", maxLength: 250, nullable: false, comment: "Buinsess web-link"),
+                    AppointmentDuration = table.Column<TimeSpan>(type: "time", nullable: false, comment: "Duration of each appointment"),
                     ApplicationUserId = table.Column<string>(type: "nvarchar(450)", nullable: false)
                 },
                 constraints: table =>
@@ -133,9 +134,9 @@ namespace AppointMeWeb.Infrastrucure.Migrations
                         .Annotation("SqlServer:Identity", "1, 1"),
                     BusinessServiceProviderId = table.Column<int>(type: "int", nullable: false, comment: "Foreign key to BusinessServiceProvider"),
                     Day = table.Column<int>(type: "int", nullable: false, comment: "Day of the week"),
-                    StartTime = table.Column<TimeSpan>(type: "time", nullable: false, comment: "Start time of work"),
-                    EndTime = table.Column<TimeSpan>(type: "time", nullable: false, comment: "End time of work"),
-                    AppointmentDuration = table.Column<TimeSpan>(type: "time", nullable: false, comment: "Duration of each appointment")
+                    StartTime = table.Column<TimeSpan>(type: "time", nullable: true, comment: "Start time of work"),
+                    EndTime = table.Column<TimeSpan>(type: "time", nullable: true, comment: "End time of work"),
+                    IsDayOff = table.Column<bool>(type: "bit", nullable: false, comment: "Indicates whether the day is a day off for the service provider.")
                 },
                 constraints: table =>
                 {

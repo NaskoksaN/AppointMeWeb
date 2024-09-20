@@ -191,6 +191,10 @@ namespace AppointMeWeb.Infrastrucure.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(450)");
 
+                    b.Property<TimeSpan>("AppointmentDuration")
+                        .HasColumnType("time")
+                        .HasComment("Duration of each appointment");
+
                     b.Property<string>("BusinessDescription")
                         .IsRequired()
                         .HasMaxLength(50)
@@ -238,10 +242,6 @@ namespace AppointMeWeb.Infrastrucure.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<TimeSpan>("AppointmentDuration")
-                        .HasColumnType("time")
-                        .HasComment("Duration of each appointment");
-
                     b.Property<int>("BusinessServiceProviderId")
                         .HasColumnType("int")
                         .HasComment("Foreign key to BusinessServiceProvider");
@@ -250,11 +250,15 @@ namespace AppointMeWeb.Infrastrucure.Migrations
                         .HasColumnType("int")
                         .HasComment("Day of the week");
 
-                    b.Property<TimeSpan>("EndTime")
+                    b.Property<TimeSpan?>("EndTime")
                         .HasColumnType("time")
                         .HasComment("End time of work");
 
-                    b.Property<TimeSpan>("StartTime")
+                    b.Property<bool>("IsDayOff")
+                        .HasColumnType("bit")
+                        .HasComment("Indicates whether the day is a day off for the service provider.");
+
+                    b.Property<TimeSpan?>("StartTime")
                         .HasColumnType("time")
                         .HasComment("Start time of work");
 
