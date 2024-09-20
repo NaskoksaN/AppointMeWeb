@@ -14,13 +14,13 @@ namespace AppointMeWeb.Areas.BusinessArea.Controllers
         private readonly ICustomUserService customUserService;
         private readonly IFactory factory;
         private readonly IHelperService helperService;
-        private readonly ILogger logger;
+        private readonly ILogger<BusinessSetupController> logger;
 
         public BusinessSetupController(IBusinessService _businessService
                 , ICustomUserService _customUserService
                 , IFactory _factory
                 , IHelperService _helperService
-                , ILogger _logger)
+                , ILogger<BusinessSetupController> _logger)
         {
             this.businessService = _businessService;
             this.customUserService = _customUserService;
