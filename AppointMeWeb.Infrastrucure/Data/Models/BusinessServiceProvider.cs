@@ -11,7 +11,6 @@ namespace AppointMeWeb.Infrastrucure.Data.Models
     [Comment("Details of service providers")]
     public  class BusinessServiceProvider
     {
-
         [Key]
         [Comment("Buinsess identifier")]
         public int Id { get; set; }
@@ -44,6 +43,10 @@ namespace AppointMeWeb.Infrastrucure.Data.Models
         [Comment("Buinsess web-link")]
         [MaxLength(BusinessServiceProviderUrlMaxLength)]
         public string Url { get; set; } = string.Empty;
+
+        [Required]
+        [Comment("Duration of each appointment")]
+        public TimeSpan AppointmentDuration { get; set; } = TimeSpan.FromMinutes(30);
 
         [Required]
         public string ApplicationUserId {  get; set; } = string.Empty;

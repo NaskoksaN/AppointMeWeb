@@ -19,17 +19,17 @@ namespace AppointMeWeb.Infrastrucure.Data.Models
         [Comment("Day of the week")]
         public DayOfWeek Day { get; set; }
 
-        [Required]
+        
         [Comment("Start time of work")]
-        public TimeSpan StartTime { get; set; }
+        public TimeSpan? StartTime { get; set; }
 
-        [Required]
+      
         [Comment("End time of work")]
-        public TimeSpan EndTime { get; set; }
+        public TimeSpan? EndTime { get; set; }
 
         [Required]
-        [Comment("Duration of each appointment")]
-        public TimeSpan AppointmentDuration { get; set; } = TimeSpan.FromMinutes(30);
+        [Comment("Indicates whether the day is a day off for the service provider.")]
+        public bool IsDayOff { get; set; }
 
         [ForeignKey(nameof(BusinessServiceProviderId))]
         public  BusinessServiceProvider BusinessServiceProvider { get; set; } = null!;
