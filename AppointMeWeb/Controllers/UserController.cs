@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Identity;
 using AppointMeWeb.Infrastrucure.Data.Models;
 using System.Security.Claims;
 using AppointMeWeb.Extensions;
+using Microsoft.AspNetCore.Authentication.Cookies;
 
 namespace AppointMeWeb.Controllers
 {
@@ -30,6 +31,22 @@ namespace AppointMeWeb.Controllers
         [AllowAnonymous]
         public IActionResult MyProfile()
         {
+            if (User.Identity.IsAuthenticated)
+            {
+                if (User.IsBusinessProvider())
+                {
+                    return RedirectToAction("BusinessHomeIndex", "Home", new { area = "BusinessArea" });
+                }
+                else if (User.IsAdmin())
+                {
+                    return RedirectToAction("AdminHomeIndex", "Home", new { area = "AdminArea" });
+                }
+                else if (User.IsUser())
+                {
+                    return RedirectToAction("UserHomeIndex", "Home", new { area = "UserArea" });
+                }
+            }
+
             MyProfileViewModel model = new ();
             return View(model);
         }
@@ -183,9 +200,8 @@ namespace AppointMeWeb.Controllers
         [AllowAnonymous]  
         public async Task<IActionResult> Logout()
         {
-            await signInManager.SignOutAsync();
-
-            return RedirectToAction("Index", "Home");  
+            HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
+            return RedirectToAction("Index", "Home");
         }
 
 
