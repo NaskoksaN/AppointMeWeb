@@ -7,8 +7,11 @@ builder.Services.AddControllersWithViews()
     .AddRazorOptions(options =>
     {
         options.ViewLocationFormats.Add("/Areas/{2}/Views/{1}/{0}.cshtml");
+        options.ViewLocationFormats.Add("/Areas/{2}/Views/Shared/{0}.cshtml");
+        options.ViewLocationFormats.Add("/Views/{1}/{0}.cshtml");
         options.ViewLocationFormats.Add("/Views/Shared/{0}.cshtml");
     });
+
 
 builder.Services.AddApplicationService();
 
@@ -48,7 +51,7 @@ app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Home}/{action=Index}/{id?}"
 );
-//app.MapRazorPages();
+app.MapRazorPages();
 
 
 app.Run();
