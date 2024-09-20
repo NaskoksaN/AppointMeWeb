@@ -4,6 +4,7 @@ using AppointMeWeb.Core.Models.BusinessProvider;
 using AppointMeWeb.Core.Contracts;
 using AppointMeWeb.Extensions;
 using System.Security.Claims;
+using Microsoft.Extensions.Logging;
 
 namespace AppointMeWeb.Areas.BusinessArea.Controllers
 {
@@ -12,14 +13,20 @@ namespace AppointMeWeb.Areas.BusinessArea.Controllers
         private readonly IBusinessService businessService;
         private readonly ICustomUserService customUserService;
         private readonly IFactory factory;
+        private readonly IHelperService helperService;
+        private readonly ILogger logger;
 
         public BusinessSetupController(IBusinessService _businessService
                 , ICustomUserService _customUserService
-                , IFactory _factory)
+                , IFactory _factory
+                , IHelperService _helperService
+                , ILogger _logger)
         {
             this.businessService = _businessService;
             this.customUserService = _customUserService;
             this.factory = _factory;
+            this.helperService = _helperService;
+            this.logger = _logger;
         }
 
         [HttpGet]
@@ -27,11 +34,8 @@ namespace AppointMeWeb.Areas.BusinessArea.Controllers
         {
             BusinessProviderFormModel model = new()
             {
-                Days = Enum.GetValues(typeof(DayOfWeek))
-                   .Cast<DayOfWeek>()
-                   .Skip(1)
-                   .Concat(new[] { DayOfWeek.Sunday })
-                   .ToList()
+                Days = helperService.GetDaysOfWeek(),
+                
             };
             return View(model);
         }
@@ -51,14 +55,10 @@ namespace AppointMeWeb.Areas.BusinessArea.Controllers
             }
             catch (Exception ex)
             {
-
+                logger.LogError(ex, "An error occurred while setting up business provider details.");
                 BusinessProviderFormModel modelView = new()
                 {
-                    Days = Enum.GetValues(typeof(DayOfWeek))
-                  .Cast<DayOfWeek>()
-                  .Skip(1)
-                  .Concat(new[] { DayOfWeek.Sunday })
-                  .ToList()
+                    Days = helperService.GetDaysOfWeek()
                 };
                 return View(modelView);
             }
