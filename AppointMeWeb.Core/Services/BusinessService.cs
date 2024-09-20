@@ -1,8 +1,5 @@
 ﻿using AppointMeWeb.Core.Contracts;
-using AppointMeWeb.Core.Models.BusinessProvider;
 using AppointMeWeb.Infrastrucure.Data.Common;
-using AppointMeWeb.Infrastrucure.Data.Models;
-using Microsoft.AspNetCore.Identity;
 
 namespace AppointMeWeb.Core.Services
 {
@@ -17,6 +14,7 @@ namespace AppointMeWeb.Core.Services
             this.factory = _factory;
             this.sqlService = _sqlService;
         }
+
         
     }
 }
