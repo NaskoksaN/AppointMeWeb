@@ -120,7 +120,7 @@ namespace AppointMeWeb.Controllers
             }
             catch(Exception ex) 
             {
-                logger.LogError(nameof(Register), ex);
+                logger.LogError("Error in register controller",  ex);
                 ModelState.AddModelError("", "An error occurred during registration. Please try again.");
                 model.Roles = await customUserService.GetRolesAsync();
                 return RedirectToAction("MyProfile", new { tab = "register" });
