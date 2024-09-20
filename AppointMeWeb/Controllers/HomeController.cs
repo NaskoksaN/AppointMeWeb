@@ -1,3 +1,4 @@
+using AppointMeWeb.Extensions;
 using AppointMeWeb.Models;
 using Microsoft.AspNetCore.Mvc;
 using System.Diagnostics;
@@ -16,7 +17,23 @@ namespace AppointMeWeb.Controllers
 
         public IActionResult Index()
         {
-           
+
+            if (User.Identity.IsAuthenticated) 
+            {
+                if (User.IsBusinessProvider()) 
+                {
+                    return RedirectToAction("BusinessHomeIndex", "Home", new { area = "BusinessArea" });
+                }
+                else if (User.IsAdmin()) 
+                {
+                    return RedirectToAction("AdminHomeIndex", "Home", new { area = "AdminArea" });
+                }
+                else if (User.IsUser()) 
+                {
+                    return RedirectToAction("UserHomeIndex", "Home", new { area = "UserArea" });
+                }
+            }
+
             return View();
         }
 
