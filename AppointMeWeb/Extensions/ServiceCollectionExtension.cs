@@ -7,6 +7,8 @@ using AppointMeWeb.Infrastrucure.Data;
 using AppointMeWeb.Core.Contracts;
 using AppointMeWeb.Core.Services;
 using AppointMeWeb.Infrastrucure.Data.Common;
+using static AppointMeWeb.Infrastrucure.Constants.DataConstants;
+using Microsoft.AspNetCore.Mvc.Infrastructure;
 
 namespace Microsoft.Extensions.DependencyInjection
 {
@@ -17,6 +19,7 @@ namespace Microsoft.Extensions.DependencyInjection
             services.AddScoped<ICustomUserService, CustomUserService>();
             services.AddScoped<IFactory, Factory> ();
             services.AddScoped<IRepository, SqlRepository>();
+            services.AddSingleton<IActionContextAccessor, ActionContextAccessor>();
 
             return services;
         }
@@ -34,6 +37,22 @@ namespace Microsoft.Extensions.DependencyInjection
                 })
                 .AddRoles<IdentityRole<string>>()
                  .AddEntityFrameworkStores<ApplicationDbContext>();
+
+            services.AddAuthorization(options =>
+            {
+                options.AddPolicy(AdminRole, policy =>
+                {
+                    policy.RequireRole(AdminRole);
+                    policy.RequireRole(BusinessRole);
+                    policy.RequireRole(WebUserRole);
+                });
+            });
+
+            services.ConfigureApplicationCookie(options =>
+            {
+                options.LoginPath = $"/User/Login";
+                options.LogoutPath = $"/User/Logout";
+            });
 
             return services;
         }
