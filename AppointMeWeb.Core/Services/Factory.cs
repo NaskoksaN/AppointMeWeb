@@ -1,5 +1,6 @@
 ﻿using AppointMeWeb.Core.Contracts;
 using AppointMeWeb.Core.Models.ApplicationUser;
+using AppointMeWeb.Core.Models.BusinessProvider;
 using AppointMeWeb.Infrastrucure.Data.Common;
 using AppointMeWeb.Infrastrucure.Data.Models;
 using Microsoft.Extensions.Logging;
@@ -45,6 +46,32 @@ namespace AppointMeWeb.Core.Services
 
         }
 
-        
+        public async Task<bool> CreateWorkSchedule(List<DailyScheduleViewModel> dailySchedules, int businessUserId)
+        {
+            try
+            {
+                List<WorkingSchedule> schedule = new();
+                foreach (var day in dailySchedules)
+                {
+                    WorkingSchedule workingSchedule = new WorkingSchedule()
+                    {
+                        Day = day.Day,
+                        StartTime = day.StartTime,
+                        EndTime = day.EndTime,
+                        IsDayOff = day.IsDayOff,
+                        BusinessServiceProviderId = businessUserId
+                    };
+                    schedule.Add(workingSchedule);
+                }
+                await sqlRepository.AddRangeAsync<WorkingSchedule>(schedule);
+                await sqlRepository.SaveChangesAsync();
+                return true;
+            }
+            catch (Exception ex)
+            {
+                throw new ApplicationException("Database failed to save info", ex);
+            }
+
+        }
     }
 }

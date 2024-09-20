@@ -8,6 +8,7 @@ using AppointMeWeb.Infrastrucure.Data.Common;
 using AppointMeWeb.Infrastrucure.Data.Models;
 
 using static AppointMeWeb.Infrastrucure.Constants.DataConstants;
+using AppointMeWeb.Core.Models.BusinessProvider;
 
 namespace AppointMeWeb.Core.Services
 {
@@ -95,7 +96,7 @@ namespace AppointMeWeb.Core.Services
 
             var roleResult = await userManager.AddToRoleAsync(user, role.Name );
 
-            if (userResult.Succeeded && roleResult.Succeeded) 
+            if (userResult.Succeeded && roleResult.Succeeded && model.IsBusinessProvider) 
             {
                 int businessId = await factory.CreateBusinessUserAndReturnId(model, user.Id);
                 try
@@ -112,6 +113,29 @@ namespace AppointMeWeb.Core.Services
                 return true;
             }
             return false;
+        }
+
+        public async Task<int> UpdateBusinessUserDurationDetails(TimeSpan appointmentDuration, string userId)
+        {
+            try
+            {
+                var businessUser = await sqlService
+                        .All<BusinessServiceProvider>()
+                        .Where(b => b.ApplicationUserId == userId)
+                        .FirstOrDefaultAsync();
+                if(businessUser == null)
+                {
+                    throw new ArgumentNullException("Not valid business user");
+                }
+                businessUser.AppointmentDuration = appointmentDuration;
+                sqlService.Update<BusinessServiceProvider>(businessUser);
+                await sqlService.SaveChangesAsync();
+                return businessUser.Id;
+            }
+            catch (Exception ex)
+            {
+                throw new ApplicationException("Database failed to save info", ex);
+            }
         }
     }
 }
