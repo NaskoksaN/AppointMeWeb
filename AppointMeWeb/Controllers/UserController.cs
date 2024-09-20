@@ -14,13 +14,13 @@ namespace AppointMeWeb.Controllers
 {
     public class UserController : Controller
     {
-        private readonly ILogger logger;
+        private readonly ILogger<UserController> logger;
         private readonly SignInManager<ApplicationUser> signInManager;
         private readonly ICustomUserService customUserService;
         private readonly IBusinessService businessService;
 
         public UserController(ICustomUserService _customUserService
-            , ILogger<IFactory> _logger
+            , ILogger<UserController> _logger
             , SignInManager<ApplicationUser> _signInManager
             , IBusinessService _businessService)
         {

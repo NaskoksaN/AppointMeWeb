@@ -20,6 +20,8 @@ namespace Microsoft.Extensions.DependencyInjection
             services.AddScoped<IFactory, Factory> ();
             services.AddScoped<IRepository, SqlRepository>();
             services.AddScoped<IBusinessService, BusinessService>();
+            services.AddScoped<IHelperService, HelperService>();
+            
 
             services.AddSingleton<IActionContextAccessor, ActionContextAccessor>();
             
