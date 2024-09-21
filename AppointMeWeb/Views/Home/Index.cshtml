@@ -1,8 +1,9 @@
-﻿@{
-    ViewData["Title"] = "AppointMe";
+﻿@model IEnumerable<BusinessViewModel>
+@{
+    ViewData["Title"] = "AppointMe: the largest service network.";
 }
+<h6 class="display-4">@ViewData["Title"]</h6>
 
-<div class="text-center">
-    <h1 class="display-4">@ViewData["Title"]</h1>
-    
-</div>
+<partial name="_IndexViewPartial" model="Model" />
+
+
