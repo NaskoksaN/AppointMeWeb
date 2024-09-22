@@ -1,0 +1,20 @@
+﻿@model IEnumerable<BusinessViewModel>
+
+
+<div class="text-center">
+   
+    <hr />
+    @if (Model == null)
+    {
+        <h6 class="alert-warning">no service added yet</h6>
+    }
+    else
+    {
+        @foreach (var business in Model)
+        {
+            <partial name="_BusinessProviderDetailPartial" model="business" />
+        }
+    }
+</div>
+
+

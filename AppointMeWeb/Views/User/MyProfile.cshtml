@@ -3,7 +3,7 @@
 <div class="container mt-4">
     <div class="row justify-content-center">
         <div class="col-md-4">
-            <div class="card">
+            <div class="card shadow-lg">
                 <div class="card-body">
                     
                     <ul class="nav nav-tabs" id="myTab" role="tablist">
@@ -29,27 +29,63 @@
         </div>
     </div>
 </div>
+<style>
+    .form-control:focus {
+        border-color: darkorange; 
+        box-shadow: 0 0 0.2rem rgba(255, 165, 0, 0.5); 
+    }
+
+    .input-group .form-control:focus {
+        outline: none; 
+    }
+
+    .btn {
+        color:black;
+        background-color: darkorange;
+    }
+
+    .btn:hover {
+        color: darkorange;
+        background-color: black;
+    }
+
+    .nav-tabs .nav-link {
+        color: darkgray; 
+    }
+
+    .nav-tabs .nav-link.active {
+        color: black; 
+    }
+
+   
+</style>
 
 
-<script>
-    function Check() {
-        const checkBox = document.getElementById("registerAsBusinessProvider");
-        const businessDiv = document.getElementById("businessProviderFields");
 
-        if (checkBox.checked) {
-        businessDiv.style.display = 'block';
-        document
-                .querySelectorAll('#businessProviderFields .form-control')
-                .forEach(input => {
-                                input.setAttribute('required', 'true');
-                });
-    } else {
-        businessDiv.style.display = 'none';
-        document
-                .querySelectorAll('#businessProviderFields .form-control')
-                .forEach(input => {
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+
+    <script>
+        function Check() {
+            const checkBox = document.getElementById("registerAsBusinessProvider");
+            const businessDiv = document.getElementById("businessProviderFields");
+
+            if (checkBox.checked) {
+                businessDiv.style.display = 'block';
+                document
+                    .querySelectorAll('#businessProviderFields .form-control')
+                    .forEach(input => {
+                        input.setAttribute('required', 'true');
+                    });
+            } else {
+                businessDiv.style.display = 'none';
+                document
+                    .querySelectorAll('#businessProviderFields .form-control')
+                    .forEach(input => {
                         input.removeAttribute('required');
-                });
-    }
-    }
-</script>
+                    });
+            }
+        }
+    </script>
+}
+
