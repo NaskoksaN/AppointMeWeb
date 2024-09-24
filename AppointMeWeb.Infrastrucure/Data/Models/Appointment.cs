@@ -25,10 +25,6 @@ namespace AppointMeWeb.Infrastrucure.Data.Models
         public AppointmentStatus Status { get; set; } = AppointmentStatus.Confirmed;
 
         [Required]
-        [Comment("User Identifier")]
-        public string UserId {  get; set; }=string.Empty;
-
-        [Required]
         [Comment("Day of the week")]
         public DayOfWeek Day { get; set; }
 
@@ -43,8 +39,15 @@ namespace AppointMeWeb.Infrastrucure.Data.Models
         [Required]
         [Comment("BusinessServiceProvider Identifier")]
         public int BusinessServiceProviderId { get; set; }
+        [Required]
+        [Comment("User Identifier")]
+        public string UserId { get; set; } = string.Empty;
 
+        [Required]
+        [ForeignKey(nameof(UserId))]
+        public ApplicationUser ApplicationUser { get; set; }=null!;
 
+        [Required]
         [ForeignKey(nameof(BusinessServiceProviderId))]
         public BusinessServiceProvider BusinessServiceProvider { get; set; } = null!;
     }

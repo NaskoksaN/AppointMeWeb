@@ -49,6 +49,10 @@ namespace AppointMeWeb.Infrastrucure.Data.Models
         public TimeSpan AppointmentDuration { get; set; } = TimeSpan.FromMinutes(30);
 
         [Required]
+        [Comment("BusinessProvier activity")]
+        public bool IsActive { get; set; } = true;
+
+        [Required]
         public string ApplicationUserId {  get; set; } = string.Empty;
         [Required]
         [ForeignKey(nameof(ApplicationUserId))]
