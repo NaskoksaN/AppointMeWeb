@@ -22,6 +22,8 @@ namespace Microsoft.Extensions.DependencyInjection
             services.AddScoped<IBusinessService, BusinessService>();
             services.AddScoped<IHelperService, HelperService>();
             services.AddScoped<IDataService, DataService>();
+            services.AddScoped<IAppointmentService, AppointmentService>();
+
 
             services.AddSingleton<IActionContextAccessor, ActionContextAccessor>();
             
