@@ -51,13 +51,16 @@ namespace AppointMeWeb.Core.Contracts
         /// <exception cref="ApplicationException">Thrown when the database operation fails while saving the business ID.</exception>
         Task<bool> RegisterUserAsync(RegisterFormModel model);
 
-        // <summary>
-        /// Retrieves the business user's ID based on the provided application user ID.
+        /// <summary>
+        /// Asynchronously retrieves the ID of a BusinessServiceProvider based on the provided user ID.
+        /// The user ID can be either an integer (business ID) or a string (application user ID).
+        /// Throws an ArgumentException for unsupported user ID types and an ArgumentNullException if no matching business provider is found.
         /// </summary>
-        /// <param name="userId">The ID of the application user to find the associated business user.</param>
-        /// <returns>The ID of the corresponding business user if found.</returns>
-        /// <exception cref="ArgumentNullException">Thrown when the business user associated with the provided application user ID is not found.</exception>
-        /// <exception cref="ApplicationException">Thrown when there is an issue accessing the database.</exception>
-        Task<int> GetBusinessUserIdAsync(string userId);
+        /// <typeparam name="T">The type of the user ID, which can be either int or string.</typeparam>
+        /// <param name="userId">The user ID used to query for the BusinessServiceProvider.</param>
+        /// <returns>The ID of the matching BusinessServiceProvider.</returns>
+        /// <exception cref="ArgumentException">Thrown when an unsupported user ID type is provided.</exception>
+        /// <exception cref="ApplicationException">Thrown when the database fails to retrieve the business user info.</exception>
+        public Task<int> GetBusinessUserIdAsync<T>(T userId);
     }
 }
