@@ -1,10 +1,7 @@
-﻿using Microsoft.AspNetCore.Mvc;
-
+﻿using AppointMeWeb.Core.Contracts;
 using AppointMeWeb.Core.Models.BusinessProvider;
-using AppointMeWeb.Core.Contracts;
 using AppointMeWeb.Extensions;
-using System.Security.Claims;
-using Microsoft.Extensions.Logging;
+using Microsoft.AspNetCore.Mvc;
 
 namespace AppointMeWeb.Areas.BusinessArea.Controllers
 {
@@ -30,12 +27,13 @@ namespace AppointMeWeb.Areas.BusinessArea.Controllers
         }
 
         [HttpGet]
-        public IActionResult Setup()
+        public async Task<IActionResult> Setup()
         {
+            string userId = User.Id();
             BusinessProviderFormModel model = new()
             {
                 Days = helperService.GetDaysOfWeek(),
-                
+                ExistedSchedule = await businessService.GetUserWorkingShedulesAsync(userId)
             };
             return View(model);
         }
@@ -48,17 +46,23 @@ namespace AppointMeWeb.Areas.BusinessArea.Controllers
                 string userId = User.Id();
                 int businessUserId = await customUserService
                             .UpdateBusinessUserDurationDetails(model.AppointmentDuration, userId);
-                bool isWorkScheduleUpdate = await factory
-                            .CreateWorkSchedule(model.DailySchedules, businessUserId);
-
+                bool isWorkScheduleUpdate = model.ExistedSchedule.Any() == false
+                        ? await factory
+                            .CreateWorkSchedule(model.DailySchedules, businessUserId)
+                        : await factory.UpdateWorkSchedule(model.ExistedSchedule, businessUserId);
+                // todo show result - create/update sucseeful
                 return Ok();
+                // todo redirecition.
             }
             catch (Exception ex)
             {
-                logger.LogError(ex, "An error occurred while setting up business provider details.");
+                logger.LogError(ex,ex.Message);
+
+                string userId = User.Id();
                 BusinessProviderFormModel modelView = new()
                 {
-                    Days = helperService.GetDaysOfWeek()
+                    Days = helperService.GetDaysOfWeek(),
+                    ExistedSchedule = await businessService.GetUserWorkingShedulesAsync(userId),
                 };
                 return View(modelView);
             }
