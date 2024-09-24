@@ -2,12 +2,12 @@
 using Microsoft.AspNetCore.Mvc;
 
 using AppointMeWeb.Core.Contracts;
-using AppointMeWeb.Core.Models.FindService;
 using static AppointMeWeb.WebConstants.AppointmentConstants;
+using AppointMeWeb.Core.Models.AppointmeModels;
 
 namespace AppointMeWeb.Areas.UserArea.Controllers
 {
-    public class AppointmentController : Controller
+    public class AppointmentController : BaseController
     {
         private readonly IHelperService helperService;
         private readonly ILogger<FindController> logger;
