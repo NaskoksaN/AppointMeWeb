@@ -1,3 +1,5 @@
+using AppointMeWeb.Core.Contracts;
+using AppointMeWeb.Core.Models.BusinessProvider;
 using AppointMeWeb.Extensions;
 using AppointMeWeb.Models;
 using Microsoft.AspNetCore.Mvc;
@@ -8,17 +10,21 @@ namespace AppointMeWeb.Controllers
 {
     public class HomeController : Controller
     {
-        private readonly ILogger<HomeController> _logger;
+        private readonly ILogger<HomeController> logger;
+        private readonly IBusinessService businessService;
 
-        public HomeController(ILogger<HomeController> logger)
+        public HomeController(ILogger<HomeController> _logger
+                , IBusinessService _businessService)
         {
-            _logger = logger;
+            this.logger = _logger;
+            this.businessService = _businessService;
         }
 
-        public IActionResult Index()
+        [HttpGet]
+        public async Task<IActionResult> Index()
         {
 
-            if (User.Identity.IsAuthenticated) 
+            if (User.Identity != null && User.Identity.IsAuthenticated) 
             {
                 if (User.IsBusinessProvider()) 
                 {
@@ -34,7 +40,17 @@ namespace AppointMeWeb.Controllers
                 }
             }
 
-            return View();
+            try
+            {
+                IEnumerable<BusinessViewModel> model = await businessService.GetAllBusinessAsync();
+                return View(model);
+            }
+            catch (Exception ex)
+            {
+                logger.LogError("Error in register controller: {ExceptionMessage}", ex.Message);
+                return View();
+            }
+            
         }
 
 
