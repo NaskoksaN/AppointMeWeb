@@ -4,7 +4,6 @@ using AppointMeWeb.Core.Models.BusinessProvider;
 using AppointMeWeb.Infrastrucure.Data.Common;
 using AppointMeWeb.Infrastrucure.Data.Models;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Logging;
 
 namespace AppointMeWeb.Core.Services
 {
@@ -93,7 +92,7 @@ namespace AppointMeWeb.Core.Services
                 {
                     throw new ApplicationException("Business user not found.");
                 }
-                List<WorkingSchedule> schedule = new();
+                List<WorkingSchedule> schedule = [];
                 foreach (var day in dailySchedules)
                 {
                     WorkingSchedule workingSchedule = CreateScheduleObject(day, businessUser.Id);
