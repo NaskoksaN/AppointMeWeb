@@ -34,7 +34,7 @@ namespace AppointMeWeb.Controllers
         [AllowAnonymous]
         public IActionResult MyProfile()
         {
-            if (User.Identity.IsAuthenticated)
+            if (User.Identity != null && User.Identity.IsAuthenticated)
             {
                 if (User.IsBusinessProvider())
                 {
@@ -119,7 +119,7 @@ namespace AppointMeWeb.Controllers
             }
             catch (Exception ex)
             {
-                logger.LogError("Error in register controller", ex);
+                logger.LogError("Error in register controller: {ExceptionMessage}", ex.Message);
                 ModelState.AddModelError("", "An error occurred during registration. Please try again.");
                 return RedirectToAction("MyProfile", new { tab = "register" });
             }
@@ -193,7 +193,8 @@ namespace AppointMeWeb.Controllers
                 else
                 {
                     ModelState.AddModelError(string.Empty, "Invalid login attempt. Please check your email and password.");
-                    return View(model);
+                    TempData["ErrorMessage"] = "Invalid login attempt.";
+                    return RedirectToAction(nameof(MyProfile));
                 }
             }
             catch (Exception ex)
