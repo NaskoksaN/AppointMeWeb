@@ -9,5 +9,10 @@ namespace AppointMeWeb.Core.Contracts
         /// </summary>
         /// <returns>A list of <see cref="DayOfWeek"/> starting from Monday and ending with Sunday.</returns>
         List<DayOfWeek> GetDaysOfWeek();
+
+        /// <summary>
+        /// Retrieves all values of a specified enum type.
+        /// </summary>
+        IEnumerable<T> GetEnumValues<T>() where T : Enum;
     }
 }
