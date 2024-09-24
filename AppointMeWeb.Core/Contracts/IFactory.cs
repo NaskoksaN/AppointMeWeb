@@ -30,5 +30,6 @@ namespace AppointMeWeb.Core.Contracts
         /// <returns>A task that represents the asynchronous operation, with a value indicating whether the schedule was successfully created.</returns>
         /// <exception cref="ApplicationException">Thrown when there is an error saving the schedule to the database.</exception>
         Task<bool> CreateWorkSchedule(List<DailyScheduleViewModel> dailySchedules, int businessUserId);
+        Task<bool> UpdateWorkSchedule(List<DailyScheduleViewModel> existedSchedule, int businessUserId);
     }
 }

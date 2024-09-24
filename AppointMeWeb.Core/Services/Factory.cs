@@ -79,22 +79,30 @@ namespace AppointMeWeb.Core.Services
         /// <param name="dailySchedules">A list of daily schedules containing details such as day, start time, end time, and whether it's a day off.</param>
         /// <param name="businessUserId">The identifier of the business user for whom the schedule is created.</param>
         /// <returns>A task that represents the asynchronous operation, with a value indicating whether the schedule was successfully created.</returns>
-        /// <exception cref="ApplicationException">Thrown when there is an error saving the schedule to the database.</exception>
+        /// <exception cref="ApplicationException">Thrown when the business user is not found or when there is an error saving to the database.</exception>
         public async Task<bool> CreateWorkSchedule(List<DailyScheduleViewModel> dailySchedules, int businessUserId)
         {
             try
             {
+                var business = await sqlRepository
+                        .AllReadOnly<BusinessServiceProvider>()
+                        .FirstOrDefaultAsync(b=> b.Id==businessUserId);
+                if(business == null)
+                {
+                    throw new ApplicationException("Business user not found.");
+                }
                 List<WorkingSchedule> schedule = new();
                 foreach (var day in dailySchedules)
                 {
-                    WorkingSchedule workingSchedule = new WorkingSchedule()
-                    {
-                        Day = day.Day,
-                        StartTime = day.StartTime,
-                        EndTime = day.EndTime,
-                        IsDayOff = day.IsDayOff,
-                        BusinessServiceProviderId = businessUserId
-                    };
+                    WorkingSchedule workingSchedule = CreateScheduleObject(day, business.Id);
+                    //WorkingSchedule workingSchedule = new WorkingSchedule()
+                    //{
+                    //    Day = day.Day,
+                    //    StartTime = day.StartTime,
+                    //    EndTime = day.EndTime,
+                    //    IsDayOff = day.IsDayOff,
+                    //    BusinessServiceProviderId = businessUserId
+                    //};
                     schedule.Add(workingSchedule);
                 }
                 await sqlRepository.AddRangeAsync<WorkingSchedule>(schedule);
@@ -106,6 +114,64 @@ namespace AppointMeWeb.Core.Services
                 throw new ApplicationException("Database failed to save info", ex);
             }
 
+        }
+        /// <summary>
+        /// Updates the working schedule for a specified business service provider.
+        /// </summary>
+        /// <param name="existedSchedule">A list of existing daily schedules to be updated.</param>
+        /// <param name="businessUserId">The unique identifier of the business service provider.</param>
+        /// <returns>A task representing the asynchronous operation. The task result contains a boolean value indicating whether the update was successful.</returns>
+        /// <exception cref="ApplicationException">Thrown when the business user is not found or when there is an error saving to the database.</exception>
+        public async Task<bool> UpdateWorkSchedule(List<DailyScheduleViewModel> existedSchedule, int businessUserId)
+        {
+            try
+            {
+                var businessUser = await sqlRepository
+                        .All<BusinessServiceProvider>()
+                        .Include(b => b.WorkingSchedules) 
+                        .FirstOrDefaultAsync(b => b.Id == businessUserId);
+                if (businessUser == null)
+                {
+                    throw new ApplicationException("Business user not found.");
+                }
+                businessUser.WorkingSchedules.Clear();
+
+                foreach (var day in existedSchedule)
+                {
+                    WorkingSchedule workingSchedule = CreateScheduleObject(day, businessUser.Id);
+                    //WorkingSchedule workingSchedule = new WorkingSchedule()
+                    //{
+                    //    Day = day.Day,
+                    //    StartTime = day.StartTime,
+                    //    EndTime = day.EndTime,
+                    //    IsDayOff = day.IsDayOff,
+                    //    BusinessServiceProviderId = businessUserId
+                    //};
+                    businessUser.WorkingSchedules.Add(workingSchedule);
+                }
+
+                await sqlRepository.SaveChangesAsync();
+                return true;
+            }
+            catch (Exception ex)
+            {
+                throw new ApplicationException("Database failed to save info", ex);
+            }
+
+        }
+
+        private WorkingSchedule CreateScheduleObject(DailyScheduleViewModel day, int businessUserId)
+        {
+            WorkingSchedule result = new WorkingSchedule()
+            {
+                Day = day.Day,
+                StartTime = day.StartTime,
+                EndTime = day.EndTime,
+                IsDayOff = day.IsDayOff,
+                BusinessServiceProviderId = businessUserId
+            };
+
+            return result;
         }
     }
 }
