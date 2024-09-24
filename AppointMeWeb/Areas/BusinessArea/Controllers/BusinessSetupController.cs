@@ -45,11 +45,11 @@ namespace AppointMeWeb.Areas.BusinessArea.Controllers
             {
                 string userId = User.Id();
                 int businessUserId = await customUserService
-                            .UpdateBusinessUserDurationDetails(model.AppointmentDuration, userId);
+                            .GetBusinessUserIdAsync(userId);
                 bool isWorkScheduleUpdate = model.ExistedSchedule.Any() == false
                         ? await factory
-                            .CreateWorkSchedule(model.DailySchedules, businessUserId)
-                        : await factory.UpdateWorkSchedule(model.ExistedSchedule, businessUserId);
+                            .CreateWorkScheduleAsync(model.DailySchedules, businessUserId, model.AppointmentDuration)
+                        : await factory.UpdateWorkScheduleAsync(model.ExistedSchedule, businessUserId, model.AppointmentDuration);
                 // todo show result - create/update sucseeful
                 return Ok();
                 // todo redirecition.
