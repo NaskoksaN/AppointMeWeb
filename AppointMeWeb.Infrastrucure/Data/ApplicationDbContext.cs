@@ -28,11 +28,21 @@ namespace AppointMeWeb.Infrastrucure.Data
         }
         protected override void OnModelCreating(ModelBuilder builder)
         {
+            builder.Entity<Appointment>()
+                .HasOne(u => u.ApplicationUser)
+                .WithMany(a => a.Appointments)
+                .OnDelete(DeleteBehavior.NoAction);
+
+            builder.Entity<Appointment>()
+               .HasOne(u => u.BusinessServiceProvider)
+               .WithMany(a => a.Appointments)
+               .OnDelete(DeleteBehavior.NoAction);
 
             if (seedDb)
             {
                 builder.ApplyConfiguration(new IdentityRoleConfiguration());
             }
+            
             
 
             base.OnModelCreating(builder);
