@@ -1,0 +1,47 @@
+﻿@model AppointmentViewModel
+
+@{
+    ViewData["Title"] = "Book Your Appointment in the Coming 30 Days";
+}
+
+<div class="container mt-4">
+    <h2 class="mb-4 text-center">@ViewData["Title"]</h2>
+
+    <div class="row d-flex align-items-stretch">
+        @foreach (var date in Model.NextThirtyDays)
+        {
+            var dayOfWeek = date.DayOfWeek; 
+            var workingSchedule = Model.BusinessWorkingSchedule
+            .FirstOrDefault(ds => ds.Day == dayOfWeek); 
+
+            var workingTime = workingSchedule != null && !workingSchedule.IsDayOff
+            ? $"{workingSchedule.StartTime:hh\\:mm} - {workingSchedule.EndTime:hh\\:mm}"
+            : "Day OFF, no working hours";
+
+            <div class="col-md-2 mb-2 d-flex">
+                <a asp-area="User"
+                   asp-controller="Find"
+                   asp-action="MakeAppointment"
+                   asp-route-date="@date.Date"
+                   asp-route-dayOfWeek="@dayOfWeek.ToString()"
+                   class="btn btn-primary btn-block"
+                   title="@workingTime"
+                   data-toggle="tooltip" data-placement="top">
+                    @date.ToString("dddd, MMM dd yyyy")
+                </a>
+            </div>
+        }
+    </div>
+</div>
+
+
+
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-toggle="tooltip"]'));
+        var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+            return new bootstrap.Tooltip(tooltipTriggerEl);
+        });
+    });
+</script>
