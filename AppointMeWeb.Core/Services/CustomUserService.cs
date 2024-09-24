@@ -153,15 +153,14 @@ namespace AppointMeWeb.Core.Services
             return true;
         }
 
-        /// <summary>
-        /// Updates the appointment duration details for a specified business user.
+        // <summary>
+        /// Retrieves the business user's ID based on the provided application user ID.
         /// </summary>
-        /// <param name="appointmentDuration">The new appointment duration as a TimeSpan.</param>
-        /// <param name="userId">The ID of the business user whose details are to be updated.</param>
-        /// <returns>The ID of the updated business user.</returns>
-        /// <exception cref="ArgumentNullException">Thrown when the business user is not found.</exception>
-        /// <exception cref="ApplicationException">Thrown when the database operation fails.</exception>
-        public async Task<int> UpdateBusinessUserDurationDetails(TimeSpan appointmentDuration, string userId)
+        /// <param name="userId">The ID of the application user to find the associated business user.</param>
+        /// <returns>The ID of the corresponding business user if found.</returns>
+        /// <exception cref="ArgumentNullException">Thrown when the business user associated with the provided application user ID is not found.</exception>
+        /// <exception cref="ApplicationException">Thrown when there is an issue accessing the database.</exception>
+        public async Task<int> GetBusinessUserIdAsync(string userId)
         {
             try
             {
@@ -171,15 +170,12 @@ namespace AppointMeWeb.Core.Services
                         .FirstOrDefaultAsync();
 
                 ArgumentNullException.ThrowIfNull(businessUser);
-
-                businessUser.AppointmentDuration = appointmentDuration;
-                sqlService.Update<BusinessServiceProvider>(businessUser);
-                await sqlService.SaveChangesAsync();
+               
                 return businessUser.Id;
             }
             catch (Exception ex)
             {
-                throw new ApplicationException("Database failed to save info", ex);
+                throw new ApplicationException("Database failed to retrieve the business user info.", ex);
             }
         }
     }
