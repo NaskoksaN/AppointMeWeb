@@ -46,17 +46,17 @@ namespace AppointMeWeb.Areas.BusinessArea.Controllers
                 string userId = User.Id();
                 int businessUserId = await customUserService
                             .GetBusinessUserIdAsync(userId);
-                bool isWorkScheduleUpdate = model.ExistedSchedule.Any() == false
+                bool isWorkScheduleUpdate = model.ExistedSchedule!=null &&  model.ExistedSchedule.Count==0
                         ? await factory
                             .CreateWorkScheduleAsync(model.DailySchedules, businessUserId, model.AppointmentDuration)
-                        : await factory.UpdateWorkScheduleAsync(model.ExistedSchedule, businessUserId, model.AppointmentDuration);
+                        : await factory.UpdateWorkScheduleAsync(model.ExistedSchedule=null!, businessUserId, model.AppointmentDuration);
                 // todo show result - create/update sucseeful
                 return Ok();
                 // todo redirecition.
             }
             catch (Exception ex)
             {
-                logger.LogError(ex,ex.Message);
+                logger.LogError(ex, message: ex.Message);
 
                 string userId = User.Id();
                 BusinessProviderFormModel modelView = new()

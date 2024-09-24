@@ -4,7 +4,7 @@ namespace AppointMeWeb.Core.Models.BusinessProvider
 {
     public class BusinessViewModel
     {
-        [Required]
+        
         public int Id { get; set; }
        
         public string Name { get; set; } = string.Empty;
