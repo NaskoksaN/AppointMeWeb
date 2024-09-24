@@ -17,5 +17,13 @@ namespace AppointMeWeb.Core.Services
                    .Concat(new[] { DayOfWeek.Sunday })
                    .ToList();
         }
+
+        /// <summary>
+        /// Retrieves all values of a specified enum type.
+        /// </summary>
+        public IEnumerable<T> GetEnumValues<T>() where T : Enum
+        {
+            return Enum.GetValues(typeof(T)).Cast<T>();
+        }
     }
 }
