@@ -29,7 +29,7 @@ namespace AppointMeWeb.Core.Contracts
         /// <param name="businessUserId">The identifier of the business user for whom the schedule is created.</param>
         /// <returns>A task that represents the asynchronous operation, with a value indicating whether the schedule was successfully created.</returns>
         /// <exception cref="ApplicationException">Thrown when there is an error saving the schedule to the database.</exception>
-        Task<bool> CreateWorkSchedule(List<DailyScheduleViewModel> dailySchedules, int businessUserId);
-        Task<bool> UpdateWorkSchedule(List<DailyScheduleViewModel> existedSchedule, int businessUserId);
+        Task<bool> CreateWorkScheduleAsync(List<DailyScheduleViewModel> dailySchedules, int businessUserId, TimeSpan duration);
+        Task<bool> UpdateWorkScheduleAsync(List<DailyScheduleViewModel> existedSchedule, int businessUserId, TimeSpan duration);
     }
 }

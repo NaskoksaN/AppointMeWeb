@@ -80,31 +80,28 @@ namespace AppointMeWeb.Core.Services
         /// <param name="businessUserId">The identifier of the business user for whom the schedule is created.</param>
         /// <returns>A task that represents the asynchronous operation, with a value indicating whether the schedule was successfully created.</returns>
         /// <exception cref="ApplicationException">Thrown when the business user is not found or when there is an error saving to the database.</exception>
-        public async Task<bool> CreateWorkSchedule(List<DailyScheduleViewModel> dailySchedules, int businessUserId)
+        public async Task<bool> CreateWorkScheduleAsync(List<DailyScheduleViewModel> dailySchedules
+                    , int businessUserId
+                    , TimeSpan duration)
         {
             try
             {
-                var business = await sqlRepository
+                var businessUser = await sqlRepository
                         .AllReadOnly<BusinessServiceProvider>()
                         .FirstOrDefaultAsync(b=> b.Id==businessUserId);
-                if(business == null)
+                if(businessUser == null)
                 {
                     throw new ApplicationException("Business user not found.");
                 }
                 List<WorkingSchedule> schedule = new();
                 foreach (var day in dailySchedules)
                 {
-                    WorkingSchedule workingSchedule = CreateScheduleObject(day, business.Id);
-                    //WorkingSchedule workingSchedule = new WorkingSchedule()
-                    //{
-                    //    Day = day.Day,
-                    //    StartTime = day.StartTime,
-                    //    EndTime = day.EndTime,
-                    //    IsDayOff = day.IsDayOff,
-                    //    BusinessServiceProviderId = businessUserId
-                    //};
+                    WorkingSchedule workingSchedule = CreateScheduleObject(day, businessUser.Id);
+                   
                     schedule.Add(workingSchedule);
                 }
+
+                businessUser.AppointmentDuration = duration;
                 await sqlRepository.AddRangeAsync<WorkingSchedule>(schedule);
                 await sqlRepository.SaveChangesAsync();
                 return true;
@@ -122,7 +119,9 @@ namespace AppointMeWeb.Core.Services
         /// <param name="businessUserId">The unique identifier of the business service provider.</param>
         /// <returns>A task representing the asynchronous operation. The task result contains a boolean value indicating whether the update was successful.</returns>
         /// <exception cref="ApplicationException">Thrown when the business user is not found or when there is an error saving to the database.</exception>
-        public async Task<bool> UpdateWorkSchedule(List<DailyScheduleViewModel> existedSchedule, int businessUserId)
+        public async Task<bool> UpdateWorkScheduleAsync(List<DailyScheduleViewModel> existedSchedule
+                , int businessUserId
+                , TimeSpan duration)
         {
             try
             {
@@ -139,16 +138,10 @@ namespace AppointMeWeb.Core.Services
                 foreach (var day in existedSchedule)
                 {
                     WorkingSchedule workingSchedule = CreateScheduleObject(day, businessUser.Id);
-                    //WorkingSchedule workingSchedule = new WorkingSchedule()
-                    //{
-                    //    Day = day.Day,
-                    //    StartTime = day.StartTime,
-                    //    EndTime = day.EndTime,
-                    //    IsDayOff = day.IsDayOff,
-                    //    BusinessServiceProviderId = businessUserId
-                    //};
+
                     businessUser.WorkingSchedules.Add(workingSchedule);
                 }
+                businessUser.AppointmentDuration = duration;
 
                 await sqlRepository.SaveChangesAsync();
                 return true;
