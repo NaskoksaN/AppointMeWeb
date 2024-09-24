@@ -2,6 +2,7 @@
 using System.ComponentModel.DataAnnotations;
 
 using AppointMeWeb.Core.Utilities;
+using AppointMeWeb.Infrastrucure.Data.Models;
 
 namespace AppointMeWeb.Core.Models.BusinessProvider
 {
@@ -14,6 +15,8 @@ namespace AppointMeWeb.Core.Models.BusinessProvider
         public Dictionary<string, TimeSpan> Durations => (Dictionary<string, TimeSpan>)AppointmentDurationsCollections.AppointmentDurations;
         public List<DayOfWeek> Days { get; set; } = [];
         public List<DailyScheduleViewModel> DailySchedules { get; set; } = [];
+
+        public List<DailyScheduleViewModel>? ExistedSchedule { get; set; } = [];
         
     }
 
