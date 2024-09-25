@@ -1,4 +1,5 @@
 ﻿using AppointMeWeb.Core.Contracts;
+using AppointMeWeb.Core.Models.AppointmeModels;
 using AppointMeWeb.Core.Models.BusinessProvider;
 using AppointMeWeb.Core.Models.HomeModels;
 using AppointMeWeb.Infrastrucure.Data.Common;
@@ -72,6 +73,23 @@ namespace AppointMeWeb.Core.Services
             {
                 throw new Exception("An error occurred while accessing the database.", ex);
             }
+        }
+
+        public async Task<BusinessServiceProvider>? GetBusinessByIdAsync(int businessId)
+        {
+            try
+            {
+                var result = await sqlService
+                            .AllReadOnly<BusinessServiceProvider>()
+                            .FirstOrDefaultAsync(b => b.Id == businessId);
+                return result;
+            }
+            catch (Exception)
+            {
+                throw new NullReferenceException("Business not found");
+            }
+            
+
         }
 
         /// <summary>

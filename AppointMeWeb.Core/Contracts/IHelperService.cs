@@ -14,6 +14,6 @@ namespace AppointMeWeb.Core.Contracts
         /// Retrieves all values of a specified enum type.
         /// </summary>
         IEnumerable<T> GetEnumValues<T>() where T : Enum;
-        List<DateTime> GetNextCountOfDays(int countOfDays);
+        List<DateOnly> GetNextCountOfDays(int countOfDays);
     }
 }
