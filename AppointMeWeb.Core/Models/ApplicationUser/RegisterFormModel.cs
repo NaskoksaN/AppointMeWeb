@@ -64,7 +64,7 @@ namespace AppointMeWeb.Core.Models.ApplicationUser
         [Required]
         [Display(Name = "Birth Date")]
         [DataType(DataType.Date)]
-        public DateTime DOB { get; set; }
+        public DateOnly DOB { get; set; }
 
         [Phone]
         [Display(Name = "Phone number")]
