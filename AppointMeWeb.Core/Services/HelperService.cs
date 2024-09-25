@@ -26,10 +26,10 @@ namespace AppointMeWeb.Core.Services
             return Enum.GetValues(typeof(T)).Cast<T>();
         }
 
-        public List<DateTime> GetNextCountOfDays(int countOfDays)
+        public List<DateOnly> GetNextCountOfDays(int countOfDays)
         {
-            var dates = new List<DateTime>();
-            DateTime startDate = DateTime.Today.AddDays(1); 
+            var dates = new List<DateOnly>();
+            DateOnly startDate = DateOnly.FromDateTime(DateTime.Today.AddDays(1));
 
             for (int i = 0; i < countOfDays; i++)
             {

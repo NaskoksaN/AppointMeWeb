@@ -1,6 +1,8 @@
-﻿using AppointMeWeb.Core.Models.BusinessProvider;
+﻿using AppointMeWeb.Core.Models.AppointmeModels;
+using AppointMeWeb.Core.Models.BusinessProvider;
 using AppointMeWeb.Core.Models.HomeModels;
 using AppointMeWeb.Infrastrucure.Data.Enum;
+using AppointMeWeb.Infrastrucure.Data.Models;
 
 namespace AppointMeWeb.Core.Contracts
 {
@@ -16,6 +18,7 @@ namespace AppointMeWeb.Core.Contracts
         /// <returns>A task representing the asynchronous operation, containing an enumerable of <see cref="BusinessViewModel"/>.</returns>
         /// <exception cref="Exception">Thrown when no businesses are found or when a database access error occurs.</exception>
         Task<IEnumerable<BusinessViewModel>> GetAllBusinessAsync();
+        Task<BusinessServiceProvider> GetBusinessByIdAsync(int businessId);
 
         /// <summary>
         /// Retrieves the working schedule of a business service provider based on the provided user ID.
@@ -29,6 +32,5 @@ namespace AppointMeWeb.Core.Contracts
         /// </returns>
         /// <exception cref="ArgumentException">Thrown when the user ID type is unsupported.</exception>
         Task<List<DailyScheduleViewModel>> GetUserWorkingShedulesAsync<T>(T userId);
-        
     }
 }
