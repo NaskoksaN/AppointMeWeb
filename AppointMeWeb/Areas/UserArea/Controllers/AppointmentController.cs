@@ -32,18 +32,30 @@ namespace AppointMeWeb.Areas.UserArea.Controllers
         [HttpGet]
         public async Task<IActionResult> MakeAppointment(int businessId)
         {
-
-
-            AppointmentViewModel model = new()
+            try
             {
-                NextThirtyDays = helperService
+                AppointmentViewModel model = new()
+                {
+                    NextThirtyDays = helperService
                             .GetNextCountOfDays(CountOfDays),
-                BusinessWorkingSchedule = await businessService
+                    BusinessWorkingSchedule = await businessService
                                             .GetUserWorkingShedulesAsync<int>(businessId),
-                AvailableSlots = await appointmentService.GetAvaibleSlotsAsync(businessId)
-            };
+                    AvailableSlots = await appointmentService.GetAvaibleSlotsAsync(businessId),
+                    WorkingHours = appointmentService.WorkingHours,
+                    TooltipTexts = appointmentService.TooltipTexts,
 
-            return View(model);
+
+                };
+                
+                return View(model);
+            }
+            catch (Exception ex)
+            {
+                logger.LogError("Error in register controller: {ControllerName}. Exception: {ExceptionMessage}", nameof(AppointmentController), ex.Message);
+                return View();
+            }
+
+            
         }
     }
 }
