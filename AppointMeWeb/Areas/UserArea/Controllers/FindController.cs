@@ -46,7 +46,7 @@ namespace AppointMeWeb.Areas.UserArea.Controllers
             }
             catch (Exception ex)
             {
-                logger.LogError("Error in register controller: {ExceptionMessage}", ex.Message);
+                logger.LogError("Error in register controller: {ControllerName}. Exception: {ExceptionMessage}", nameof(AppointmentController), ex.Message);
                 return View();
             }
         }

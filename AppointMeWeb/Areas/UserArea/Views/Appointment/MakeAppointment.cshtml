@@ -10,31 +10,19 @@
     <div class="row d-flex align-items-stretch">
         @foreach (var date in Model.NextThirtyDays)
         {
-            var dayOfWeek = date.DayOfWeek; 
-            var workingSchedule = Model.BusinessWorkingSchedule
-            .FirstOrDefault(ds => ds.Day == dayOfWeek); 
+            var dayOfWeek = date.DayOfWeek;
 
-            var workingTime = workingSchedule != null && !workingSchedule.IsDayOff
-            ? $"{workingSchedule.StartTime:hh\\:mm} - {workingSchedule.EndTime:hh\\:mm}"
-            : "Day OFF, no working hours";
-
-            var availableSlots = Model.AvailableSlots
-            .Where(slot => slot.Date.Date == date.Date)
-            .ToList();
-
-            
-            var tooltipText = availableSlots.Count > 0
-            ? "Available slots: " + string.Join(", ", availableSlots.Select(slot => $"{slot.StartTime:hh\\:mm} - {slot.EndTime:hh\\:mm}"))
-            : "No available slots";
+            var workingTime = Model.WorkingHours[date];
+            var tooltipText = Model.TooltipTexts[date];
 
             <div class="col-md-2 mb-2 d-flex">
                 <a asp-area="User"
                    asp-controller="Find"
                    asp-action="MakeAppointment"
-                   asp-route-date="@date.Date"
+                   asp-route-date="@date.ToString("yyyy-MM-dd")"
                    asp-route-dayOfWeek="@dayOfWeek.ToString()"
                    class="btn btn-primary btn-block"
-                   title="@($"{workingTime} - {tooltipText}")"
+                   title="@($"{workingTime}  {tooltipText}")"
                    data-toggle="tooltip" data-placement="top">
                     @date.ToString("dddd, MMM dd yyyy")
                 </a>
@@ -43,7 +31,21 @@
     </div>
 </div>
 
+<style>
+    .tooltip {
+        /* max-width: 40ch;  */
+        padding: 8px; 
+        font-size: 16px; 
+    }
 
+    .tooltip-inner {
+        max-width: 35ch;
+        /* background-color: #333; /* Tooltip background color */
+        color: #fff; /* Tooltip text color */ */
+        border-radius: 4px; /* Optional: add border radius */
+        line-height: 1.4;
+    }
+</style>
 
 
 <script>
