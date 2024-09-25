@@ -1,28 +1,35 @@
-﻿@* @model IEnumerable<BusinessViewModel>
-@{
-    ViewData["Title"] = "AppointMe: the largest service network.";
-}
-<h6 class="display-4">@ViewData["Title"]</h6>
-
-<partial name="_IndexViewPartial" model="Model" /> *@
-
-@* <div class="img w-100" style="max-height: 80vh; overflow: hidden;">
-    <img src="https://images.unsplash.com/photo-1519370855830-34c503c41d0f?q=80&w=1961&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D" alt="We connect people with business" class="img-fluid" style="height: auto; width: 100%;" />
-</div> *@
-
-@{
+﻿@{
     ViewData["Title"] = "AppointMe: ";
     ViewData["Info"] = "Find, Book, and Enjoy Professional Services!";
 }
-<div class="position-relative d-flex flex-column align-items-center">
-    <h1 class="text-center" style="color: #FF8C00;">
-        @ViewData["Title"]
-    </h1>
-    <h3 class="text-center" style="color: #FF8C00;">
-        @ViewData["Info"]
-    </h3>
-    <a class="btn" style="background-color: #FF8C00; color: white; border: none;" asp-area="" asp-controller="Home" asp-action="Service">Find out our services</a>
+
+<div class="position-relative d-flex flex-column justify-content-between vh-100" style="background-image: url('https://cdn.pixabay.com/photo/2018/07/14/11/33/earth-3537401_1280.jpg'); background-size: cover; background-position: center;">
+    <div class="text-center" style="padding-top: 20px;">
+        <h1 style="color: whitesmoke;">
+            @ViewData["Title"]
+        </h1>
+    </div>
+    <div class="text-center" style="flex-grow: 1; display: flex; flex-direction: column; justify-content: center;">
+        <h3 style="color: whitesmoke;" class="my-4">
+            @ViewData["Info"]
+        </h3>
+    </div>
+    <div class="text-center mb-4">
+        <a class="btn btn-light custom-btn" style="background-color: whitesmoke; color: #212C37; border: none; padding: 10px 20px;"
+           asp-area="" asp-controller="Home" asp-action="Services">
+            Find out our services
+        </a>
+    </div>
 </div>
+
+<style>
+    .custom-btn:hover {
+        background-color: #FF8C00 !important;
+        color: whitesmoke !important;
+        transition: background-color 0.3s ease, color 0.3s ease;
+    }
+</style>
+
 
 
 
