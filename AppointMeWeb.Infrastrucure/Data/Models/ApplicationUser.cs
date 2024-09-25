@@ -27,7 +27,7 @@ namespace AppointMeWeb.Infrastrucure.Data.Models
 
         [Required]
         [Comment("User date of birth")]
-        public DateTime DateOfBirth { get; set; }
+        public DateOnly DateOfBirth { get; set; }
 
         [Required]
         [Comment("User activity")]

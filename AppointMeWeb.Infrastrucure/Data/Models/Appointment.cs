@@ -25,8 +25,12 @@ namespace AppointMeWeb.Infrastrucure.Data.Models
         public AppointmentStatus Status { get; set; } = AppointmentStatus.Confirmed;
 
         [Required]
+        [Comment("Slot availability status")]
+        public bool IsBooked { get; set; }
+
+        [Required]
         [Comment("Day of the week")]
-        public DayOfWeek Day { get; set; }
+        public DateOnly Day { get; set; }
 
         [Required]
         [Comment("Start of appointment")]
