@@ -13,16 +13,19 @@ namespace AppointMeWeb.Areas.UserArea.Controllers
         private readonly ILogger<FindController> logger;
         private readonly IBusinessService businessService;
         private readonly ICustomUserService customUserService;
+        private readonly IAppointmentService appointmentService;
 
         public AppointmentController(IHelperService _helperService
                 , ILogger<FindController> _logger
                 , IBusinessService _businessService
-                , ICustomUserService _customUserService)
+                , ICustomUserService _customUserService
+                , IAppointmentService _appointmentService)
         {
             this.helperService = _helperService;
             this.logger = _logger;
             this.businessService = _businessService;
             this.customUserService = _customUserService;
+            this.appointmentService = _appointmentService;
         }
 
         
@@ -33,8 +36,11 @@ namespace AppointMeWeb.Areas.UserArea.Controllers
 
             AppointmentViewModel model = new()
             {
-                NextThirtyDays = helperService.GetNextCountOfDays(CountOfDays),
-                BusinessWorkingSchedule = await businessService.GetUserWorkingShedulesAsync<int>(businessId)
+                NextThirtyDays = helperService
+                            .GetNextCountOfDays(CountOfDays),
+                BusinessWorkingSchedule = await businessService
+                                            .GetUserWorkingShedulesAsync<int>(businessId),
+                AvailableSlots = await appointmentService.GetAvaibleSlotsAsync(businessId)
             };
 
             return View(model);

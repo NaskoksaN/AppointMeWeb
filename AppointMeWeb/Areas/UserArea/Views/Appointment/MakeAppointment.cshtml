@@ -18,6 +18,15 @@
             ? $"{workingSchedule.StartTime:hh\\:mm} - {workingSchedule.EndTime:hh\\:mm}"
             : "Day OFF, no working hours";
 
+            var availableSlots = Model.AvailableSlots
+            .Where(slot => slot.Date.Date == date.Date)
+            .ToList();
+
+            
+            var tooltipText = availableSlots.Count > 0
+            ? "Available slots: " + string.Join(", ", availableSlots.Select(slot => $"{slot.StartTime:hh\\:mm} - {slot.EndTime:hh\\:mm}"))
+            : "No available slots";
+
             <div class="col-md-2 mb-2 d-flex">
                 <a asp-area="User"
                    asp-controller="Find"
@@ -25,7 +34,7 @@
                    asp-route-date="@date.Date"
                    asp-route-dayOfWeek="@dayOfWeek.ToString()"
                    class="btn btn-primary btn-block"
-                   title="@workingTime"
+                   title="@($"{workingTime} - {tooltipText}")"
                    data-toggle="tooltip" data-placement="top">
                     @date.ToString("dddd, MMM dd yyyy")
                 </a>
