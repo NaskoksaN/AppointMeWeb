@@ -8,11 +8,6 @@ using static AppointMeWeb.WebConstants.AppointmentConstants;
 
 namespace AppointMeWeb.Areas.UserArea.Controllers
 {
-
-    
-    
-    
-
     public class AppointmentController : BaseController
     {
         private readonly IHelperService helperService;
@@ -34,9 +29,7 @@ namespace AppointMeWeb.Areas.UserArea.Controllers
             this.appointmentService = _appointmentService;
         }
 
-        
-       
-        [HttpGet("UserArea/Appointment/MakeAppointment/{businessId}")]
+        [HttpGet]
         public async Task<IActionResult> MakeAppointment(int businessId)
         {
             try
@@ -61,8 +54,8 @@ namespace AppointMeWeb.Areas.UserArea.Controllers
                 return View();
             }
         }
-        [HttpPost("UserArea/Appointment/GetSlots")]
-        [ValidateAntiForgeryToken]
+
+        [HttpPost]
         public async Task<IActionResult> GetSlotsAsync([FromBody] AvailableSlotsViewModel model)
         {
             var requestBody = await new StreamReader(Request.Body).ReadToEndAsync();
