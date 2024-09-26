@@ -1,0 +1,19 @@
+﻿@model AvailableSlotsViewModel
+
+<h3 class="text-center">Available Slots for @Model.Date</h3>
+<div class="row">
+    @if (Model.Slots != null && Model.Slots.Any())
+    {
+        foreach (var slot in Model.Slots)
+        {
+            <div class="col-md-3 mb-3 d-flex align-items-center">
+                <p class="mb-0 me-2">@($"{slot.StartTime} - {slot.EndTime}")</p>
+                <button type="submit" name="slotId" @* value="@slot.Id" *@ class="btn btn-success">Book</button>
+            </div>
+        }
+    }
+    else
+    {
+        <p>No available slots for @Model.Date.</p>
+    }
+</div>
