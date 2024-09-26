@@ -4,7 +4,7 @@ namespace AppointMeWeb.Core.Models.AppointmeModels
 {
     public class AppointmentViewModel
     {
-        public int Id { get; set; }
+        public int BusinessId { get; set; }
 
         public List<DateOnly> NextThirtyDays { get; set; } = [];
         public List<DailyScheduleViewModel> BusinessWorkingSchedule { get; set; } = [];
