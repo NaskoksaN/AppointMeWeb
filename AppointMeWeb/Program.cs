@@ -1,4 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
+using System.Text.Json.Serialization;
+using System.Text.Json;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -43,6 +45,16 @@ app.UseHttpsRedirection();
 app.UseStaticFiles();
 
 app.UseRouting();
+
+//show routing 
+app.Use(async (context, next) =>
+{
+    var endpoint = context.GetEndpoint();
+    Console.WriteLine("==--=============================================================================");
+    Console.WriteLine($"Request for {context.Request.Path} to endpoint: {endpoint?.DisplayName}");
+    Console.WriteLine("==--=============================================================================");
+    await next();
+});
 
 app.UseAuthentication();
 app.UseAuthorization();
