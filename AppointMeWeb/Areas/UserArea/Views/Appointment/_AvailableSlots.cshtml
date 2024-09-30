@@ -1,14 +1,31 @@
 ﻿@model AvailableSlotsViewModel
 
-<h3 class="text-center">Available Slots for @Model.Date</h3>
+
+<h3 class="text-center mb-3">Available Slots for @Model.Date</h3>
 <div class="row">
     @if (Model.Slots != null && Model.Slots.Any())
     {
-        foreach (var slot in Model.Slots)
+        @foreach (var slot in Model.Slots)
         {
-            <div class="col-md-3 mb-3 d-flex align-items-center">
-                <p class="mb-0 me-2">@($"{slot.StartTime} - {slot.EndTime}")</p>
-                <button type="submit" name="slotId" @* value="@slot.Id" *@ class="btn btn-success">Book</button>
+            <div class="col-md-3 mb-3" style="background-color:white;">
+                <div class="border p-3 rounded shadow-lg">
+                    <div class="d-flex justify-content-between align-items-center mb-2">
+                        <p class="mb-0">@($"{slot.StartTime.ToString(TimeFormat)} - {slot.EndTime.ToString(TimeFormat)}")</p>
+                        <button type="submit" name="slotId" class="btn btn-success"
+                                style="color:#FF8C00; background-color:#273E51;"
+                                onmouseover="this.style.backgroundColor='#FF8C00'; this.style.color='#273E51';"
+                                onmouseout="this.style.backgroundColor='#273E51'; this.style.color='#FF8C00';">
+                            Book
+                        </button>
+                    </div>
+                    <div class="form-check mb-2">
+                        <input type="checkbox" class="form-check-input reason-checkbox" onclick="ShowReasonOfBooking(this)" />
+                        <label class="form-check-label">Reason of booking</label>
+                    </div>
+                    <div class="mb-2 reason-textarea" style="display:none">
+                        <textarea class="form-control" name="VisitMessage" rows="2" placeholder="Describe your reason..." style="resize: none;"></textarea>
+                    </div>
+                </div>
             </div>
         }
     }
@@ -17,3 +34,21 @@
         <p>No available slots for @Model.Date.</p>
     }
 </div>
+
+<script>
+    function ShowReasonOfBooking(checkbox) {
+        const reasonBookingDiv = checkbox.closest('.border').querySelector('.reason-textarea');
+
+        if (checkbox.checked) {
+            reasonBookingDiv.style.display = 'block';
+        } else {
+            reasonBookingDiv.style.display = 'none';
+        }
+    }
+</script>
+
+
+
+
+
+

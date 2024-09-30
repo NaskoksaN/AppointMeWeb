@@ -10,13 +10,28 @@
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/AppointMeWeb.styles.css" asp-append-version="true" />
     
+    <style>
+       
+
+        .footer {
+            background-color: #273E51 !important;
+            color: #FF8C00 !important;
+        }
+
+
+        .linkedin-icon:hover {
+            background-color: #FF8C00 !important;
+            /* color: #FF8C00 !important; */
+        }
+    </style>
+
 </head>
 <body>
     <header>
         <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
             <div class="container-fluid">
                 
-                @if (User.IsUser())
+                @if (User.IsUser() || User.IsBusinessProvider())
                 {
                     <div class="navbar-collapse d-flex justify-content-between align-items-center">
                         <a class="navbar-brand" asp-area="UserArea" asp-controller="Home" asp-action="UserHomeIndex">UserPageArea</a>
@@ -24,6 +39,7 @@
                         <partial name="_LoginPartial" />
                     </div>
                 }
+
             </div>
         </nav>
     </header>
@@ -36,6 +52,10 @@
     <footer class="border-top footer text-muted">
         <div class="container">
             &copy; @DateTime.Today.Year - AppointMeWeb | Schedule Made Simple by Atanas Bobchev
+            | LinkedIn: 
+            <a href="https://www.linkedin.com/in/atanas-bobchev-62a99b289/" target="_blank" class="linkedin-icon">
+                <i class="fa-brands fa-linkedin" style="font-size: 25px; color:whitesmoke !important;"></i>
+            </a>
         </div>
     </footer>
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
