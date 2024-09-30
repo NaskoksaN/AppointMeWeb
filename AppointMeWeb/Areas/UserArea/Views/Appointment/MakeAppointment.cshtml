@@ -1,61 +1,67 @@
 ﻿@model AppointmentViewModel
 
 
-    @{
-        ViewData["Title"] = "Book Your Appointment in the Coming 30 Days";
-        var tempDate = DateOnly.FromDateTime(DateTime.Now.AddDays(4)); // This is of type DateOnly
-    }
+@{
+    ViewData["Title"] = "Book Your Appointment in the Coming 30 Days";
+    var tempDate = DateOnly.FromDateTime(DateTime.Now.AddDays(1));
+}
 
-    <div class="container mt-4">
-        <h2 class="mb-4 text-center">@ViewData["Title"]</h2>
+<div class="container mt-4" style="background-color:#F7F7F7;">
+    <h2 class="mb-4 text-center">@ViewData["Title"]</h2>
 
-        <div class="row d-flex align-items-stretch">
-            @foreach (var date in Model.NextThirtyDays)
-            {
-                var workingTime = Model.WorkingHours[date];
-                var tooltipText = Model.TooltipTexts[date];
+    <div class="row d-flex align-items-stretch">
+        @foreach (var date in Model.NextThirtyDays)
+        {
+            var workingTime = Model.WorkingHours[date];
+            var tooltipText = Model.TooltipTexts[date];
 
-                <div class="col-md-2 mb-2 d-flex">
-                    <a href="javascript:void(0);" class="btn btn-primary btn-block select-date"
-                       data-date="@date.ToString("yyyy-MM-dd")"
-                       data-businessid="@Model.BusinessId"
-                       title="@($"{workingTime} {tooltipText}")"
-                       data-toggle="tooltip"
-                       data-placement="top">
-                        @date.ToString("dddd, MMM dd yyyy")
-                    </a>
-                </div>
-            }
-        </div>
-
-        <div class="book-slot mt-5">
-            <form asp-area="UserArea" asp-controller="Appointment" asp-action="GetSlots" method="post">
-                <div id="slotContainer" class="mt-5">
-                    <input type="hidden" name="BusinessId" value="@Model.BusinessId" />
-                    <input type="hidden" name="Date" value="@tempDate.ToString("yyyy-MM-dd")" /> <!-- This line is correct for hidden input -->
-                    <input type="hidden" name="__RequestVerificationToken" value="@Html.AntiForgeryToken()">
-                    <div id="availableSlots">
-                      
-                    <partial name="_AvailableSlots" model="new AvailableSlotsViewModel() { BusinessId = Model.BusinessId, Date = tempDate, Slots=Model.AvailableSlots[tempDate] }" />
-                    </div>
-                </div>
-            </form>
-        </div>
+            <div class="col-md-2 mb-2 d-flex">
+                <a href="javascript:void(0);"
+                   class="btn btn-primary btn-block select-date shadow-sm border-0"
+                   style="background-color:#FF7F50"
+                   onmouseover="this.style.backgroundColor='#273E51'; this.style.color='white';"
+                   onmouseout="this.style.backgroundColor='#FF7F50'; this.style.color='white';"
+                    data-date="@date.ToString(DateFormat)"
+                    data-businessid="@Model.BusinessId"
+                    title="@($"{workingTime} {tooltipText}")"
+                    data-toggle="tooltip"
+                    data-placement="top">
+                    @date.ToString(DayDateFormat)
+                </a>
+            </div>
+        }
     </div>
+
+    <div class="book-slot mt-5">
+        <form asp-area="UserArea" asp-controller="Appointment" asp-action="GetSlots" method="post">
+            <div id="slotContainer" class="mt-5">
+                <input type="hidden" name="BusinessId" value="@Model.BusinessId" />
+                <input type="hidden" name="Date" value="@tempDate.ToString("yyyy-MM-dd")" /> <!-- This line is correct for hidden input -->
+                <input type="hidden" name="__RequestVerificationToken" value="@Html.AntiForgeryToken()">
+                <div id="availableSlots">
+                    <partial name="_AvailableSlots" model="new AvailableSlotsViewModel()
+                                    { BusinessId = Model.BusinessId,
+                                      Date = tempDate,
+                                      Slots=Model.AvailableSlots[tempDate] }" />
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
 
 
 <style>
     .tooltip {
         /* max-width: 40ch;  */
-        padding: 8px; 
-        font-size: 16px; 
+        padding: 8px;
+        font-size: 16px;
     }
 
     .tooltip-inner {
         max-width: 35ch;
-        /* background-color: #333; /* Tooltip background color */
-        color: #fff; 
-        border-radius: 4px; /* Optional: add border radius */
+        /* background-color: #333;
+            color: #fff;  */
+        border-radius: 4px;
         line-height: 1.4;
     }
 </style>
@@ -68,17 +74,26 @@
             new bootstrap.Tooltip(tooltipTriggerEl);
         });
 
-        var availableSlotsData = @Html.Raw(Json.Serialize(Model.AvailableSlots));
-        console.log("Available Slots Data:", availableSlotsData);
+        // function ShowReasonOfBooking() {
+        //     const checkbox = document.getElementById('reasonCheckbox');
 
+        //     const reasonBookingDiv = document.querySelector('.reason-booking');
+
+        //     if (checkbox.checked) {
+        //         reasonBookingDiv.style.display = 'block'; // Show the textarea
+        //     } else {
+        //         reasonBookingDiv.style.display = 'none'; // Hide the textarea
+        //     }
+        // }
+
+        var availableSlotsData = @Html.Raw(Json.Serialize(Model.AvailableSlots));
+
+        // fetch dynamic date of appointment with available slots
         document.querySelectorAll('.select-date').forEach(function (dateElement) {
             dateElement.addEventListener('click', function () {
                 var selectedDate = this.getAttribute('data-date');
                 var businessId = this.getAttribute('data-businessid');
                 var slots = availableSlotsData[selectedDate] || [];
-
-                console.log("Selected Date:", selectedDate);
-                console.log("Retrieved slots for " + selectedDate + ":", slots);
 
                 var model = {
                     BusinessId: businessId,
@@ -86,7 +101,7 @@
                     Slots: slots
                 };
 
-                console.log("Model to send:", model);
+                //console.log("Model to send:", model);
                 const fetchUrl = '/UserArea/Appointment/GetSlots';
 
                 const tokenInput = document.querySelector('input[name="__RequestVerificationToken"]');
@@ -119,7 +134,7 @@
         });
     });
 
-    
+
 </script>
 
 
