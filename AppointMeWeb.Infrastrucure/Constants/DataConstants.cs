@@ -32,5 +32,6 @@
         public const string WebUserRole = "WebUser";
         public const string BusinessRole = "Business";
         public const string AdminRole = "Admin";
+        
     }
 }
