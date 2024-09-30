@@ -13,20 +13,24 @@ namespace AppointMeWeb.Infrastrucure.Data.Models
         [Required]
         [MaxLength(ApplicationUserFirstNameMaxLength)]
         [Comment("Application first name")]
+        [PersonalData]
         public string FirstName {  get; set; }=string.Empty;
 
         [Required]
         [MaxLength(ApplicationUserLastNameMaxLength)]
         [Comment("Application last name")]
+        [PersonalData]
         public string LastName { get; set; }= string.Empty;
 
         [Required]
         [MaxLength(UserPhoneMaxLength)] 
         [Comment("Application phone")]
+        [PersonalData]
         public string Phone { get; set; } = string.Empty;
 
         [Required]
         [Comment("User date of birth")]
+        [PersonalData]
         public DateOnly DateOfBirth { get; set; }
 
         [Required]
