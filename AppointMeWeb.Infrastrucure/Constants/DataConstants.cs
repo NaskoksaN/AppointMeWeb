@@ -12,6 +12,7 @@
         public const int UserPhoneMinLength = 6;
 
         public const int AppointmentMessageMaxLength = 150;
+        public const int AppointmentMessageMinLength = 5;
 
         public const int BusinessServiceProviderNameMaxLength = 50;
         public const int BusinessServiceProviderNameMinLength = 1;
