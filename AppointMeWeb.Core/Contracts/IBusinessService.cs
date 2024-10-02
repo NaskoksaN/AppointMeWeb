@@ -1,13 +1,13 @@
 ﻿using AppointMeWeb.Core.Models.AppointmeModels;
 using AppointMeWeb.Core.Models.BusinessProvider;
 using AppointMeWeb.Core.Models.HomeModels;
-using AppointMeWeb.Infrastrucure.Data.Enum;
 using AppointMeWeb.Infrastrucure.Data.Models;
 
 namespace AppointMeWeb.Core.Contracts
 {
     public interface IBusinessService
     {
+        Task<bool> BookSlotAsync(BookSlotFormModel model, string currentUserId);
         public List<ServiceInfoModels> BusinessInfo();
 
         /// <summary>
