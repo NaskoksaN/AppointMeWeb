@@ -1,10 +1,9 @@
-﻿
+﻿using Microsoft.AspNetCore.Mvc;
+
 using AppointMeWeb.Core.Contracts;
 using AppointMeWeb.Core.Models.AppointmeModels;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Mvc;
-using Newtonsoft.Json;
 using static AppointMeWeb.WebConstants.AppointmentConstants;
+using AppointMeWeb.Extensions;
 
 namespace AppointMeWeb.Areas.UserArea.Controllers
 {
@@ -54,9 +53,40 @@ namespace AppointMeWeb.Areas.UserArea.Controllers
                 return View();
             }
         }
+        [HttpPost]
+        public async Task<IActionResult> MakeAppointment([FromBody] BookSlotFormModel model)
+        {
+            
+            if (!ModelState.IsValid)
+            {
+                logger.LogError("Model state is invalid: {Errors}",
+                    string.Join(", ", ModelState.Values.SelectMany(v => v.Errors).Select(e => e.ErrorMessage)));
+                
+
+                return PartialView("_AvailableSlots", model);
+            }
+
+            try
+            {
+                string currentUserId = User.Id();
+                bool result = await businessService.BookSlotAsync(model, currentUserId);
+                if (result)
+                {
+                    logger.LogInformation("Successfully booked appointment for BusinessId: {BusinessId} on Date: {Date}", model.BusinessId, model.Date);
+                    return Ok();
+                }
+                return BadRequest("slot already booked");
+            }
+            catch (Exception ex)
+            {
+                
+                logger.LogError(ex, "Error occurred while making appointment for BusinessId: {BusinessId}, Date: {Date}", model.BusinessId, model.Date);
+                return StatusCode(500, "Internal server error. Please try again later."); 
+            }
+        }
 
         [HttpPost]
-        public async Task<IActionResult> GetSlotsAsync([FromBody] AvailableSlotsViewModel model)
+        public async Task<IActionResult> GetSlotsAsync([FromBody] AvailableSlotsFormModel model)
         {
             var requestBody = await new StreamReader(Request.Body).ReadToEndAsync();
             logger.LogInformation("Request Payload: {RequestBody}", requestBody);
@@ -70,7 +100,6 @@ namespace AppointMeWeb.Areas.UserArea.Controllers
                 logger.LogError("Model State Errors: {Errors}", string.Join(", ", errors));
                 return BadRequest(ModelState);
             }
-
 
             try
             {
