@@ -1,11 +1,13 @@
-﻿using AppointMeWeb.Core.Contracts;
+﻿using Microsoft.EntityFrameworkCore;
+
+using AppointMeWeb.Core.Contracts;
 using AppointMeWeb.Core.Models.AppointmeModels;
 using AppointMeWeb.Core.Models.BusinessProvider;
 using AppointMeWeb.Core.Models.HomeModels;
 using AppointMeWeb.Infrastrucure.Data.Common;
 using AppointMeWeb.Infrastrucure.Data.Enum;
 using AppointMeWeb.Infrastrucure.Data.Models;
-using Microsoft.EntityFrameworkCore;
+
 
 namespace AppointMeWeb.Core.Services
 {
@@ -37,6 +39,46 @@ namespace AppointMeWeb.Core.Services
         public BusinessService(IRepository _sqlService)
         {
             this.sqlService = _sqlService;
+        }
+
+        public async Task<bool> BookSlotAsync(BookSlotFormModel model, string currentUserId)
+        {
+            var business = await sqlService.All<BusinessServiceProvider>()
+                        .Include(b => b.Appointments)
+                        .Where(b => b.Id == model.BusinessId)
+                        .FirstOrDefaultAsync() ?? throw new NullReferenceException(nameof(BusinessServiceProvider));
+            var appointmentCollection = business.Appointments;
+            Appointment? slot = business.Appointments
+                        .Where(a => a.StartTime == model.StartTime && a.EndTime == model.EndTime 
+                        & a.Day==model.Date)
+                        .FirstOrDefault();
+            try
+            {
+                bool result = false;
+                if (slot !=null && slot.IsBooked)
+                {
+                    return result;
+                }
+                Appointment newSlot = new()
+                {
+                    BusinessServiceProviderId = model.BusinessId,
+                    UserId = currentUserId,
+                    StartTime = model.StartTime,
+                    EndTime = model.EndTime,
+                    IsBooked = true,
+                    Day=model.Date,
+                    Status=AppointmentStatus.Pending,
+                };
+                await sqlService.AddAsync<Appointment>(newSlot);
+                await sqlService.SaveChangesAsync();
+                result = true;
+
+                return result;
+            }
+            catch (Exception ex)
+            {
+                throw new InvalidOperationException("An error occurred while booking the slot.", ex);
+            }
         }
 
         public List<ServiceInfoModels> BusinessInfo() => businessInfo;
@@ -88,7 +130,7 @@ namespace AppointMeWeb.Core.Services
             {
                 throw new NullReferenceException("Business not found");
             }
-            
+
 
         }
 
@@ -127,11 +169,12 @@ namespace AppointMeWeb.Core.Services
                             EndTime = w.EndTime,
                         }).ToList(),
                 })
-                .FirstOrDefaultAsync();
+                .FirstOrDefaultAsync() 
+                        ?? throw new NullReferenceException(nameof(BusinessServiceProvider)); ;
 
-            return schedule?.ExistedSchedule;
+            return schedule.ExistedSchedule;
         }
 
-        
+
     }
 }
