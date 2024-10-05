@@ -1,4 +1,5 @@
 ﻿using AppointMeWeb.Core.Models.AppointmeModels;
+using AppointMeWeb.Core.Models.HomeModels;
 
 namespace AppointMeWeb.Core.Contracts
 {
@@ -8,6 +9,6 @@ namespace AppointMeWeb.Core.Contracts
         Dictionary<DateOnly, string> TooltipTexts { get; }
 
         Task<Dictionary<DateOnly, List<AppointmentSlotViewModel>>> GetAvaibleSlotsAsync(int businessId);
-       
+        Task<UserHomeIndexView> GetUserAppointmentAsync(string userId);
     }
 }
