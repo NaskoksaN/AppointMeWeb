@@ -3,10 +3,12 @@
 using AppointMeWeb.Core.Contracts;
 using AppointMeWeb.Core.Models.AppointmeModels;
 using AppointMeWeb.Core.Models.BusinessProvider;
+using AppointMeWeb.Core.Models.HomeModels;
 using AppointMeWeb.Infrastrucure.Data.Common;
 using AppointMeWeb.Infrastrucure.Data.Models;
+using AppointMeWeb.Infrastrucure.Data.Enum;
+
 using static AppointMeWeb.Core.Constants.CoreConstants;
-using System.Text;
 
 
 namespace AppointMeWeb.Core.Services
@@ -202,6 +204,33 @@ namespace AppointMeWeb.Core.Services
                             .Where(s => !s.IsBooked)
                             .Select(slot => $"slot: {slot.StartTime:hh\\:mm} - {slot.EndTime:hh\\:mm}"))
                 : "No available slots";
+        }
+
+        public async Task<UserHomeIndexView> GetUserAppointmentAsync(string userId)
+        {
+            DateOnly today = DateOnly.FromDateTime(DateTime.Now);
+            IEnumerable<UserHomeIndexViewModel> models = await sqlService.AllReadOnly<Appointment>()
+                        .Where(a=> a.UserId == userId && a.Day>= today)
+                        .Select(a=> new UserHomeIndexViewModel()
+                        {
+                            AppointmentId= a.Id,
+                            BusinessProviderId=a.BusinessServiceProviderId,
+                            BusinessProviderName=a.BusinessServiceProvider.Name,
+                            AppointmentDate=a.Day,
+                            StartTime=a.StartTime,
+                            EndTime=a.EndTime,
+                            Status=a.Status,
+                        })
+                        .OrderBy(a=> a.AppointmentDate)
+                        .ToListAsync();
+            UserHomeIndexView userAppointments = new()
+            {
+                Active = models.Where(m => m.Status == AppointmentStatus.Confirmed)
+                            .ToList(),
+                Canceled = models.Where(m => m.Status == AppointmentStatus.Canceled)
+                            .ToList()
+            };
+            return userAppointments;
         }
     }
 }
