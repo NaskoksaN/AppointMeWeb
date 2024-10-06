@@ -1,6 +1,71 @@
-﻿@{
-    Layout = "~/Areas/BusinessArea/Views/Shared/_Layout.cshtml";
+﻿@model BusinessHomeIndexView;
+@{
+    ViewData["Title"] = "Appointments";
 }
+<style>
+     .mt-5 {
+        margin-top: 0 !important; /* Ensures no top margin */
+        max-width: 1920px; /* Optional: Set a max-width */
+        width: 100%; /* Ensures it takes up full width */
+        padding: 0; /* Removes any padding */
+    }
+</style>
 
-<h2>Business Area Home</h2>
-<p>Welcome to the Business Area home page!</p>
+<div class="container mt-5">
+    <h3 class="text-warning text-center">Active Appointments</h3>
+    <div class="appointment-column" style="height: 70vh; overflow-y: auto;">
+        <div class="row">
+            @if (Model.Active.Any())
+            {
+                @foreach (var appointment in Model.Active)
+                {
+                    <div class="col-md-4 mb-4">
+                        <!-- Adjust column size as needed -->
+                        <div class="card appointment-item">
+                            <div class="card-body">
+                                <h5 class="card-title">@appointment.UserNames</h5>
+                                <p class="card-text">
+                                    <strong>Date:</strong> @appointment.AppointmentDate.ToString("yyyy-MM-dd")<br />
+                                    <strong>Time:</strong> @appointment.StartTime.ToString(@"hh\:mm") - @appointment.EndTime.ToString(@"hh\:mm")<br />
+                                    <strong>Phone:</strong> @appointment.UserPhone<br />
+                                    <strong>Email:</strong> @appointment.UserEmail<br />
+                                    <strong>Message:</strong> @appointment.UserMessage
+                                </p>
+                                <button class="btn btn-danger btn-sm" onclick="cancelAppointment(@appointment.AppointmentId)">Cancel</button>
+                            </div>
+                        </div>
+                    </div>
+                }
+            }
+            else
+            {
+                <div class="col-12">
+                    <p class="text-center">No active appointments.</p>
+                </div>
+            }
+        </div>
+    </div>
+</div>
+
+<script>
+    function cancelAppointment(appointmentId) {
+        console.log("Cancel appointment with ID:", appointmentId);
+        // Add logic to cancel the appointment
+    }
+</script>
+
+<style>
+    .appointment-column {
+        border: 1px solid #dee2e6;
+        border-radius: 5px;
+        background-color: #f8f9fa;
+        padding: 10px;
+        overflow-y: auto; /* Enables vertical scrolling */
+    }
+
+    .appointment-item {
+        border: 1px solid #dee2e6;
+        border-radius: 5px;
+        background-color: #ffffff;
+    }
+</style>
