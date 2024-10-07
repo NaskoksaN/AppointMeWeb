@@ -1,4 +1,78 @@
-﻿@model BusinessHomeIndexView;
+﻿@* @model BusinessHomeIndexView; *@
+@{
+    ViewData["Title"] = "Appointments";
+}
+<style>
+    .mt-5 {
+        margin-top: 0 !important; /* Ensures no top margin */
+        max-width: 1920px; /* Optional: Set a max-width */
+        width: 100%; /* Ensures it takes up full width */
+        padding: 0 40px; /* Removes any padding */
+    }
+
+    .appointment-column {
+        border: 1px solid #dee2e6;
+        border-radius: 5px;
+        background-color: #f8f9fa;
+        padding: 10px;
+        overflow-y: auto; /* Enables vertical scrolling */
+        height: 70vh; /* Set height for the column */
+    }
+
+    .appointment-item {
+        border: 1px solid #dee2e6;
+        border-radius: 5px;
+        background-color: #ffffff;
+        margin-bottom: 15px; /* Spacing between cards */
+    }
+</style>
+
+
+<div class="container mt-5">
+    <h3 class="text-warning text-center" style="color:black">Active Appointments</h3>
+    @* <div class="row" style="max-height:; overflow-y: auto;">
+        @if (Model.Active.Any())
+        {
+            foreach (var appointment in Model.Active)
+            {
+                <div class="col-md-3 col-sm-6 mb-4"> <!-- Use col-md-3 for 4 cards per row -->
+                    <div class="card">
+                        <div class="card-body">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <h5 class="card-title mb-0">@appointment.UserNames</h5>
+                                <button class="btn btn-danger btn-sm" onclick="cancelAppointment(@appointment.AppointmentId)">Cancel</button>
+                            </div>
+                            <p class="card-text">
+                                <strong>Date:</strong> @appointment.AppointmentDate.ToString("yyyy-MM-dd")<br />
+                                <strong>Time:</strong> @appointment.StartTime.ToString(@"hh\:mm") - @appointment.EndTime.ToString(@"hh\:mm")<br />
+                                <strong>Email:</strong> <a href="mailto:@appointment.UserEmail">@appointment.UserEmail</a><br />
+                                <strong>Message:</strong> @appointment.UserMessage
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            }
+        }
+        else
+        {
+            <div class="col-12">
+                <p class="text-center">No active appointments.</p>
+            </div>
+        }
+    </div> *@
+</div>
+
+
+
+<script>
+    function cancelAppointment(appointmentId) {
+        console.log("Cancel appointment with ID:", appointmentId);
+        // Add logic to cancel the appointment (e.g., AJAX request to your API)
+    }
+</script>
+
+
+@* @model BusinessHomeIndexView;
 @{
     ViewData["Title"] = "Appointments";
 }
@@ -69,3 +143,4 @@
         background-color: #ffffff;
     }
 </style>
+ *@
