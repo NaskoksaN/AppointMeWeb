@@ -1,0 +1,38 @@
+﻿@model IEnumerable<BusinessAppointmentViewModel>
+
+@if (Model != null && Model.Any())
+{
+    foreach (var appointment in Model)
+    {
+        <div class="col-md-4 mb-4">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">
+                        @appointment.UserNames
+                    </h5>
+                    <p class="card-text">
+                        <strong>Date:</strong> @appointment.AppointmentDate.ToShortDateString() <br />
+                        <strong>Time Slot:</strong>
+                        <span>
+                            @appointment.StartTime.ToString(@"hh\:mm") - @appointment.EndTime.ToString(@"hh\:mm")
+                        </span>
+                        <button class="btn btn-danger btn-sm float-end" onclick="cancelAppointment('@appointment.AppointmentId')">Cancel</button>
+                        <br />
+                        <strong>Phone:</strong> @appointment.UserPhone <br />
+                        <strong>Email:</strong> @appointment.UserEmail <br />
+                        <strong>Message:</strong> @appointment.UserMessage
+                    </p>
+                </div>
+            </div>
+        </div>
+    }
+}
+else
+{
+    <div class="col-12">
+        <div class="alert alert-info text-center" role="alert">
+            <h5>No appointments scheduled.</h5>
+            <p>Check back later or add a new appointment!</p>
+        </div>
+    </div>
+}

@@ -10,58 +10,58 @@
     <link rel="stylesheet" href="~/AppointMeWeb.styles.css" asp-append-version="true" />
 
     <style>
-        /* Ensure global reset is applied to prevent any unwanted spacing */
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box; /* Ensures proper box sizing */
+        html, body {
+            height: 100%; 
+            margin: 0; 
         }
 
         body {
-            margin-bottom: 0px; /* Remove any bottom margin from the body */
+            display: flex; 
+            flex-direction: column; 
         }
 
-        nav.navbar {
-            margin-bottom: 0 !important; /* Remove any bottom margin on navbar */
-        }
-
-        .container.main-content {
-            max-width: 100% !important;
-            width: 100%;
-            padding-left: 0;
-            padding-right: 0; /* Remove default padding */
-            padding-top: 0; /* Ensure there is no padding at the top */
+        header {
+            flex: 0 0 auto; 
         }
 
         main {
-            margin-top: 0 !important; /* Ensure no top margin on main */
+            flex: 1 1 auto; 
+            overflow-y: auto; 
+            margin: 0; 
         }
 
+        footer {
+            flex: 0 0 auto; 
+        }
+
+        .container{
+            flex: 1 1 100%;
+        }
         .navbar.bg-custom {
             background-color: #273E51 !important;
         }
 
             .navbar.bg-custom .nav-link {
-                color: #FF8C00 !important; /* Orange text color */
-                transition: color 0.3s ease, background-color 0.3s ease; /* Smooth transition */
+                color: #FF8C00 !important; 
+                transition: color 0.3s ease, background-color 0.3s ease; 
             }
 
                 .navbar.bg-custom .nav-link:hover {
-                    color: #fff !important; /* White text on hover */
-                    background-color: #FF8C00 !important; /* Orange background on hover */
+                    color: #fff !important; 
+                    background-color: #FF8C00 !important; 
                 }
 
             .navbar.bg-custom .dropdown-menu {
-                background-color: #273E51 !important; /* Dark background for dropdown */
+                background-color: #273E51 !important; 
             }
 
                 .navbar.bg-custom .dropdown-menu .dropdown-item {
-                    color: #FF8C00 !important; /* Orange text */
+                    color: #FF8C00 !important; 
                 }
 
                     .navbar.bg-custom .dropdown-menu .dropdown-item:hover {
-                        color: #fff !important; /* White text on hover */
-                        background-color: #FF8C00 !important; /* Orange background on hover */
+                        color: #fff !important; 
+                        background-color: #FF8C00 !important; 
                     }
 
         .footer {
@@ -99,7 +99,7 @@
         </nav>
     </header>
 
-    <div class="container main-content">
+    <div class="container">
         <main role="main" class="pb-1">
             @RenderBody()
         </main>
