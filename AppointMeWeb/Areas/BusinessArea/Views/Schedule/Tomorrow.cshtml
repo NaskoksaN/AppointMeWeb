@@ -1,0 +1,20 @@
+﻿@model IEnumerable<BusinessAppointmentViewModel>
+
+@{
+    var tomorrow = DateTime.Now.AddDays(1);
+    ViewData["Title"] = $"Appointments for tomorrow: {tomorrow.ToString("dddd")}, {tomorrow.ToString("MMMM dd, yyyy")}";
+}
+<h4 class="text-center">@ViewData["Title"]</h4>
+
+<div class="container mt-4">
+    <div class="row">
+        <partial name="_AppointmentCard" model="Model" />
+    </div>
+</div>
+
+<script>
+    function cancelAppointment(appointmentId) {
+        alert('Cancel appointment with ID: ' + appointmentId);
+
+    }
+</script>
