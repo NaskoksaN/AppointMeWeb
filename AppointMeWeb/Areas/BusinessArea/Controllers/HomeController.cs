@@ -1,43 +1,29 @@
-﻿using AppointMeWeb.Extensions;
+﻿using AppointMeWeb.Areas.UserArea.Controllers;
+using AppointMeWeb.Core.Contracts;
+using AppointMeWeb.Core.Models.HomeModels;
+using AppointMeWeb.Extensions;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Infrastructure;
-using Microsoft.AspNetCore.Mvc.Razor;
 
 namespace AppointMeWeb.Areas.BusinessArea.Controllers
 {
     public class HomeController : BaseController
     {
-        private readonly IActionContextAccessor _actionContextAccessor;
-        private readonly IRazorViewEngine _razorViewEngine;
+        
+        private readonly IAppointmentService appointmentService;
+        private readonly ILogger<HomeController> logger;
 
-        public HomeController(IActionContextAccessor actionContextAccessor, IRazorViewEngine razorViewEngine)
+        public HomeController(IAppointmentService _appointmentService,
+            ILogger<HomeController> _logger)
         {
-            _actionContextAccessor = actionContextAccessor;
-            _razorViewEngine = razorViewEngine;
+           
+            this.appointmentService = _appointmentService;
+            this.logger = _logger;
         }
 
-        public IActionResult BusinessHomeIndex()
+        public async Task<IActionResult> BusinessHomeIndex()
         {
-            //    var context = _actionContextAccessor.ActionContext;
-            //    //var viewResult = _razorViewEngine.GetView(executingFilePath: null, viewPath: "BusinessHomeIndex", isMainPage: false);
-            //    var viewResult = _razorViewEngine.GetView(
-            //executingFilePath: null,
-            //viewPath: "/Areas/BusinessArea/Views/Home/BusinessHomeIndex.cshtml",
-            //isMainPage: false);
-
-            //    if (!viewResult.Success)
-            //    {
-            //        // Log or debug view locations
-            //        var searchedLocations = viewResult.SearchedLocations;
-            //        foreach (var location in searchedLocations)
-            //        {
-            //            Console.WriteLine($"Searched location: {location}");
-            //        }
-
-            //        return NotFound();
-            //    }
-
             return View();
+
         }
     }
 }
