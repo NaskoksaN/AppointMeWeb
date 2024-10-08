@@ -1,11 +1,5 @@
 ﻿using AppointMeWeb.Core.Models.ApplicationUser;
-using AppointMeWeb.Core.Models.BusinessProvider;
 using AppointMeWeb.Infrastrucure.Data.Models;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace AppointMeWeb.Core.Contracts
 {
@@ -61,6 +55,7 @@ namespace AppointMeWeb.Core.Contracts
         /// <returns>The ID of the matching BusinessServiceProvider.</returns>
         /// <exception cref="ArgumentException">Thrown when an unsupported user ID type is provided.</exception>
         /// <exception cref="ApplicationException">Thrown when the database fails to retrieve the business user info.</exception>
-        public Task<int> GetBusinessUserIdAsync<T>(T userId);
+        public Task<BusinessServiceProvider> GetBusinessUserAsync<T>(T userId);
+        Task<ApplicationUser> GetUserByEmailAsync(string searchByEmail);
     }
 }
