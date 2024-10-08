@@ -163,7 +163,7 @@ namespace AppointMeWeb.Core.Services
         /// <returns>The ID of the matching BusinessServiceProvider.</returns>
         /// <exception cref="ArgumentException">Thrown when an unsupported user ID type is provided.</exception>
         /// <exception cref="ApplicationException">Thrown when the database fails to retrieve the business user info.</exception>
-        public async Task<int> GetBusinessUserIdAsync<T>(T userId)
+        public async Task<BusinessServiceProvider> GetBusinessUserAsync<T>(T userId)
         {
             try
             {
@@ -176,19 +176,35 @@ namespace AppointMeWeb.Core.Services
                     _ => throw new ArgumentException("Unsupported user ID type.")
                 };
                 var businessUser = await query.FirstOrDefaultAsync();
-                //var businessUser = await sqlService
-                //        .All<BusinessServiceProvider>()
-                //        .Where(b => b.ApplicationUserId == userId)
-                //        .FirstOrDefaultAsync();
 
                 ArgumentNullException.ThrowIfNull(businessUser);
                
-                return businessUser.Id;
+                return businessUser;
             }
             catch (Exception ex)
             {
                 throw new ApplicationException("Database failed to retrieve the business user info.", ex);
             }
+        }
+
+        /// <summary>
+        /// Retrieves an <see cref="ApplicationUser"/> based on the provided email address.
+        /// </summary>
+        /// <param name="searchByEmail">The email address to search for in the database.</param>
+        /// <returns>
+        /// The <see cref="ApplicationUser"/> corresponding to the provided email address.
+        /// If no user is found, an exception is thrown.
+        /// </returns>
+        /// <exception cref="InvalidOperationException">
+        /// Thrown when no user with the specified email address is found.
+        /// </exception>
+        public async Task<ApplicationUser> GetUserByEmailAsync(string searchByEmail)
+        {
+            var user = await sqlService.AllReadOnly<ApplicationUser>()
+                               .Where(a => a.Email == searchByEmail)
+                               .FirstOrDefaultAsync();
+
+            return user ?? throw new InvalidOperationException("User with the specified email not found.");
         }
     }
 }
