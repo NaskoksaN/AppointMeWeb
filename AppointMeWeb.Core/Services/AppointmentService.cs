@@ -36,8 +36,28 @@ namespace AppointMeWeb.Core.Services
             this.TooltipTexts = [];
             this.userService = _userService;
         }
+
+        /// <summary>
+        /// Gets or sets a dictionary containing the working hours for each date.
+        /// The key is the date, and the value is a string representing the working hours for that date.
+        /// </summary>
         public Dictionary<DateOnly, string> WorkingHours { get; set; }
+
+        /// <summary>
+        /// Gets or sets a dictionary containing tooltip texts for appointment slots on each date.
+        /// The key is the date, and the value is a string with the tooltip text indicating available slots.
+        /// </summary>
         public Dictionary<DateOnly, string> TooltipTexts { get;  set; }
+
+        /// <summary>
+        /// Asynchronously retrieves available appointment slots for the next thirty days for a specified business.
+        /// </summary>
+        /// <param name="businessId">The identifier of the business for which to fetch available appointment slots.</param>
+        /// <returns>
+        /// A dictionary where the key is the date and the value is a list of <see cref="AppointmentSlotViewModel"/> objects 
+        /// representing the available appointment slots for that date.
+        /// </returns>
+        /// <exception cref="InvalidOperationException">Thrown when there is an error fetching available slots.</exception>
         public async Task<Dictionary<DateOnly, List<AppointmentSlotViewModel>>> GetAvaibleSlotsAsync(int businessId)
         {
             try
@@ -200,6 +220,18 @@ namespace AppointMeWeb.Core.Services
             }
 
         }
+        
+        /// <summary>
+        /// Retrieves client appointments based on the client's email and the associated business user ID.
+        /// </summary>
+        /// <param name="searchByEmail">The email of the client whose appointments are being searched.</param>
+        /// <param name="businessUserId">The ID of the business user associated with the appointments.</param>
+        /// <returns>
+        /// A task that represents the asynchronous operation. The task result contains an 
+        /// enumerable collection of <see cref="ClientRecordViewModel"/> objects representing 
+        /// the client's appointments within a specified date range.
+        /// </returns>
+        /// <exception cref="Exception">Thrown when an error occurs while retrieving appointments.</exception>
         public async Task<IEnumerable<ClientRecordViewModel>> GetClientAppointmentsByEmailAndTermAsync(string searchByEmail, string businessUserId)
         {
             try
@@ -235,6 +267,18 @@ namespace AppointMeWeb.Core.Services
                 throw new Exception("An error occurred while retrieving appointments.", ex);
             }
         }
+        
+        /// <summary>
+        /// Gets the appointment term in months based on the specified business type.
+        /// </summary>
+        /// <param name="businessType">The type of business for which to retrieve the appointment term.</param>
+        /// <returns>
+        /// The appointment term in months. Returns:
+        /// - 3 months for service types such as Doctor, Dentist, Therapist, etc.
+        /// - 2 months for service types such as Barber, Hairdresser, Manicurist.
+        /// - 6 months for service types such as Accountant, Lawyer, Personal Trainer.
+        /// - 2 months for any other business types.
+        /// </returns>
         private int GetAppointmentTermByBusinessType(BusinessType businessType)
         {
             switch (businessType)
@@ -265,12 +309,34 @@ namespace AppointMeWeb.Core.Services
                     return 2; 
             }
         }
+
+        /// <summary>
+        /// Retrieves the working hours from the provided daily schedule.
+        /// </summary>
+        /// <param name="schedule">The daily schedule containing start and end working times. Can be null.</param>
+        /// <returns>
+        /// A string indicating the working hours for the day. Returns:
+        /// - A message with the working hours if the schedule is not null and it's not a day off.
+        /// - A message indicating the day is off if the schedule is null or marked as a day off.
+        /// </returns>
         private string GetWorkingHours(DailyScheduleViewModel? schedule)
         {
             return schedule != null && !schedule.IsDayOff
                 ? $"Working time from {schedule.StartTime:hh\\:mm} - to {schedule.EndTime:hh\\:mm}{Environment.NewLine}"
                 : $"Day OFF, no working hours{Environment.NewLine}";
         }
+
+        /// <summary>
+        /// Generates a list of available appointment slots for a given day based on the daily schedule.
+        /// </summary>
+        /// <param name="schedule">The daily schedule containing start and end working times. Can be null.</param>
+        /// <param name="day">The date for which to generate the appointment slots.</param>
+        /// <param name="duration">The duration of each appointment slot.</param>
+        /// <param name="businessAppointments">A list of existing business appointments for checking availability.</param>
+        /// <returns>
+        /// A list of <see cref="AppointmentSlotViewModel"/> objects representing the available appointment slots for the specified day.
+        /// If the schedule is null, the day is marked as off, or if start/end times are not set, returns an empty list.
+        /// </returns>
         private List<AppointmentSlotViewModel> GetDailySlots(DailyScheduleViewModel? schedule, DateOnly day, TimeSpan duration, List<AppointmentSlotViewModel> businessAppointments)
         {
             if (schedule == null || schedule.IsDayOff || !schedule.StartTime.HasValue || !schedule.EndTime.HasValue)
@@ -295,6 +361,15 @@ namespace AppointMeWeb.Core.Services
 
             return slots;
         }
+
+        /// <summary>
+        /// Creates a tooltip text indicating available appointment slots based on the provided list.
+        /// </summary>
+        /// <param name="availableSlots">A list of appointment slots to check for availability.</param>
+        /// <returns>
+        /// A string indicating the available slots in the format "Available: slot: HH:mm - HH:mm".
+        /// If no slots are available, returns "No available slots".
+        /// </returns>
         private string CreateTooltipText(List<AppointmentSlotViewModel> availableSlots)
         {
             return availableSlots.Any(s => !s.IsBooked)
