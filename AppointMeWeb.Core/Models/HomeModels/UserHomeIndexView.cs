@@ -11,5 +11,6 @@ namespace AppointMeWeb.Core.Models.HomeModels
         public IEnumerable<UserHomeIndexViewModel> Active { get; set; } = [];
         public IEnumerable<UserHomeIndexViewModel> Canceled { get; set; } = [];
 
+       
     }
 }
