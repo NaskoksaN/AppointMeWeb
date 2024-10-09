@@ -167,12 +167,14 @@ namespace AppointMeWeb.Core.Services
         {
             try
             {
-                var query = sqlService.AllReadOnly<BusinessServiceProvider>();
-
-                query = userId switch
+                IQueryable<BusinessServiceProvider> query = userId switch
                 {
-                    int id => query.Where(b => b.Id == id),
-                    string appUserId => query.Where(b => b.ApplicationUserId == appUserId),
+                    int id => sqlService
+                            .AllReadOnly<BusinessServiceProvider>()
+                            .Where(b => b.Id == id),
+                    string appUserId => sqlService
+                            .AllReadOnly<BusinessServiceProvider>()
+                            .Where(b => b.ApplicationUserId == appUserId),
                     _ => throw new ArgumentException("Unsupported user ID type.")
                 };
                 var businessUser = await query.FirstOrDefaultAsync();

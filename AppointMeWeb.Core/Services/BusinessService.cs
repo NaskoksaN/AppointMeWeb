@@ -175,6 +175,5 @@ namespace AppointMeWeb.Core.Services
             return schedule.ExistedSchedule;
         }
 
-
     }
 }
