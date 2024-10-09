@@ -3,10 +3,10 @@
     public static class DataConstants
     {
         public const int ApplicationUserFirstNameMaxLength = 30;
-        public const int ApplicationUserFirstNameMinLength = 5;
+        public const int ApplicationUserFirstNameMinLength = 1;
 
         public const int ApplicationUserLastNameMaxLength = 30;
-        public const int ApplicationUserLastNameMinLength = 5;
+        public const int ApplicationUserLastNameMinLength = 1;
 
         public const int UserPhoneMaxLength = 20;
         public const int UserPhoneMinLength = 6;
