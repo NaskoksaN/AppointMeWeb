@@ -115,7 +115,7 @@ namespace AppointMeWeb.Areas.BusinessArea.Controllers
             {
                 string userId = User.Id();
                 IEnumerable<BusinessAppointmentViewModel> modelDate = await appointmentService
-                                    .GetAppointmentsAsync(userId, AppointmentSearchCriteria.ThisWeek, model);
+                                    .GetAppointmentsAsync(userId, AppointmentSearchCriteria.DateRange, model);
                 ViewBag.StartDate = model.StartDate;
                 ViewBag.EndDate = model.EndDate;
                 return View("ShowRangePeriod", modelDate);
