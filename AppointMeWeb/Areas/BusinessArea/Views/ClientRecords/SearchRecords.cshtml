@@ -1,0 +1,18 @@
+﻿@model ClientRecordFormModel
+
+<div class="container mt-5">
+    <form asp-action="SearchRecords" method="post">
+        <div class="form-group">
+            <div class="col-4">
+                <label for="SearchByEmail">Search by Email</label>
+                <input asp-for="SearchByEmail" class="form-control" style="width: 100%;" placeholder="Enter email" />
+                <span class="text-danger validation-message" asp-validation-for="@Model.SearchByEmail"></span>
+            </div>
+        </div>
+        <button type="submit" class="btn btn-primary mt-2">Search</button>
+    </form>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}
