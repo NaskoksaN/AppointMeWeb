@@ -3,8 +3,7 @@
     ViewData["Info"] = "Find, Book, and Enjoy Professional Services!";
 }
 
-@* <div class="custom-height img-fluid position-relative d-flex flex-column justify-content-center align-items-center vh-100" style="background-image: url('https://cdn.pixabay.com/photo/2018/07/14/11/33/earth-3537401_1280.jpg'); background-size: cover; background-position: center;"> *@
-<div class="custom-height img-fluid position-relative d-flex flex-column justify-content-center align-items-center vh-100" style="background-image: url('https://cdn.pixabay.com/photo/2023/09/17/17/33/ai-generated-8259052_1280.jpg'); background-size: cover; background-position: center;">
+<div class="custom-height img-fluid position-relative d-flex flex-column justify-content-center align-items-center vh-100" style="background-image: url('https://cdn.pixabay.com/photo/2023/09/17/17/33/ai-generated-8259052_1280.jpg'); background-size: cover; background-position: center; max-height=100%">
     <div class="text-center">
         <h1 style="color: whitesmoke;">
             @ViewData["Title"]
@@ -22,28 +21,12 @@
         </a>
     </div>
 </div>
-@* <div class="position-relative d-flex flex-column justify-content-between vh-100" style="background-image: url('https://cdn.pixabay.com/photo/2018/07/14/11/33/earth-3537401_1280.jpg'); background-size: cover; background-position: center;"> *@
-@* <div class="custom-height img-fluid position-relative d-flex flex-column justify-content-between vh-100" style="background-image: url('https://cdn.pixabay.com/photo/2023/09/17/17/33/ai-generated-8259052_1280.jpg'); background-size: cover; background-position: center;">
-    <div class="text-center" style="padding-top: 20px;">
-        <h1 style="color: whitesmoke;">
-            @ViewData["Title"]
-        </h1>
-    </div>
-    <div class="text-center" style="flex-grow: 1; display: flex; flex-direction: column; justify-content: center;">
-        <h3 style="color: whitesmoke;" class="my-4">
-            @ViewData["Info"]
-        </h3>
-    </div>
-    <div class="text-center mb-4">
-        <a class="btn btn-light custom-btn" style="background-color: whitesmoke; color: #212C37; border: none; padding: 10px 20px;"
-           asp-area="" asp-controller="Home" asp-action="Services">
-            Find out our services
-        </a>
-    </div>
-</div> *@
+
 
 <style>
-    
+    .custom-height.img-fluid {
+        max-height: 100%;
+    }
     .custom-btn:hover {
         background-color: #FF8C00 !important;
         color: whitesmoke !important;
