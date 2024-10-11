@@ -38,8 +38,8 @@ namespace AppointMeWeb.Infrastrucure.Migrations
                         .IsConcurrencyToken()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<DateTime>("DateOfBirth")
-                        .HasColumnType("datetime2")
+                    b.Property<DateOnly>("DateOfBirth")
+                        .HasColumnType("date")
                         .HasComment("User date of birth");
 
                     b.Property<string>("Email")
@@ -54,6 +54,10 @@ namespace AppointMeWeb.Infrastrucure.Migrations
                         .HasMaxLength(30)
                         .HasColumnType("nvarchar(30)")
                         .HasComment("Application first name");
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("bit")
+                        .HasComment("User activity");
 
                     b.Property<string>("LastName")
                         .IsRequired()
@@ -127,20 +131,21 @@ namespace AppointMeWeb.Infrastrucure.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<string>("ApplicationUserId")
-                        .HasColumnType("nvarchar(450)");
-
                     b.Property<int>("BusinessServiceProviderId")
                         .HasColumnType("int")
                         .HasComment("BusinessServiceProvider Identifier");
 
-                    b.Property<int>("Day")
-                        .HasColumnType("int")
+                    b.Property<DateOnly>("Day")
+                        .HasColumnType("date")
                         .HasComment("Day of the week");
 
                     b.Property<TimeSpan>("EndTime")
                         .HasColumnType("time")
                         .HasComment("End of appointment");
+
+                    b.Property<bool>("IsBooked")
+                        .HasColumnType("bit")
+                        .HasComment("Slot availability status");
 
                     b.Property<string>("Message")
                         .HasMaxLength(150)
@@ -157,14 +162,14 @@ namespace AppointMeWeb.Infrastrucure.Migrations
 
                     b.Property<string>("UserId")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)")
+                        .HasColumnType("nvarchar(450)")
                         .HasComment("User Identifier");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("ApplicationUserId");
-
                     b.HasIndex("BusinessServiceProviderId");
+
+                    b.HasIndex("UserId");
 
                     b.ToTable("Appointments", t =>
                         {
@@ -197,13 +202,17 @@ namespace AppointMeWeb.Infrastrucure.Migrations
 
                     b.Property<string>("BusinessDescription")
                         .IsRequired()
-                        .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)")
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)")
                         .HasComment("Buinsess description");
 
                     b.Property<int>("BusinessType")
                         .HasColumnType("int")
                         .HasComment("Type of buinsess section");
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("bit")
+                        .HasComment("BusinessProvier activity");
 
                     b.Property<string>("Name")
                         .IsRequired()
@@ -456,15 +465,19 @@ namespace AppointMeWeb.Infrastrucure.Migrations
 
             modelBuilder.Entity("AppointMeWeb.Infrastrucure.Data.Models.Appointment", b =>
                 {
-                    b.HasOne("AppointMeWeb.Infrastrucure.Data.Models.ApplicationUser", null)
-                        .WithMany("Appointments")
-                        .HasForeignKey("ApplicationUserId");
-
                     b.HasOne("AppointMeWeb.Infrastrucure.Data.Models.BusinessServiceProvider", "BusinessServiceProvider")
                         .WithMany("Appointments")
                         .HasForeignKey("BusinessServiceProviderId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
+
+                    b.HasOne("AppointMeWeb.Infrastrucure.Data.Models.ApplicationUser", "ApplicationUser")
+                        .WithMany("Appointments")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
+                    b.Navigation("ApplicationUser");
 
                     b.Navigation("BusinessServiceProvider");
                 });
