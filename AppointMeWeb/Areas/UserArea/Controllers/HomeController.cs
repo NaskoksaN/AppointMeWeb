@@ -1,7 +1,9 @@
-﻿using AppointMeWeb.Core.Contracts;
-using AppointMeWeb.Core.Models.BusinessProvider;
+﻿using Microsoft.AspNetCore.Mvc;
+
+using AppointMeWeb.Core.Contracts;
+using AppointMeWeb.Core.Models.HomeModels;
 using AppointMeWeb.Extensions;
-using Microsoft.AspNetCore.Mvc;
+
 
 namespace AppointMeWeb.Areas.UserArea.Controllers
 {
@@ -10,19 +12,34 @@ namespace AppointMeWeb.Areas.UserArea.Controllers
 
         private readonly ILogger<HomeController> logger;
         private readonly IBusinessService businessService;
+        private readonly IAppointmentService appointmentService;
 
         public HomeController(ILogger<HomeController> _logger
-                , IBusinessService _businessService)
+                , IBusinessService _businessService
+                , IAppointmentService _appointmentService)
         {
             this.logger = _logger;
             this.businessService = _businessService;
+            this.appointmentService = _appointmentService;
         }
 
         [HttpGet]
         
-        public IActionResult UserHomeIndex()
+        public async Task<IActionResult> UserHomeIndex()
         {
-            return View();
+            try
+            {
+                string userId = User.Id();
+                UserHomeIndexView userAppointments = await appointmentService
+                                        .GetUserAppointmentsAsync(userId);
+                return View(userAppointments);
+            }
+            catch (Exception ex)
+            {
+                logger.LogError("Error in register controller: {ControllerName}. Exception: {ExceptionMessage}", nameof(AppointmentController), ex.Message);
+                return StatusCode(500, "Internal server error. Please try again later.");
+            }
+            
         }
     }
 }
