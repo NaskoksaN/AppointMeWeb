@@ -1,4 +1,5 @@
-﻿<!DOCTYPE html>
+﻿
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="utf-8" />
@@ -11,14 +12,21 @@
     <style>
         body {
             margin: 0px;
+            display: flex;
+            flex-direction: column;
         }
         .container {
             max-width: 100% !important; 
             width: 100%; 
-            padding: 0; 
-             
+            padding: 0;
+            flex: 1 1 auto;
+           /*  overflow-y: auto; */
+            margin: 1rem 0 !important;
         }
 
+        header {
+            flex: 0 0 auto;
+        }
         .navbar {
             margin-bottom: 0 !important; 
         }
@@ -28,7 +36,7 @@
         }
 
         .footer {
-            
+            flex: 0 0 auto;
             background-color: #273E51 !important;
             color: #FF8C00 !important;
         }
@@ -72,9 +80,8 @@
         </nav>
     </header>
     <div class="container">
-        <main role="main" class="pb-1">
+        <main role="main">
             @RenderBody()
-            
         </main>
     </div>
 
