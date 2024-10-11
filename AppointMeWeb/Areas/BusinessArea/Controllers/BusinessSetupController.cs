@@ -50,7 +50,7 @@ namespace AppointMeWeb.Areas.BusinessArea.Controllers
                         ? await factory
                             .CreateWorkScheduleAsync(model.DailySchedules, businessUser.Id, model.AppointmentDuration)
                         : await factory.UpdateWorkScheduleAsync(model.ExistedSchedule=null!, businessUser.Id, model.AppointmentDuration);
-                // todo show result - create/update sucseeful
+                // todo show result - create/update sucseeful SignalAr hub or...
                 return Ok();
                 // todo redirecition.
             }
