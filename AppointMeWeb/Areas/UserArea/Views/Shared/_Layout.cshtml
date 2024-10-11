@@ -11,59 +11,67 @@
     <link rel="stylesheet" href="~/AppointMeWeb.styles.css" asp-append-version="true" />
 
     <style>
-        /* Ensure global reset is applied to prevent any unwanted spacing */
-        * {
+      
+        html, body {
+            height: 100%;
             margin: 0;
-            padding: 0;
-            box-sizing: border-box; /* Ensures proper box sizing */
         }
 
         body {
-            margin-bottom: 0px; /* Remove any bottom margin from the body */
-
+            display: flex;
+            flex-direction: column;
         }
 
-        nav.navbar {
-            margin-bottom: 0 !important; /* Remove any bottom margin on navbar */
-        }
-
-        .container.main-content {
-            max-width: 100% !important;
-            width: 100%;
-            padding-left: 0;
-            padding-right: 0; /* Remove default padding */
-            padding-top: 0; /* Ensure there is no padding at the top */
+        header {
+            flex: 0 0 auto;
         }
 
         main {
-            margin-top: 0 !important; /* Ensure no top margin on main */
+            flex: 1 1 auto;
+            overflow-y: auto;
+            margin: 0 !important;
         }
 
+        footer {
+            flex: 0 0 auto;
+        }
+
+        .container {
+            flex: 1 1 100%;
+            max-width: 100% !important;
+            width: 100%;
+            padding-left: 0;
+            padding-right: 0; 
+            padding-top: 0; 
+        }
+
+        nav.navbar {
+            margin-bottom: 0 !important; 
+        }
         .navbar.bg-custom {
             background-color: #273E51 !important;
         }
 
             .navbar.bg-custom .nav-link {
-                color: #FF8C00 !important; /* Orange text color */
-                transition: color 0.3s ease, background-color 0.3s ease; /* Smooth transition */
-            }
+                color: #FF8C00 !important; 
+                transition: color 0.3s ease, background-color 0.3s ease; 
 
                 .navbar.bg-custom .nav-link:hover {
-                    color: #fff !important; /* White text on hover */
-                    background-color: #FF8C00 !important; /* Orange background on hover */
+                    color: #fff !important; 
+                    background-color: #FF8C00 !important; 
                 }
 
             .navbar.bg-custom .dropdown-menu {
-                background-color: #273E51 !important; /* Dark background for dropdown */
+                background-color: #273E51 !important; 
             }
 
                 .navbar.bg-custom .dropdown-menu .dropdown-item {
-                    color: #FF8C00 !important; /* Orange text */
+                    color: #FF8C00 !important; 
                 }
 
                     .navbar.bg-custom .dropdown-menu .dropdown-item:hover {
-                        color: #fff !important; /* White text on hover */
-                        background-color: #FF8C00 !important; /* Orange background on hover */
+                        color: #fff !important; 
+                        background-color: #FF8C00 !important; 
                     }
 
         .footer {
@@ -119,50 +127,3 @@
 </body>
 </html>
 
-
-@* <!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>@ViewData["Title"] | Schedule Made Simple</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
-    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
-    <link rel="stylesheet" href="~/AppointMeWeb.styles.css" asp-append-version="true" />
-    
-</head>
-
-<body>
-    <header>
-        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
-            <div class="container-fluid">
-                @if (User.IsUser())
-                {
-                    <div class="navbar-collapse d-flex justify-content-between align-items-center">
-                        <a class="navbar-brand" asp-area="UserArea" asp-controller="Home" asp-action="UserHomeIndex">UserPageArea</a>
-                        @await Component.InvokeAsync(nameof(UserMenuComponent))
-                        <partial name="_LoginPartial" />
-                    </div>
-                }
-            </div>
-        </nav>
-    </header>
-
-    <div class="container">
-        <main role="main" class="pb-3">
-            @RenderBody()
-        </main>
-    </div>
-
-    <footer class="border-top footer text-muted">
-        @await Component.InvokeAsync(nameof(FooterComponent))
-    </footer>
-
-    <script src="~/lib/jquery/dist/jquery.min.js"></script>
-    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="~/js/site.js" asp-append-version="true"></script>
-    @await RenderSectionAsync("Scripts", required: false)
-</body>
-</html>
- *@
