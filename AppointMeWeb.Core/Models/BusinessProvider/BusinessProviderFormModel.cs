@@ -1,8 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using AppointMeWeb.Core.Utilities;
 using System.ComponentModel.DataAnnotations;
-
-using AppointMeWeb.Core.Utilities;
-using AppointMeWeb.Infrastrucure.Data.Models;
 
 namespace AppointMeWeb.Core.Models.BusinessProvider
 {

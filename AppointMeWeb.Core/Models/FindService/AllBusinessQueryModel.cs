@@ -8,7 +8,6 @@ namespace AppointMeWeb.Core.Models.FindService
     public class AllBusinessQueryModel
     {
         public int SetupBusinessPerPage { get; set; } = BusinessPerPage;
-        [Required]
         public string TypeOfBusiness { get; set; } = string.Empty;
 
         [Display(Name = "Search by town")]
@@ -21,6 +20,7 @@ namespace AppointMeWeb.Core.Models.FindService
         public string? SearchingInDescription { get; set; }
         public int CurrentPage { get; set; } = StartPage;
         public int CountOfBusiness { get; set; }
+        [Display(Name = "Sort by business name")]
         public AlphabeticSort Sorting { get; set; }
 
         public IEnumerable<string> BusinessTypes { get; set; } = [];
