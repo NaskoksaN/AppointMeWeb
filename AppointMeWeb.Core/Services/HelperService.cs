@@ -26,6 +26,10 @@ namespace AppointMeWeb.Core.Services
             return Enum.GetValues(typeof(T)).Cast<T>();
         }
 
+        public IEnumerable<string> GetEnumValuesAsString<T>() where T : Enum
+        {
+            return Enum.GetValues(typeof(T)).Cast<T>().Select(e => e.ToString());
+        }
         public List<DateOnly> GetNextCountOfDays(int countOfDays)
         {
             var dates = new List<DateOnly>();
