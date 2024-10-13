@@ -1,5 +1,7 @@
-﻿using AppointMeWeb.Core.Models.AppointmeModels;
+﻿using AppointMeWeb.Core.Enums;
+using AppointMeWeb.Core.Models.AppointmeModels;
 using AppointMeWeb.Core.Models.BusinessProvider;
+using AppointMeWeb.Core.Models.FindService;
 using AppointMeWeb.Core.Models.HomeModels;
 using AppointMeWeb.Infrastrucure.Data.Models;
 
@@ -32,5 +34,14 @@ namespace AppointMeWeb.Core.Contracts
         /// </returns>
         /// <exception cref="ArgumentException">Thrown when the user ID type is unsupported.</exception>
         Task<List<DailyScheduleViewModel>> GetUserWorkingShedulesAsync<T>(T userId);
+
+        Task<BusinessQueryServiceModel> GetAllBusinessAsQueryAsync(
+            string? category = null,
+            string? searchingTown = null,
+            string? BusinessName=null,
+            string? SearchingInDescription=null,
+            int currentPage = 1,
+            int businessPerPage = 1,
+            AlphabeticSort sorting= AlphabeticSort.Ascending);
     }
 }

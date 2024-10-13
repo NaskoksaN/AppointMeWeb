@@ -7,6 +7,8 @@ using AppointMeWeb.Core.Models.HomeModels;
 using AppointMeWeb.Infrastrucure.Data.Common;
 using AppointMeWeb.Infrastrucure.Data.Enum;
 using AppointMeWeb.Infrastrucure.Data.Models;
+using AppointMeWeb.Core.Models.FindService;
+using AppointMeWeb.Core.Enums;
 
 
 namespace AppointMeWeb.Core.Services
@@ -82,6 +84,72 @@ namespace AppointMeWeb.Core.Services
         }
 
         public List<ServiceInfoModels> BusinessInfo() => businessInfo;
+
+        public async Task<BusinessQueryServiceModel> GetAllBusinessAsQueryAsync(
+                        string? category = null, 
+                        string? searchingTown = null, 
+                        string? businessName = null, 
+                        string? searchInDescription = null, 
+                        int currentPage = 1, 
+                        int businessPerPage = 1,
+                        AlphabeticSort sorting = AlphabeticSort.Ascending)
+        {
+            IQueryable<BusinessServiceProvider> businessQuerry = sqlService
+                        .AllReadOnly<BusinessServiceProvider>();
+           
+            if (!string.IsNullOrEmpty(category) && Enum.TryParse<BusinessType>(category, true, out var businessType))
+            {
+                businessQuerry = businessQuerry
+                    .Where(b => b.BusinessType == businessType);
+            }
+            if (!string.IsNullOrEmpty(searchingTown))
+            {
+                businessQuerry = businessQuerry
+                    .Where(b=>b.Town.ToLower().Contains(searchingTown.ToLower()));
+            }
+            if (!string.IsNullOrEmpty(businessName))
+            {
+                businessQuerry = businessQuerry
+                    .Where(b => b.Name.ToLower().Contains(businessName.ToLower()));
+            }
+            if (!string.IsNullOrEmpty(searchInDescription))
+            {
+                businessQuerry = businessQuerry
+                    .Where(b => b.BusinessDescription.ToLower().Contains(searchInDescription.ToLower()));
+            }
+
+            businessQuerry = sorting switch
+            {
+                AlphabeticSort.Ascending => businessQuerry.OrderBy(b => b.Name),
+                AlphabeticSort.Descending => businessQuerry.OrderByDescending(b => b.Name),
+                _ => businessQuerry.OrderBy(b => b.Id)
+            };
+
+            var business = businessQuerry
+                .Skip((currentPage-1) * businessPerPage)
+                .Take(businessPerPage)
+                .Select(b=> new BusinessViewModel()
+                {
+
+                    Id = b.Id,
+                    Name = b.Name,
+                    BusinessType = b.BusinessType.ToString(),
+                    Description = b.BusinessDescription,
+                    Phone = b.ApplicationUser.Phone,
+                    Email = b.ApplicationUser.Email,
+                    Town = b.Town,
+                    Address = b.Address,
+                    WebsiteUrl = b.Url,
+                })
+                .ToList();
+            int totalBusinessCount = businessQuerry != null ? businessQuerry.Count() : 0;
+            BusinessQueryServiceModel result =  new ()
+            {
+                CountOfBusiness = totalBusinessCount,
+                Businesses = business
+            };
+            return result;
+        }
 
         /// <summary>
         /// Asynchronously retrieves all business service provider records from the database,
