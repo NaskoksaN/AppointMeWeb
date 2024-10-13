@@ -27,26 +27,29 @@ namespace AppointMeWeb.Areas.UserArea.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> FindService()
+        public async Task<IActionResult> FindService([FromQuery] AllBusinessQueryModel query)
         {
            
             try
             {
-                IEnumerable<BusinessType> businessType = helperService
-                                   .GetEnumValues<BusinessType>();
-                IEnumerable<BusinessViewModel> businessCollection = await businessService
-                                                                    .GetAllBusinessAsync();
-                FindFormModel model = new ()
-                {
-                    BusinessTypes = businessType,
-                    Businesses = businessCollection
-                };
-                
-                return View(model);
+                var querryResult = await businessService.GetAllBusinessAsQueryAsync(
+                    query.TypeOfBusiness,
+                    query.SearchingTown,
+                    query.BusinessName,
+                    query.SearchingInDescription,
+                    query.CurrentPage,
+                    query.SetupBusinessPerPage
+                    );
+
+                query.BusinessTypes = helperService.GetEnumValuesAsString<BusinessType>();
+                query.Businesses = querryResult.Businesses;
+                query.CountOfBusiness = querryResult.CountOfBusiness;
+
+                return View(query);
             }
             catch (Exception ex)
             {
-                logger.LogError("Error in register controller: {ControllerName}. Exception: {ExceptionMessage}", nameof(AppointmentController), ex.Message);
+                logger.LogError("Error in register controller: {FindController}. Exception: {ExceptionMessage}", nameof(AppointmentController), ex.Message);
                 return View();
             }
         }
