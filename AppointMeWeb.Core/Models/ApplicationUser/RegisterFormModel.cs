@@ -1,7 +1,10 @@
-﻿using AppointMeWeb.Infrastrucure.Data.Enum;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
+using AppointMeWeb.Core.CustomValidations;
+using AppointMeWeb.Infrastrucure.Data.Enum;
+
 
 using static AppointMeWeb.Core.Constants.MessageConstants;
+using static AppointMeWeb.Core.Constants.CoreConstants;
 using static AppointMeWeb.Infrastrucure.Constants.DataConstants;
 
 namespace AppointMeWeb.Core.Models.ApplicationUser
@@ -61,8 +64,9 @@ namespace AppointMeWeb.Core.Models.ApplicationUser
             ErrorMessage = LengthMessage)]
         public string LastName { get; set; } = string.Empty;
 
-        [Required]
+        [Required(ErrorMessage =RequiredMessage)]
         [Display(Name = "Birth Date")]
+        [MinAge(MinAgeUser)]
         [DataType(DataType.Date)]
         public DateOnly DOB { get; set; }
 
