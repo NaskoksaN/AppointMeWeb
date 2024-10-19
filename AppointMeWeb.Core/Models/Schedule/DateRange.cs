@@ -1,8 +1,18 @@
-﻿namespace AppointMeWeb.Core.Models.Schedule
+﻿using AppointMeWeb.Core.CustomValidations;
+using System.ComponentModel.DataAnnotations;
+using static AppointMeWeb.Core.Constants.CoreConstants;
+using static AppointMeWeb.Core.Constants.MessageConstants;
+
+namespace AppointMeWeb.Core.Models.Schedule
 {
     public class DateRange
     {
-        public DateOnly StartDate { get; set; } 
+        [Required(ErrorMessage = RequiredMessage)]
+        public DateOnly StartDate { get; set; }
+
+        [Required(ErrorMessage = RequiredMessage)]
+        [EndDateAfterStartDate(MaxDaySchedulePeriod, ErrorMessage = EndDateErrMsg)]
+        [MaxDaysDifference(MaxDaySchedulePeriod, ErrorMessage = SchedulePeriodErrMsg)]
         public DateOnly EndDate { get; set; }   
     }
 }
