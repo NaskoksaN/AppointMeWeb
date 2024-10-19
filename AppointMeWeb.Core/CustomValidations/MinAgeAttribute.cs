@@ -18,16 +18,6 @@ namespace AppointMeWeb.Core.CustomValidations
         {
 
 
-            //DateOnly today = DateOnly.FromDateTime(DateTime.Today);
-            //DateOnly? birthDate = (DateOnly?)value;
-
-            //var age = today.Year - birthDate.Value.Year;
-
-            //if (age<minAge)
-            //{
-            //    string errorMessage = string.Format(MinAgeErrorMsg, minAge);
-            //    return new ValidationResult(errorMessage);
-            //}
 
             DateOnly today = DateOnly.FromDateTime(DateTime.Today);
 
