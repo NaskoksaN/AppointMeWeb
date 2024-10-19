@@ -10,11 +10,11 @@
                 <i class="fa-solid fa-person"></i>
             </span>
             <div class="form-floating flex-grow-1">
-                <input asp-for="FirstName" class="form-control" />
-                <label asp-for="FirstName"></label>
+                <input asp-for="@Model.FirstName" class="form-control" />
+                <label asp-for="@Model.FirstName"></label>
             </div>
         </div>
-        <span asp-validation-for="FirstName" class="small text-danger"></span>
+        <span asp-validation-for="@Model.FirstName" class="small text-danger"></span>
     </div>
     
     <div class="mb-2 w-100">
@@ -35,11 +35,14 @@
                 <i class="fa-regular fa-calendar-days"></i>
             </span>
             <div class="form-floating flex-grow-1">
-                <input asp-for="@Model.DOB" class="form-control" type="date" value="@DateTime.Today.ToString("dd-MM-yyyy")" />
-                <label asp-for="@Model.DOB"></label>
+                <input asp-for="DOB" class="form-control" type="date"
+                       value="@DateOnly.FromDateTime(DateTime.Today).ToString("yyyy-MM-dd")"
+                       max="@DateOnly.FromDateTime(DateTime.Today).ToString("yyyy-MM-dd")" required/>
+                <label asp-for="DOB"></label>
+                
             </div>
         </div>
-        <span asp-validation-for="@Model.DOB" class="small text-danger"></span>
+        <span asp-validation-for="DOB" class="small text-danger"></span>
     </div>
     <div class="mb-2 w-100">
         <div class="input-group">
