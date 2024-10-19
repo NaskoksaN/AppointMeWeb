@@ -1,5 +1,7 @@
-﻿using Microsoft.EntityFrameworkCore;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
+
+using AppointMeWeb.Core.CustomValidations;
+using static AppointMeWeb.Core.Constants.MessageConstants;
 
 namespace AppointMeWeb.Core.Models.BusinessProvider
 {
@@ -11,6 +13,7 @@ namespace AppointMeWeb.Core.Models.BusinessProvider
         
         public TimeSpan? StartTime { get; set; }
 
+        [EndTimeAfterStartTime(ErrorMessage = EndTimeBeforeStartTimeErrMsg)]
         public TimeSpan? EndTime { get; set; }
         [Required]
         public bool IsDayOff {  get; set; }=false;
