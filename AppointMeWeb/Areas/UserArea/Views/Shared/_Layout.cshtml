@@ -9,7 +9,7 @@
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/AppointMeWeb.styles.css" asp-append-version="true" />
-
+    <link rel="stylesheet" href="~/css/custom-styles-Layout.css" asp-append-version="true" />
     <style>
       
         html, body {
@@ -98,11 +98,16 @@
 </head>
 <body>
     <header>
-        <nav class="navbar navbar-expand-sm navbar-toggleable-sm bg-custom border-bottom box-shadow mb-3">
+        <nav class="navbar navbar-expand-sm navbar-light custom-navbar border-bottom box-shadow mb-3">
             <div class="container-fluid">
+                <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">Book with AppointMe</a>
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
+                        aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
                 @if (User.IsUser())
                 {
-                    <div class="navbar-collapse d-flex justify-content-between align-items-center">
+                    <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
                         @await Component.InvokeAsync(nameof(UserMenuComponent))
                         <partial name="_LoginPartial" />
                     </div>
@@ -112,7 +117,7 @@
     </header>
 
     <div class="container main-content">
-        <main role="main" class="pb-1">
+        <main role="main">
             @RenderBody()
         </main>
     </div>
@@ -123,6 +128,9 @@
 
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://ajax.aspnetcdn.com/ajax/jquery.validate/1.19.3/jquery.validate.min.js"></script>
+    <script src="https://ajax.aspnetcdn.com/ajax/jquery.validate.unobtrusive/3.2.11/jquery.validate.unobtrusive.min.js"></script>
+
     <script src="~/js/site.js" asp-append-version="true"></script>
     @await RenderSectionAsync("Scripts", required: false)
 </body>
