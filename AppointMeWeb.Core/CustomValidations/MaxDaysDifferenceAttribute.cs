@@ -1,19 +1,16 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.ComponentModel.DataAnnotations;
+
+using static AppointMeWeb.Core.Constants.MessageConstants;
 
 namespace AppointMeWeb.Core.CustomValidations
 {
     public class MaxDaysDifferenceAttribute : ValidationAttribute
     {
-        private readonly int _maxDaysDifference;
+        private readonly int maxDaysDifference;
 
-        public MaxDaysDifferenceAttribute(int maxDaysDifference)
+        public MaxDaysDifferenceAttribute(int _maxDaysDifference)
         {
-            _maxDaysDifference = maxDaysDifference;
+            maxDaysDifference = _maxDaysDifference;
         }
 
         protected override ValidationResult IsValid(object value, ValidationContext validationContext)
@@ -23,16 +20,17 @@ namespace AppointMeWeb.Core.CustomValidations
 
             if (startDateProperty == null)
             {
-                return new ValidationResult("Start Date property not found.");
+                return new ValidationResult(StartDateNotFoundErrMsg);
             }
 
             DateOnly startDate = (DateOnly)startDateProperty.GetValue(validationContext.ObjectInstance, null);
 
             int daysDifference = endDate.DayNumber- startDate.DayNumber;
 
-            if (daysDifference>0 && daysDifference > _maxDaysDifference)
+            if (daysDifference>0 && daysDifference > maxDaysDifference)
             {
-                return new ValidationResult($"The difference between Start Date and End Date cannot exceed {_maxDaysDifference} days.");
+                string errorMessage = string.Format(SchedulePeriodErrMsg, maxDaysDifference);
+                return new ValidationResult(errorMessage);
             }
 
             return ValidationResult.Success;
