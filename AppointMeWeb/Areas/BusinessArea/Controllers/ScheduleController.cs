@@ -1,15 +1,13 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 
 using AppointMeWeb.Areas.UserArea.Controllers;
+using AppointMeWeb.Core.Constants;
 using AppointMeWeb.Core.Contracts;
 using AppointMeWeb.Core.Enums;
 using AppointMeWeb.Core.Models.HomeModels;
 using AppointMeWeb.Core.Models.Schedule;
 using AppointMeWeb.Extensions;
 
-using static AppointMeWeb.Core.Constants.DateConstants;
-using AppointMeWeb.Core.Constants;
-using AppointMeWeb.Infrastrucure.Data.Models;
 
 namespace AppointMeWeb.Areas.BusinessArea.Controllers
 {
@@ -42,7 +40,7 @@ namespace AppointMeWeb.Areas.BusinessArea.Controllers
             }
             catch (Exception ex)
             {
-                logger.LogError("Error in register controller: {ControllerName}. Exception: {ExceptionMessage}", nameof(AppointmentController), ex.Message);
+                logger.LogError("Error in register controller: {ScheduleController}. Exception: {ExceptionMessage}", nameof(AppointmentController), ex.Message);
                 return StatusCode(500, "Internal server error. Please try again later.");
             }
             
@@ -77,7 +75,7 @@ namespace AppointMeWeb.Areas.BusinessArea.Controllers
             }
             catch (Exception ex)
             {
-                logger.LogError("Error in register controller: {ControllerName}. Exception: {ExceptionMessage}", nameof(AppointmentController), ex.Message);
+                logger.LogError("Error in register controller: {ScheduleController}. Exception: {ExceptionMessage}", nameof(AppointmentController), ex.Message);
                 return StatusCode(500, "Internal server error. Please try again later.");
             }
         }
@@ -121,7 +119,7 @@ namespace AppointMeWeb.Areas.BusinessArea.Controllers
             }
             catch (Exception ex)
             {
-                logger.LogError("Error in register controller: {ControllerName}. Exception: {ExceptionMessage}", nameof(AppointmentController), ex.Message);
+                logger.LogError("Error in register controller: {ScheduleController}. Exception: {Action DateRange}", nameof(AppointmentController), ex.Message);
                 model.StartDate = DateConstants.Tomorrow;
                 model.EndDate= DateConstants.NextThirtyDays;
                 return View(model);
