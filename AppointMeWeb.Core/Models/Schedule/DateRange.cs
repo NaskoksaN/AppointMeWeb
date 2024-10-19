@@ -11,7 +11,7 @@ namespace AppointMeWeb.Core.Models.Schedule
         public DateOnly StartDate { get; set; }
 
         [Required(ErrorMessage = RequiredMessage)]
-        [EndDateAfterStartDate(MaxDaySchedulePeriod, ErrorMessage = EndDateErrMsg)]
+        [EndDateAfterStartDate]
         [MaxDaysDifference(MaxDaySchedulePeriod, ErrorMessage = SchedulePeriodErrMsg)]
         public DateOnly EndDate { get; set; }   
     }
