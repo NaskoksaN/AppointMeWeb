@@ -20,7 +20,7 @@ namespace AppointMeWeb.Core.CustomValidations
             int daysDifference = endDate.DayNumber - startDate.DayNumber;
             if (daysDifference < 0)
             {
-                return new ValidationResult(EndDateErrMsg);
+                return new ValidationResult(EndDateBeforeStartDateErrMsg);
             }
 
             return ValidationResult.Success;
