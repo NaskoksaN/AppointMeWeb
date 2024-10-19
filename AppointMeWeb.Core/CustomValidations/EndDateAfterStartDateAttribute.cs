@@ -1,9 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.ComponentModel.DataAnnotations;
+
+using static AppointMeWeb.Core.Constants.MessageConstants;
 
 namespace AppointMeWeb.Core.CustomValidations
 {
@@ -23,14 +20,14 @@ namespace AppointMeWeb.Core.CustomValidations
 
             if (startDateProperty == null)
             {
-                return new ValidationResult("Start Date property not found.");
+                return new ValidationResult(StartDateNotFoundErrMsg);
             }
 
             var startDate = (DateOnly)startDateProperty.GetValue(validationContext.ObjectInstance, null);
             int daysDifference = endDate.DayNumber - startDate.DayNumber;
             if (daysDifference < 0)
             {
-                return new ValidationResult("End Date must be greater than or equal to Start Date.");
+                return new ValidationResult(EndDateErrMsg);
             }
 
             return ValidationResult.Success;
