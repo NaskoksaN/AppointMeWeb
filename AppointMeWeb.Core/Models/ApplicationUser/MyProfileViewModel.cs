@@ -11,5 +11,7 @@
     {
         public LoginFormModel LoginFormModel { get; set; } = new LoginFormModel();
         public RegisterFormModel RegisterFormModel { get; set; } = new RegisterFormModel();
+
+        public string ActiveTab { get; set; } = "login";
     }
 }
