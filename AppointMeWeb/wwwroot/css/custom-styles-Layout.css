@@ -1,0 +1,55 @@
+﻿html, body {
+    height: 100%;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    overflow:hidden;
+}
+
+
+.container {
+    max-width: 100% !important;
+    width: 100%;
+    padding: 0;
+    flex: 1 1 auto;
+   
+}
+
+header {
+    flex: 0 1 auto;
+}
+
+.navbar {
+    margin-bottom: 0 !important;
+}
+
+.custom-navbar {
+    background-color: #273E51 !important;
+}
+
+.footer {
+    flex: 0 1 auto;
+    background-color: #273E51 !important;
+    color: #FF8C00 !important;
+}
+
+.custom-navbar .navbar-brand,
+.custom-navbar .navbar-nav .nav-link {
+    color: #FF8C00 !important;
+}
+
+.custom-navbar .navbar-toggler {
+    background-color: #FF8C00 !important;
+}
+
+.custom-navbar .navbar-nav .nav-link:hover {
+    color: white !important;
+}
+
+.custom-navbar .navbar-brand:hover {
+    color: white !important;
+}
+
+.linkedin-icon:hover {
+    background-color: #FF8C00 !important;
+}
