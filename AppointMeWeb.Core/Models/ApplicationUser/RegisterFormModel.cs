@@ -66,7 +66,7 @@ namespace AppointMeWeb.Core.Models.ApplicationUser
 
         [Required(ErrorMessage =RequiredMessage)]
         [Display(Name = "Birth Date")]
-        [MinAge(MinAgeUser)]
+        [MinAge(MinAgeUser, ErrorMessage = MinAgeErrorMsg)]
         [DataType(DataType.Date)]
         public DateOnly DOB { get; set; }
 
