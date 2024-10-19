@@ -60,7 +60,7 @@ namespace AppointMeWeb.Areas.BusinessArea.Controllers
             }
             catch (Exception ex)
             {
-                logger.LogError("Error in register controller: {ControllerName}. Exception: {ExceptionMessage}", nameof(AppointmentController), ex.Message);
+                logger.LogError("Error in register controller: {ScheduleController}. Exception: {ExceptionMessage}", nameof(AppointmentController), ex.Message);
                 return StatusCode(500, "Internal server error. Please try again later.");
             }
         }
@@ -96,7 +96,7 @@ namespace AppointMeWeb.Areas.BusinessArea.Controllers
             }
             catch (Exception ex)
             {
-                logger.LogError("Error in register controller: {ControllerName}. Exception: {ExceptionMessage}", nameof(AppointmentController), ex.Message);
+                logger.LogError("Error in register controller: {ScheduleController}. Exception: {ExceptionMessage}", nameof(AppointmentController), ex.Message);
                 return StatusCode(500, "Internal server error. Please try again later.");
             }
         }
@@ -105,8 +105,7 @@ namespace AppointMeWeb.Areas.BusinessArea.Controllers
         {
             if (!ModelState.IsValid)
             {
-                logger.LogError("Error in register controller: {ControllerName}. Exception: {ExceptionMessage}", nameof(AppointmentController));
-                ModelState.AddModelError(string.Empty, "EndDate must be equal to or greater than StartDate.");
+                logger.LogError("Error in register controller: {ScheduleController}. Error : {DateRange}");
                 model.StartDate = DateConstants.Tomorrow;
                 model.EndDate = DateConstants.NextThirtyDays;
                 return View(model);
