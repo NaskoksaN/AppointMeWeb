@@ -105,17 +105,22 @@ namespace AppointMeWeb.Controllers
                     ModelState.AddModelError(nameof(model.Url), "Business URL is required.");
                 }
             }
-
             if (!ModelState.IsValid)
             {
+                logger.LogError("Error in register controller: {UserController}. Error : {Failed ModelState registration}");
                 model.Roles = await customUserService.GetRolesAsync();
-                return RedirectToAction("MyProfile", new { tab = "register" });
+                return View("MyProfile", new MyProfileViewModel
+                {
+                    RegisterFormModel = model,
+                    ActiveTab = "register" 
+                });
             }
 
             bool registrationStatus;
             try
             {
                 registrationStatus = await customUserService.RegisterUserAsync(model);
+                return RedirectToAction("MyProfile", new { tab = "login" });
             }
             catch (Exception ex)
             {
@@ -123,14 +128,7 @@ namespace AppointMeWeb.Controllers
                 ModelState.AddModelError("", "An error occurred during registration. Please try again.");
                 return RedirectToAction("MyProfile", new { tab = "register" });
             }
-
-            if (registrationStatus)
-            {
-                return RedirectToAction("MyProfile", new { tab = "login" });
-            }
-
-            ModelState.AddModelError("", "Registration failed. Please try again.");
-            return RedirectToAction("MyProfile", new { tab = "register" });
+            
         }
 
         [HttpGet]

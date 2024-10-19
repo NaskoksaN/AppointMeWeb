@@ -1,8 +1,9 @@
-﻿@model FindFormModel
+﻿@model AllBusinessQueryModel
 
 @{
     ViewBag.Title = "Find Service in our Network and make apointment";
     ViewBag.Message = "No business is added";
+    
 }
 
 <h2>@ViewBag.Title </h2>
@@ -10,33 +11,42 @@
     <div class="row">
         <div class="form-group col-md-2 d-flex justify-content-between">
             <div class="form-group">
-                <label asp-for="TypeOfBusiness"></label>
-                <select asp-for="TypeOfBusiness" class="form-control">
+                <label asp-for="@Model.TypeOfBusiness"></label>
+                <select asp-for="@Model.TypeOfBusiness" class="form-control">
                     <option value="">All</option>
                     @foreach (var business in Model.BusinessTypes)
                     {
                         <option value="@business">@business</option>
                     }
                 </select>
-                <span asp-validation-for="TypeOfBusiness" class="text-danger"></span>
+                <span asp-validation-for="@Model.TypeOfBusiness" class="text-danger"></span>
             </div>
         </div>
 
         <div class="form-group col-md-2">
-            <label asp-for="SearchingTown"></label>
-            <input asp-for="SearchingTown" class="form-control" placeholder="Find by town">
-            <span asp-validation-for="SearchingTown" class="text-danger"></span>
+            <label asp-for="@Model.SearchingTown"></label>
+            <input asp-for="@Model.SearchingTown" class="form-control" placeholder="Find by town">
+            <span asp-validation-for="@Model.SearchingTown" class="text-danger"></span>
         </div>
-        <div class="form-group col-md-3">
-            <label asp-for="BusinessName"></label>
-            <input asp-for="BusinessName" class="form-control" placeholder="Find by BusinessName">
-            <span asp-validation-for="BusinessName" class="text-danger"></span>
+        <div class="form-group col-md-2">
+            <label asp-for="@Model.BusinessName"></label>
+            <input asp-for="@Model.BusinessName" class="form-control" placeholder="Find by BusinessName">
+            <span asp-validation-for="@Model.BusinessName" class="text-danger"></span>
         </div>
         
-        <div class="form-group col-md-4">
-            <label asp-for="SearchingInDescription"></label>
-            <input asp-for="SearchingInDescription" class="form-control" placeholder="Serach for specific services">
-            <span asp-validation-for="SearchingInDescription" class="text-danger"></span>
+        <div class="form-group col-md-3">
+            <label asp-for="@Model.SearchingInDescription"></label>
+            <input asp-for="@Model.SearchingInDescription" class="form-control" placeholder="Serach for specific services">
+            <span asp-validation-for="@Model.SearchingInDescription" class="text-danger"></span>
+        </div>
+        <div class="form-group col-md-2">
+            <div class="form-group">
+                <label asp-for="Sorting"></label>
+                <select asp-for="Sorting" class="form-control">
+                    <option value="0">Ascending</option>
+                    <option value="1">Descending</option>
+                </select>
+            </div>
         </div>
 
         <div class="col-md-3">
@@ -46,15 +56,15 @@
         </div>
     </div>
 </form>
-
-@if (Model ==null || Model.Businesses == null)
-{
-    <span class="text-danger">@ViewBag.Message</span>
-}
-else
+@if (Model != null && Model.Businesses.Any())
 {
     <partial name="_IndexViewPartial" model="Model.Businesses" />
 }
+else
+{
+    <span class="text-danger">@ViewBag.Message</span>
+}
+
 
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />
