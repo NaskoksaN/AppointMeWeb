@@ -41,18 +41,26 @@ namespace AppointMeWeb.Areas.BusinessArea.Controllers
         [HttpPost]
         public async Task<IActionResult> Setup([FromForm] BusinessProviderFormModel model)
         {
+            if (!ModelState.IsValid)
+            {
+                logger.LogError("Error in register controller: {BusinessSetupController}. Exception: {fail to validate BusinessProviderFormModel model}");
+                
+                string userId = User.Id();
+                model.Days = helperService.GetDaysOfWeek();
+                model.ExistedSchedule = await businessService.GetUserWorkingShedulesAsync(userId);
+                return View(model);
+            }
             try
             {
                 string userId = User.Id();
                 var businessUser = await customUserService
                             .GetBusinessUserAsync<string>(userId);
-                bool isWorkScheduleUpdate = model.ExistedSchedule!=null &&  model.ExistedSchedule.Count==0
+                bool isWorkScheduleUpdate = model.ExistedSchedule != null && model.ExistedSchedule.Count ==0
                         ? await factory
                             .CreateWorkScheduleAsync(model.DailySchedules, businessUser.Id, model.AppointmentDuration)
-                        : await factory.UpdateWorkScheduleAsync(model.ExistedSchedule=null!, businessUser.Id, model.AppointmentDuration);
+                        : await factory.UpdateWorkScheduleAsync(model.ExistedSchedule, businessUser.Id, model.AppointmentDuration);
                 // todo show result - create/update sucseeful SignalAr hub or...
-                return Ok();
-                // todo redirecition.
+                return RedirectToAction("BusinessHomeIndex", "Home");
             }
             catch (Exception ex)
             {
@@ -67,7 +75,6 @@ namespace AppointMeWeb.Areas.BusinessArea.Controllers
                 return View(modelView);
             }
 
-            
         }
     }
 }
