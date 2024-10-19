@@ -189,7 +189,7 @@ namespace AppointMeWeb.Core.Services
         {
             try
             {
-                var result = await sqlService
+                BusinessServiceProvider? result = await sqlService
                             .AllReadOnly<BusinessServiceProvider>()
                             .FirstOrDefaultAsync(b => b.Id == businessId);
                 return result;
