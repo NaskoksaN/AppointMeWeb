@@ -16,26 +16,38 @@ namespace AppointMeWeb.Core.CustomValidations
 
         protected override ValidationResult? IsValid(object? value, ValidationContext validationContext)
         {
-            ErrorMessage = string.Format(MinAgeErrorMsg, minAge);
 
-            if (value is DateOnly birthDate)
+
+            //DateOnly today = DateOnly.FromDateTime(DateTime.Today);
+            //DateOnly? birthDate = (DateOnly?)value;
+
+            //var age = today.Year - birthDate.Value.Year;
+
+            //if (age<minAge)
+            //{
+            //    string errorMessage = string.Format(MinAgeErrorMsg, minAge);
+            //    return new ValidationResult(errorMessage);
+            //}
+
+            DateOnly today = DateOnly.FromDateTime(DateTime.Today);
+
+            if (value == null || !(value is DateOnly birthDate))
             {
-                var today = DateOnly.FromDateTime(DateTime.Today);
-                var age = today.Year - birthDate.Year;
-                Debugger.Break();
-                if (birthDate > today.AddYears(-age))
-                {
-                    age--;
-                }
-
-                if (age < minAge)
-                {
-                    return new ValidationResult(ErrorMessage);
-                }
-                return ValidationResult.Success;
+                return new ValidationResult("Birth date is required.");
             }
-            return new ValidationResult(ErrorMessage);
 
+            int age = today.Year - birthDate.Year;
+            if (today < birthDate.AddYears(age))
+            {
+                age--;
+            }
+            if (age < minAge)
+            {
+                string errorMessage = string.Format(MinAgeErrorMsg, minAge);
+                return new ValidationResult(errorMessage);
+            }
+
+            return ValidationResult.Success;
         }
     }
 }
