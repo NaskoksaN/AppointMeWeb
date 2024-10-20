@@ -1,5 +1,4 @@
-﻿
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="utf-8" />
@@ -10,7 +9,6 @@
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/AppointMeWeb.styles.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/css/custom-styles-Layout.css" asp-append-version="true" />
-    
 </head>
 <body>
     <header>
@@ -28,6 +26,7 @@
             </div>
         </nav>
     </header>
+
     <div class="container">
         <main role="main">
             @RenderBody()
@@ -37,15 +36,12 @@
     <footer class="border-top footer text-muted">
         @await Component.InvokeAsync(nameof(FooterComponent))
     </footer>
+
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://ajax.aspnetcdn.com/ajax/jquery.validate/1.19.3/jquery.validate.min.js"></script>
     <script src="https://ajax.aspnetcdn.com/ajax/jquery.validate.unobtrusive/3.2.11/jquery.validate.unobtrusive.min.js"></script>
-
     <script src="~/js/site.js" asp-append-version="true"></script>
     @await RenderSectionAsync("Scripts", required: false)
 </body>
 </html>
-
-
-
