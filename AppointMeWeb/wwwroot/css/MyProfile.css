@@ -1,0 +1,11 @@
+﻿.container {
+    padding-bottom: 2em;
+}
+
+.nav-tabs .nav-link {
+    color: darkgray;
+}
+
+    .nav-tabs .nav-link.active {
+        color: black;
+    }
