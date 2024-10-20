@@ -1,23 +1,43 @@
-﻿html, body {
-    height: 100%;
-    margin: 0;
-    display: flex;
-    flex-direction: column;
-    overflow:hidden;
+﻿*, *::before, *::after {
+    box-sizing: border-box;
 }
 
-
-.container {
-    max-width: 100% !important;
-    width: 100%;
-    padding: 0;
-    flex: 1 1 auto;
-   
+html, body {
+    height: 100%;
+    margin: 0;
+    padding:0;
+    display: flex;
+    flex-direction: column;
 }
 
 header {
-    flex: 0 1 auto;
+    flex: 0 0 auto;
 }
+.container {
+    max-width: 100% !important;
+    width: 100%;
+    flex: 1 1 auto;
+    margin: 0;
+    padding: 0;
+    overflow-y: auto;
+    overflow-x: hidden;
+}
+
+.footer {
+    flex: 0 0 auto !important;
+    background-color: #273E51 !important;
+    color: #FF8C00 !important;
+    line-height: 0px !important;
+    width: 100%;
+    box-sizing: border-box;
+    
+}
+
+    .footer .container {
+        padding: 1em 0; 
+        width: 100%; 
+        box-sizing: border-box; 
+    }
 
 .navbar {
     margin-bottom: 0 !important;
@@ -27,17 +47,15 @@ header {
     background-color: #273E51 !important;
 }
 
-.footer {
-    flex: 0 1 auto;
+.custom-navbar .navbar-brand,
+.custom-navbar .navbar-nav .nav-link {
     background-color: #273E51 !important;
     color: #FF8C00 !important;
 }
-
-.custom-navbar .navbar-brand,
-.custom-navbar .navbar-nav .nav-link {
-    color: #FF8C00 !important;
-}
-
+    .custom-navbar .navbar-nav .nav-link:focus {
+        outline: none;
+        box-shadow: none;
+    }
 .custom-navbar .navbar-toggler {
     background-color: #FF8C00 !important;
 }
@@ -52,4 +70,28 @@ header {
 
 .linkedin-icon:hover {
     background-color: #FF8C00 !important;
+}
+
+.btn {
+    color: black;
+    background-color: darkorange;
+}
+
+    .btn:hover {
+        color: darkorange;
+        background-color: black;
+    }
+
+    .btn:focus, .btn:active {
+        outline: none !important;
+        box-shadow: none !important;
+    }
+
+.form-control:focus {
+    border-color: #FF8C00;
+    box-shadow: 0 0 0.2rem rgba(255, 165, 0, 0.5);
+}
+
+.input-group .form-control:focus {
+    outline: none;
 }
