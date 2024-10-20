@@ -1,5 +1,27 @@
 ﻿@model IEnumerable<BusinessAppointmentViewModel>
 @{
+    ViewData["Title"] = $"Appointments from {ViewBag.StartDate:d} to {ViewBag.EndDate:d}"; 
+}
+
+<div class="container mt-5">
+    <div class="card shadow">
+        <div class="card-body">
+            <h5 class="text-center title-message">@ViewData["Title"]</h5>
+            <div class="row">
+                <partial name="_AppointmentCard" model="Model" />
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    function cancelAppointment(appointmentId) {
+        alert('Cancel appointment with ID: ' + appointmentId);
+        }
+</script>
+
+@* @model IEnumerable<BusinessAppointmentViewModel>
+@{
     ViewBag.Title = "Appointments from " + ViewBag.StartDate.ToString("d") + " to " + ViewBag.EndDate.ToString("d");
 }
 
@@ -16,4 +38,4 @@
         alert('Cancel appointment with ID: ' + appointmentId);
 
     }
-</script>
+</script> *@
