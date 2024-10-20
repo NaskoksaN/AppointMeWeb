@@ -1,5 +1,52 @@
 ﻿@model IEnumerable<ClientRecordViewModel>
 
+<div class="container mt-5">
+    <div class="card shadow">
+        <div class="card-body">
+            <h5 class="text-center title-message">Appointment history for @ViewData["Title"]</h5>
+
+            <div class="row">
+                @if (Model == null || !Model.Any())
+                {
+                    <div class="col-12">
+                        <div class="alert text-center custom-alert" role="alert">
+                            <h5>No appointments found.</h5>
+                            <p>Check back later or add a new appointment!</p>
+                        </div>
+                    </div>
+                }
+                else
+                {
+                    foreach (var appointment in Model)
+                    {
+                        <div class="col-md-4 mb-4">
+                            <div class="card day-card">
+                                <div class="card-body">
+                                    <h5 class="card-title">@appointment.FullName</h5>
+                                    <p class="card-text">
+                                        <strong>Email:</strong> @appointment.Email <br />
+                                        <strong>Phone:</strong> @appointment.PhoneNumber <br />
+                                        <strong>Reason of appointment:</strong> @appointment.ReasonOfAppointment <br />
+                                        <strong>Date:</strong> @appointment.DateOfAppointment.ToShortDateString() <br />
+                                        <button class="btn btn-danger btn-sm float-end"
+                                                onclick="cancelAppointment('@appointment.AppointmentId')">
+                                            Cancel
+                                        </button>
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    }
+                }
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+@* @model IEnumerable<ClientRecordViewModel>
+
 <h4 class="text-center">Appointment history for @ViewData["Title"]</h4>
 
 <div class="container mt-4">
@@ -32,4 +79,4 @@
             }
         }
     </div>
-</div>
+</div> *@
