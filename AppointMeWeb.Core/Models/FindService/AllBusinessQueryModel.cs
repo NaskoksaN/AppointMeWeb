@@ -13,14 +13,14 @@ namespace AppointMeWeb.Core.Models.FindService
         [Display(Name = "Search by town")]
         public string? SearchingTown { get; set; }
 
-        [Display(Name = "Search by business ame")]
+        [Display(Name = "Search by name")]
         public string? BusinessName { get; set; }
 
-        [Display(Name = "Search in business description")]
+        [Display(Name = "Search in description")]
         public string? SearchingInDescription { get; set; }
         public int CurrentPage { get; set; } = StartPage;
         public int CountOfBusiness { get; set; }
-        [Display(Name = "Sort by business name")]
+        [Display(Name = "Sort by name")]
         public AlphabeticSort Sorting { get; set; }
 
         public IEnumerable<string> BusinessTypes { get; set; } = [];
