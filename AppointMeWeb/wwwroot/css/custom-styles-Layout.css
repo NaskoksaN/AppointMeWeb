@@ -13,12 +13,13 @@ html, body {
 header {
     flex: 0 0 auto;
 }
+
 .container {
     max-width: 100% !important;
-    width: 100%;
-    flex: 1 1 auto;
-    margin: 0;
-    padding: 0;
+    width: 100% !important;
+    flex: 1 1 auto !important;
+    margin: 0 !important;
+    padding: 0 !important;
     overflow-y: auto;
     overflow-x: hidden;
 }
@@ -27,10 +28,8 @@ header {
     flex: 0 0 auto !important;
     background-color: #273E51 !important;
     color: #FF8C00 !important;
-    line-height: 0px !important;
     width: 100%;
     box-sizing: border-box;
-    
 }
 
     .footer .container {
