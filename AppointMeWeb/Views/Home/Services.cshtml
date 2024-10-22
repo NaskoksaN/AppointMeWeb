@@ -40,37 +40,3 @@
         }
 </style>
 
-@* @model List<ServiceInfoModels>
-
-
-<div class="container">
-    <div class="row">
-        @foreach (var service in Model)
-        {
-            <div class="col-md-3 mb-4">
-                <div class="card h-100 text-center shadow-lg">
-                    <div class="img-container">
-                        <img src="@service.ImageUrl" class="card-img-top img-fluid" alt="@service.BusinessType.ToString()">
-                    </div>
-                    <div class="card-body d-flex flex-column">
-                        <h5 class="card-title">@service.BusinessType.ToString()</h5>
-                    </div>
-                </div>
-            </div>
-        }
-    </div>
-</div>
-
-<style>
-    
-    .img-container {
-        height: 200px;
-        overflow: hidden; 
-    }
-
-        .img-container img {
-            height: 100%; 
-            object-fit: cover; 
-        }
-</style>
- *@
