@@ -1,8 +1,6 @@
-﻿using Microsoft.AspNetCore.Mvc;
-
-using AppointMeWeb.Core.Contracts;
-using AppointMeWeb.Core.Models.HomeModels;
+﻿using AppointMeWeb.Core.Contracts;
 using AppointMeWeb.Extensions;
+using Microsoft.AspNetCore.Mvc;
 
 
 namespace AppointMeWeb.Areas.UserArea.Controllers
@@ -24,22 +22,46 @@ namespace AppointMeWeb.Areas.UserArea.Controllers
         }
 
         [HttpGet]
-        
+
         public async Task<IActionResult> UserHomeIndex()
         {
             try
             {
-                string userId = User.Id();
-                UserHomeIndexView userAppointments = await appointmentService
-                                        .GetUserAppointmentsAsync(userId);
-                return View(userAppointments);
+                //string userId = User.Id();
+                //UserHomeIndexView userAppointments = await appointmentService
+                //                        .GetUserAppointmentsAsync(userId);
+                //return View(userAppointments);
+                return View();
             }
             catch (Exception ex)
             {
                 logger.LogError("Error in register controller: {ControllerName}. Exception: {ExceptionMessage}", nameof(AppointmentController), ex.Message);
                 return StatusCode(500, "Internal server error. Please try again later.");
             }
-            
+
+        }
+        [HttpGet]
+        public async Task<IActionResult> GetActiveAppointments()
+        {
+            string userId = User.Id();
+            var appointments = await appointmentService.GetUserAppointmentsAsync(userId);
+            return Json(appointments.Active);
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> GetCanceledAppointments()
+        {
+            string userId = User.Id();
+            var appointments = await appointmentService.GetUserAppointmentsAsync(userId);
+            return Json(appointments.Canceled);
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> GetForRatingAppointments()
+        {
+            string userId = User.Id();
+            var appointments = await appointmentService.GetUserAppointmentsAsync(userId);
+            return Json(appointments.ForRate);
         }
     }
 }
