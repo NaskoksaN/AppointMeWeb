@@ -1,82 +1,129 @@
-﻿@model UserHomeIndexView;
+﻿
+
 @{
     ViewData["Title"] = "Appointments";
 }
 
 <div class="container mt-5">
-    <div class="row">
-        <div class="col-md-6 mb-4">
-            <h3 class="text-warning" style="text-align:center">Active Appointments</h3>
-            <div class="appointment-column" style="height: 70vh; overflow-y: auto;">
-                @if (Model.Active.Any())
-                {
-                    <div class="list-group">
-                        @foreach (var appointment in Model.Active)
-                        {
-                            <div class="list-group-item mb-3">
-                                <div class="d-flex justify-content-between align-items-center">
-                                    <div>
-                                        <h5 class="mb-1">@appointment.BusinessProviderName</h5>
-                                        <p class="mb-1">
-                                            <strong>Date:</strong> @appointment.AppointmentDate.ToString("yyyy-MM-dd")<br />
-                                            <strong>Time:</strong> @appointment.StartTime.ToString(@"hh\:mm") - @appointment.EndTime.ToString(@"hh\:mm")
-                                        </p>
-                                    </div>
-                                    <button class="btn btn-danger btn-sm" onclick="cancelAppointment(@appointment.AppointmentId)">Cancel</button>
-                                </div>
-                            </div>
-                        }
-                    </div>
-                }
-                else
-                {
-                    <p>No active appointments.</p>
-                }
-            </div>
-        </div>
+    <div class="card shadow">
+        <div class="card-body">
+            <h5 class="text-center title-message">Your Appointments</h5>
 
-        <div class="col-md-6 mb-4">
-            <h3 class="text-warning" style="text-align:center">Canceled Appointments</h3>
-            <div class="appointment-column" style="height: 70vh; overflow-y: auto;">
-                @if (Model.Canceled.Any())
-                {
-                    <div class="list-group">
-                        @foreach (var appointment in Model.Canceled)
-                        {
-                            <div class="list-group-item mb-3">
-                                <div class="d-flex justify-content-between align-items-center">
-                                    <div>
-                                        <h5 class="mb-1">@appointment.BusinessProviderName</h5>
-                                        <p class="mb-1">
-                                            <strong>Date:</strong> @appointment.AppointmentDate.ToString("yyyy-MM-dd")<br />
-                                            <strong>Time:</strong> @appointment.StartTime.ToString(@"hh\:mm") - @appointment.EndTime.ToString(@"hh\:mm")
-                                        </p>
-                                    </div>
-                                </div>
-                            </div>
-                        }
-                    </div>
-                }
-                else
-                {
-                    <p>No canceled appointments.</p>
-                }
+            <div class="text-center mb-4">
+                <button class="btn btn-primary mx-2" onclick="loadAppointments('active')">Active Appointments</button>
+                <button class="btn btn-warning mx-2" onclick="loadAppointments('canceled')">Canceled Appointments</button>
+                <button class="btn btn-success mx-2" onclick="loadAppointments('forRate')">Rateable Appointments</button>
+            </div>
+
+            <div id="appointmentsResult" class="row" style="height: 70vh; overflow-y: auto;">
+                <p class="text-center">Select an option to view appointments.</p>
             </div>
         </div>
     </div>
 </div>
 
 <script>
+    function loadAppointments(type) {
+        const appointmentsDiv = document.getElementById('appointmentsResult');
+        appointmentsDiv.innerHTML = '<p class="text-center">Loading appointments...</p>';
+
+        let url;
+        switch (type) {
+            case 'active':
+                url = '@Url.Action("GetActiveAppointments", "Home", new { area = "UserArea" })';
+                break;
+            case 'canceled':
+                url = '@Url.Action("GetCanceledAppointments", "Home", new { area = "UserArea" })';
+                break;
+            case 'forRate':
+                url = '@Url.Action("GetForRatingAppointments", "Home", new { area = "UserArea" })';
+                break;
+        }
+
+        $.ajax({
+            url: url,
+            type: 'GET',
+            success: function (data) {
+                // console.log(data);  
+                displayAppointments(data, type);
+            },
+            error: function () {
+                appointmentsDiv.innerHTML = '<p class="text-center text-danger">Error loading appointments.</p>';
+            }
+        });
+    }
+
+    function displayAppointments(appointments, type) {
+        const appointmentsDiv = document.getElementById('appointmentsResult');
+        appointmentsDiv.innerHTML = '';
+
+        if (appointments.length === 0) {
+            appointmentsDiv.innerHTML = '<p class="text-center">No appointments found.</p>';
+            return;
+        }
+
+        appointments.forEach(appointment => {
+            const colDiv = document.createElement('div');
+            colDiv.className = 'col-md-4 mb-4';
+
+            const cardDiv = document.createElement('div');
+            cardDiv.className = 'card day-card';
+
+            const cardBodyDiv = document.createElement('div');
+            cardBodyDiv.className = 'card-body';
+
+            const appointmentDate = new Date(appointment.appointmentDate + 'T00:00:00'); 
+            const startTime = new Date(appointment.appointmentDate + 'T' + appointment.startTime); 
+            const endTime = new Date(appointment.appointmentDate + 'T' + appointment.endTime); 
+
+            if (isNaN(appointmentDate.getTime()) || isNaN(startTime.getTime()) || isNaN(endTime.getTime())) {
+                console.error('Invalid date or time format:', appointment.appointmentDate, appointment.startTime, appointment.endTime);
+                return; 
+            }
+
+            const heading = document.createElement('h5');
+            heading.textContent = appointment.businessProviderName;
+
+            const para = document.createElement('p');
+            para.innerHTML = `
+                <strong>Date:</strong> ${appointmentDate.toLocaleDateString()}<br />
+                <strong>Time:</strong> ${startTime.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })} - ${endTime.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+            `;
+
+            cardBodyDiv.appendChild(heading);
+            cardBodyDiv.appendChild(para);
+
+            if (type === 'active') {
+                const cancelButton = document.createElement('button');
+                cancelButton.className = 'btn btn-danger btn-sm';
+                cancelButton.textContent = 'Cancel';
+                cancelButton.onclick = () => cancelAppointment(appointment.appointmentId);
+                cardBodyDiv.appendChild(cancelButton);
+            } else if (type === 'forRate') {
+                const rateButton = document.createElement('button');
+                rateButton.className = 'btn btn-info btn-sm';
+                rateButton.textContent = 'Rate It';
+                rateButton.onclick = () => rateAppointment(appointment.appointmentId);
+                cardBodyDiv.appendChild(rateButton);
+            }
+
+            cardDiv.appendChild(cardBodyDiv);
+            colDiv.appendChild(cardDiv);
+            appointmentsDiv.appendChild(colDiv);
+        });
+
+    }
+
+
     function cancelAppointment(appointmentId) {
         console.log("Cancel appointment with ID:", appointmentId);
+        alert(`Appointment ${appointmentId} has been canceled.`);
+    }
+
+    function rateAppointment(appointmentId) {
+        console.log("Rate appointment with ID:", appointmentId);
+        alert(`Rate appointment ${appointmentId}.`);
     }
 </script>
 
-<style>
-    .appointment-column {
-        border: 1px solid #dee2e6;
-        border-radius: 5px;
-        padding: 10px;
-        background-color: #f8f9fa;
-    }
-</style>
+
