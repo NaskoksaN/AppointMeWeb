@@ -106,29 +106,39 @@ namespace AppointMeWeb.Core.Services
         public async Task<UserHomeIndexView> GetUserAppointmentsAsync(string userId)
         {
             DateOnly today = DateOnly.FromDateTime(DateTime.Now);
+            TimeSpan period = TimeSpan.FromDays(RatePeriod);
+            DateOnly sevenDaysAgo = today.AddDays(-period.Days); // Adjusted for clarity
 
             IEnumerable<UserHomeIndexViewModel> models = await sqlService.AllReadOnly<Appointment>()
-                        .Where(a => a.UserId == userId && a.Day >= today)
-                        .Select(a => new UserHomeIndexViewModel()
-                        {
-                            AppointmentId = a.Id,
-                            BusinessProviderId = a.BusinessServiceProviderId,
-                            BusinessProviderName = a.BusinessServiceProvider.Name,
-                            AppointmentDate = a.Day,
-                            StartTime = a.StartTime,
-                            EndTime = a.EndTime,
-                            Status = a.Status,
-                        })
-                        .OrderBy(a => a.AppointmentDate)
-                        .ToListAsync();
+                .Where(a => a.UserId == userId && a.Day >= sevenDaysAgo)
+                .Select(a => new UserHomeIndexViewModel()
+                {
+                    AppointmentId = a.Id,
+                    BusinessProviderId = a.BusinessServiceProviderId,
+                    BusinessProviderName = a.BusinessServiceProvider.Name,
+                    AppointmentDate = a.Day,
+                    StartTime = a.StartTime,
+                    EndTime = a.EndTime,
+                    Status = a.Status,
+                })
+                .OrderBy(a => a.AppointmentDate)
+                .ThenBy(a => a.StartTime)
+                .ToListAsync();
 
             UserHomeIndexView userAppointments = new()
             {
-                Active = models.Where(m => m.Status == AppointmentStatus.Confirmed)
+                Active = models.Where(m => m.Status == AppointmentStatus.Confirmed
+                            && m.AppointmentDate >= today)
                             .ToList(),
-                Canceled = models.Where(m => m.Status == AppointmentStatus.Canceled)
-                            .ToList()
+                Canceled = models.Where(m => m.Status == AppointmentStatus.Canceled
+                            && m.AppointmentDate >= today)
+                            .ToList(),
+                ForRate = models.Where(m => m.Status == AppointmentStatus.Confirmed
+                            && m.AppointmentDate < today 
+                            && m.AppointmentDate >= sevenDaysAgo) 
+                            .ToList(),
             };
+
             return userAppointments;
         }
 
