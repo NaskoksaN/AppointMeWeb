@@ -27,10 +27,6 @@ namespace AppointMeWeb.Areas.UserArea.Controllers
         {
             try
             {
-                //string userId = User.Id();
-                //UserHomeIndexView userAppointments = await appointmentService
-                //                        .GetUserAppointmentsAsync(userId);
-                //return View(userAppointments);
                 return View();
             }
             catch (Exception ex)
