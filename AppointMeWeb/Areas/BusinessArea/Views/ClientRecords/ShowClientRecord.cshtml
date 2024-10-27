@@ -1,4 +1,5 @@
-﻿@model IEnumerable<ClientRecordViewModel>
+﻿
+@model IEnumerable<ClientRecordViewModel>
 
 <div class="container mt-5">
     <div class="card shadow">
@@ -41,38 +42,3 @@
 
 
 
-@* @model IEnumerable<ClientRecordViewModel>
-
-<h4 class="text-center">Appointment history for @ViewData["Title"]</h4>
-
-<div class="container mt-4">
-    <div class="row">
-        @if (Model == null || !Model.Any())
-        {
-            <div class="col-12 text-center">
-                <div class="alert alert-warning" role="alert">
-                    No appointments found.
-                </div>
-            </div>
-        }
-        else
-        {
-            foreach (var appointment in Model)
-            {
-                <div class="col-md-4 mb-4">
-                    <div class="card">
-                        <div class="card-header bg-primary text-white">
-                            <h5 class="card-title">@appointment.FullName</h5>
-                        </div>
-                        <div class="card-body">
-                            <p><strong>Email:</strong> @appointment.Email</p>
-                            <p><strong>Phone:</strong> @appointment.PhoneNumber</p>
-                            <p><strong>Reason of appointment:</strong> @appointment.ReasonOfAppointment</p>
-                            <p><strong>Date:</strong> @appointment.DateOfAppointment.ToShortDateString()</p>
-                        </div>
-                    </div>
-                </div>
-            }
-        }
-    </div>
-</div> *@
