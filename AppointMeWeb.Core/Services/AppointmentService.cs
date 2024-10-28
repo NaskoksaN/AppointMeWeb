@@ -36,7 +36,53 @@ namespace AppointMeWeb.Core.Services
             this.TooltipTexts = [];
             this.userService = _userService;
         }
+        /// <summary>
+        /// Cancels an appointment by updating its status to "Canceled" based on the provided appointment ID
+        /// and user or business identifier. 
+        /// </summary>
+        /// <typeparam name="T">The type of the identifier, which can be either a string for User ID 
+        /// or an int for Business Service Provider ID.</typeparam>
+        /// <param name="id">The user or business identifier (string for User ID, int for Business ID).</param>
+        /// <param name="appointmentId">The ID of the appointment to cancel.</param>
+        /// <returns>A task that represents the asynchronous operation. The task result contains 
+        /// true if the appointment was successfully canceled, or false if no matching appointment was found.</returns>
+        /// <exception cref="InvalidOperationException">Thrown if an error occurs while attempting to 
+        /// cancel the appointment.</exception>
+        public async Task<bool> CancelAppointmentAsync<T>(T id, int appointmentId)
+        {
+            try
+            {
+                var query = sqlService
+                                    .All<Appointment>()
+                                    .Where(a => a.Id == appointmentId);
+                                   
+                if (id is string userId) 
+                {
+                    query = query.Where(t=> t.UserId== userId);
+                }else if(id is int businessId)
+                {
+                    query = query.Where(t => t.BusinessServiceProviderId == businessId);
+                }
 
+                Appointment? tempAppointment = await query.FirstOrDefaultAsync();
+
+                if (tempAppointment == null)
+                {
+                    throw new InvalidOperationException("No appointment found with the specified ID and user/business identifier.");
+                }
+
+                tempAppointment.Status= AppointmentStatus.Canceled;
+                sqlService.Update<Appointment>(tempAppointment);
+                await sqlService.SaveChangesAsync();
+
+                return true;
+
+            }
+            catch (Exception ex)
+            {
+                throw new InvalidOperationException("Error canceling slot: " + ex.Message, ex);
+            }
+        }
         /// <summary>
         /// Gets or sets a dictionary containing the working hours for each date.
         /// The key is the date, and the value is a string representing the working hours for that date.
@@ -389,6 +435,6 @@ namespace AppointMeWeb.Core.Services
                 : "No available slots";
         }
 
-        
+       
     }
 }
