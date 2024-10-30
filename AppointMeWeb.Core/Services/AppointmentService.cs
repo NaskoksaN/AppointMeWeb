@@ -435,6 +435,9 @@ namespace AppointMeWeb.Core.Services
                 : "No available slots";
         }
 
-       
+        public Task<bool> CancelAppointmentByAppointmentIdAsync(int id)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

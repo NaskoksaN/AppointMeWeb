@@ -11,6 +11,7 @@ namespace AppointMeWeb.Core.Contracts
         Dictionary<DateOnly, string> WorkingHours { get; }
         Dictionary<DateOnly, string> TooltipTexts { get; }
 
+
         /// <summary>
         /// Cancels an appointment by updating its status to "Canceled" based on the provided appointment ID
         /// and user or business identifier. 
