@@ -9,6 +9,7 @@ using AppointMeWeb.Infrastrucure.Data.Enum;
 using AppointMeWeb.Infrastrucure.Data.Models;
 using AppointMeWeb.Core.Models.FindService;
 using AppointMeWeb.Core.Enums;
+using Microsoft.IdentityModel.Tokens;
 
 
 namespace AppointMeWeb.Core.Services
@@ -69,7 +70,7 @@ namespace AppointMeWeb.Core.Services
                     EndTime = model.EndTime,
                     IsBooked = true,
                     Day=model.Date,
-                    Status=AppointmentStatus.Pending,
+                    Status=AppointmentStatus.Confirmed,
                 };
                 await sqlService.AddAsync<Appointment>(newSlot);
                 await sqlService.SaveChangesAsync();
@@ -200,6 +201,20 @@ namespace AppointMeWeb.Core.Services
             }
 
 
+        }
+
+        public async Task<int> GetBusinessIdFromUserIdAsync(string userId)
+        {
+            BusinessServiceProvider? business = await sqlService
+                    .All<BusinessServiceProvider>()
+                    .Where(b=> b.ApplicationUserId==userId)
+                    .FirstOrDefaultAsync();
+            if (business == null)
+            {
+                throw new InvalidOperationException($"No business found for user with ID {userId}");
+            }
+
+            return business.Id;
         }
 
         /// <summary>
