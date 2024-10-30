@@ -47,36 +47,3 @@
 
 
 
-@* @model DateRange
-
-<h2>Choose Your Appointment Period</h2>
-<p>Select a start and end date for your appointments. You can choose a period from 1 day up to 30 days!</p>
-
-
-<form asp-action="DateRange" method="post">
-    <label for="startDate">Start Date:</label>
-    <input type="date"
-           id="startDate"
-           name="StartDate"
-           value="@Model.StartDate.ToString("yyyy-MM-dd")"
-           required />
-    <span asp-validation-for="StartDate" class="text-danger"></span>
-
-    <div style="margin-top: 10px;">
-        <label for="endDate">End Date:</label>
-        <input type="date"
-               id="endDate"
-               name="EndDate"
-               value="@Model.EndDate.ToString("yyyy-MM-dd")"
-               required />
-        <span asp-validation-for="EndDate" class="text-danger"></span>
-    </div>
-
-    <div style="margin-top: 10px;">
-        <button type="submit">Submit</button>
-    </div>
-</form>
-
-@section Scripts {
-    <partial name="_ValidationScriptsPartial" />
-} *@

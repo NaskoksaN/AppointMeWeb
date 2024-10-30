@@ -1,0 +1,26 @@
+﻿@{
+    ViewBag.Title = "Confirmation";
+}
+
+<div class="container text-center" style="margin-top: 50px;">
+    <div class="card" style="width: 300px; margin: auto;">
+        <div class="card-body">
+            <h5 class="card-title">Status</h5>
+            @if (TempData["SuccessMessage"] != null)
+            {
+                <p class="text-success">@TempData["SuccessMessage"]</p>
+            }
+            else if (TempData["ErrorMessage"] != null)
+            {
+                <p class="text-danger">@TempData["ErrorMessage"]</p>
+            }
+        </div>
+        <div class="card-footer">
+            <form asp-action="RedirectAfterMessage" method="post">
+                <input type="hidden" name="currentAction" value="@TempData["CurrentAction"]" />
+                <input type="hidden" name="currentController" value="@TempData["CurrentController"]" />
+                <button type="submit" class="btn btn-primary">OK</button>
+            </form>
+        </div>
+    </div>
+</div>
