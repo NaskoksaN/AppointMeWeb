@@ -13,16 +13,4 @@
     </div>
 </div>
 
-@if (TempData["SuccessMessage"] != null || TempData["ErrorMessage"] != null)
-{
-    <div class="alert @(TempData["SuccessMessage"] != null ? "alert-success" : "alert-danger")" role="alert">
-        @if (TempData["SuccessMessage"] != null)
-        {
-            @TempData["SuccessMessage"]
-        }
-        else if (TempData["ErrorMessage"] != null)
-        {
-            @TempData["ErrorMessage"]
-        }
-    </div>
-}
+
