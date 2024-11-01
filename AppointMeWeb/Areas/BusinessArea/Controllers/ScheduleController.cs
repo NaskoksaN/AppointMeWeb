@@ -36,11 +36,13 @@ namespace AppointMeWeb.Areas.BusinessArea.Controllers
                 string userId = User.Id();
                 IEnumerable<BusinessAppointmentViewModel> model = await appointmentService
                                     .GetAppointmentsAsync(userId, AppointmentSearchCriteria.Today);
+                TempData["CurrentAction"] = nameof(Today);
+                TempData["CurrentController"] = nameof(ScheduleController);
                 return View(model);
             }
             catch (Exception ex)
             {
-                logger.LogError("Error in register controller: {ScheduleController}. Exception: {ExceptionMessage}", nameof(AppointmentController), ex.Message);
+                logger.LogError("Error in controller: {ControllerName}. Exception message: {ExceptionMessage}", nameof(ScheduleController), ex.Message);
                 return StatusCode(500, "Internal server error. Please try again later.");
             }
             
@@ -53,12 +55,13 @@ namespace AppointMeWeb.Areas.BusinessArea.Controllers
                 string userId = User.Id();
                 IEnumerable<BusinessAppointmentViewModel> model = await appointmentService
                                     .GetAppointmentsAsync(userId, AppointmentSearchCriteria.Tomorrow);
-
+                TempData["CurrentAction"] = nameof(Tomorrow);
+                TempData["CurrentController"] = nameof(ScheduleController);
                 return View(model);
             }
             catch (Exception ex)
             {
-                logger.LogError("Error in register controller: {ScheduleController}. Exception: {ExceptionMessage}", nameof(AppointmentController), ex.Message);
+                logger.LogError("Error in controller: {ControllerName}. Exception message: {ExceptionMessage}", nameof(ScheduleController), ex.Message);
                 return StatusCode(500, "Internal server error. Please try again later.");
             }
         }
@@ -70,12 +73,13 @@ namespace AppointMeWeb.Areas.BusinessArea.Controllers
                 string userId = User.Id();
                 IEnumerable<BusinessAppointmentViewModel> model = await appointmentService
                                     .GetAppointmentsAsync(userId, AppointmentSearchCriteria.ThisWeek);
-
+                TempData["CurrentAction"] = nameof(NextSevenDays);
+                TempData["CurrentController"] = nameof(ScheduleController);
                 return View(model);
             }
             catch (Exception ex)
             {
-                logger.LogError("Error in register controller: {ScheduleController}. Exception: {ExceptionMessage}", nameof(AppointmentController), ex.Message);
+                logger.LogError("Error in controller: {ControllerName}. Exception message: {ExceptionMessage}", nameof(ScheduleController), ex.Message);
                 return StatusCode(500, "Internal server error. Please try again later.");
             }
         }
@@ -94,7 +98,7 @@ namespace AppointMeWeb.Areas.BusinessArea.Controllers
             }
             catch (Exception ex)
             {
-                logger.LogError("Error in register controller: {ScheduleController}. Exception: {ExceptionMessage}", nameof(AppointmentController), ex.Message);
+                logger.LogError("Error in controller: {ControllerName}. Exception message: {ExceptionMessage}", nameof(ScheduleController), ex.Message);
                 return StatusCode(500, "Internal server error. Please try again later.");
             }
         }
@@ -103,7 +107,6 @@ namespace AppointMeWeb.Areas.BusinessArea.Controllers
         {
             if (!ModelState.IsValid)
             {
-                logger.LogError("Error in register controller: {ScheduleController}. Error : {DateRange}");
                 model.StartDate = DateConstants.Tomorrow;
                 model.EndDate = DateConstants.NextThirtyDays;
                 return View(model);
@@ -115,15 +118,46 @@ namespace AppointMeWeb.Areas.BusinessArea.Controllers
                                     .GetAppointmentsAsync(userId, AppointmentSearchCriteria.DateRange, model);
                 ViewBag.StartDate = model.StartDate;
                 ViewBag.EndDate = model.EndDate;
+                TempData["CurrentAction"] = nameof(DateRange);
+                TempData["CurrentController"] = nameof(ScheduleController);
                 return View("ShowRangePeriod", modelDate);
             }
             catch (Exception ex)
             {
-                logger.LogError("Error in register controller: {ScheduleController}. Exception: {Action DateRange}", nameof(AppointmentController), ex.Message);
+                logger.LogError("Error in controller: {ControllerName}. Exception message: {ExceptionMessage}", nameof(ScheduleController), ex.Message);
                 model.StartDate = DateConstants.Tomorrow;
                 model.EndDate= DateConstants.NextThirtyDays;
                 return View(model);
             }
         }
+        [HttpPost]
+        public async Task<IActionResult> CancelAppointment(int id)
+        {
+            try
+            {
+                string userId = User.Id();
+                int businessId = await businessService.GetBusinessIdFromUserIdAsync(userId);
+                bool canceled = await appointmentService.CancelAppointmentAsync<int>(businessId, id);
+
+                if (canceled)
+                {
+                    TempData["SuccessMessage"] = "Appointment has been successfully canceled.";
+                }
+                else
+                {
+                    TempData["ErrorMessage"] = "Unable to cancel the appointment. Please try again.";
+                }
+            }
+            catch (Exception ex)
+            {
+                logger.LogError("Error in controller: {ControllerName}. Exception message: {ExceptionMessage}", nameof(ScheduleController), ex.Message);
+                TempData["ErrorMessage"] = "An error occurred while canceling the appointment.";
+            }
+
+            // Redirect to the same action to refresh the view
+            return RedirectToAction("YourAction"); // Replace "YourAction" with the actual action name that displays the appointments
+        }
+
+
     }
 }
