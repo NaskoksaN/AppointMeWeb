@@ -3,6 +3,124 @@
 @{
     ViewBag.Title = "Find Service in our Network and make appointment";
     ViewBag.Message = "No business is added";
+    var previousPage = Model.CurrentPage - 1;
+    if (previousPage < 1)
+    {
+        previousPage = 1;
+    }
+
+    var nextPage = Model.CurrentPage + 1;
+    var maxPage = (int)Math.Ceiling((double)Model.CountOfBusiness / Model.SetupBusinessPerPage);
+    var shouldPreviousBeDisabled = Model.CurrentPage == 1;
+    var shouldNextBeDisabled = Model.CurrentPage >= maxPage;
+}
+
+<div class="container mt-5">
+    <div class="shadow">
+        <div class="p-4">
+            <h5 class="text-center title-message">@ViewBag.Title</h5>
+
+            <!-- Search Form -->
+            <form asp-controller="Find" asp-action="FindService" method="get">
+                <div class="row">
+                    <div class="form-group col-md-2">
+                        <label asp-for="@Model.TypeOfBusiness"></label>
+                        <select asp-for="@Model.TypeOfBusiness" class="form-control">
+                            <option value="">All</option>
+                            @foreach (var business in Model.BusinessTypes)
+                            {
+                                <option value="@business">@business</option>
+                            }
+                        </select>
+                        <span asp-validation-for="@Model.TypeOfBusiness" class="text-danger"></span>
+                    </div>
+
+                    <div class="form-group col-md-2">
+                        <label asp-for="@Model.SearchingTown"></label>
+                        <input asp-for="@Model.SearchingTown" class="form-control" placeholder="Find by town">
+                        <span asp-validation-for="@Model.SearchingTown" class="text-danger"></span>
+                    </div>
+                    <div class="form-group col-md-3">
+                        <label asp-for="@Model.BusinessName"></label>
+                        <input asp-for="@Model.BusinessName" class="form-control" placeholder="Find by BusinessName">
+                        <span asp-validation-for="@Model.BusinessName" class="text-danger"></span>
+                    </div>
+
+                    <div class="form-group col-md-3">
+                        <label asp-for="@Model.SearchingInDescription"></label>
+                        <input asp-for="@Model.SearchingInDescription" class="form-control" placeholder="Search for specific services">
+                        <span asp-validation-for="@Model.SearchingInDescription" class="text-danger"></span>
+                    </div>
+                    <div class="form-group col-md-2">
+                        <label asp-for="Sorting"></label>
+                        <select asp-for="Sorting" class="form-control">
+                            <option value="0">Ascending</option>
+                            <option value="1">Descending</option>
+                        </select>
+                    </div>
+
+                    <div class="col-md-3">
+                        <div class="form-group mt-4">
+                            <input type="submit" value="Search" class="btn" />
+                        </div>
+                    </div>
+                </div>
+            </form>
+
+            <!-- Results Display -->
+            @if (Model != null && Model.Businesses.Any())
+            {
+                <partial name="_IndexViewPartial" model="Model.Businesses" />
+            }
+            else
+            {
+                <span class="text-danger">@ViewBag.Message</span>
+            }
+
+            <!-- Pagination Controls -->
+            <div class="row mt-3">
+                <div class="col-md-6 d-grid gap-2 d-md-flex justify-content-md-start">
+                    <a class="btn @(Model.CurrentPage == 1 ? "disabled" : string.Empty)"
+                       asp-controller="Find"
+                       asp-action="FindService"
+                       asp-route-currentPage="@previousPage"
+                       asp-route-TypeOfBusiness="@Model.TypeOfBusiness"
+                       asp-route-SearchingTown="@Model.SearchingTown"
+                       asp-route-BusinessName="@Model.BusinessName"
+                       asp-route-SearchingInDescription="@Model.SearchingInDescription"
+                       asp-route-Sorting="@Model.Sorting">
+                        &laquo; Previous
+                    </a>
+                </div>
+                <div class="col-md-6 d-grid gap-2 d-md-flex justify-content-md-end">
+                    <a class="btn @(Model.CurrentPage == maxPage || !Model.Businesses.Any() ? "disabled" : string.Empty)"
+                       asp-controller="Find"
+                       asp-action="FindService"
+                       asp-route-currentPage="@(Model.CurrentPage + 1)"
+                       asp-route-TypeOfBusiness="@Model.TypeOfBusiness"
+                       asp-route-SearchingTown="@Model.SearchingTown"
+                       asp-route-BusinessName="@Model.BusinessName"
+                       asp-route-SearchingInDescription="@Model.SearchingInDescription"
+                       asp-route-Sorting="@Model.Sorting">
+                        Next &raquo;
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}
+
+@* @model AllBusinessQueryModel
+
+@{
+    ViewBag.Title = "Find Service in our Network and make appointment";
+    ViewBag.Message = "No business is added";
 }
 
 <div class="container mt-5">
@@ -73,4 +191,4 @@
 
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />
-}
+} *@
