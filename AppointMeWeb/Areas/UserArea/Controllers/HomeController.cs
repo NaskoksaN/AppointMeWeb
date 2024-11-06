@@ -23,7 +23,7 @@ namespace AppointMeWeb.Areas.UserArea.Controllers
 
         [HttpGet]
 
-        public async Task<IActionResult> UserHomeIndex()
+        public IActionResult UserHomeIndex()
         {
             try
             {
@@ -31,7 +31,7 @@ namespace AppointMeWeb.Areas.UserArea.Controllers
             }
             catch (Exception ex)
             {
-                logger.LogError("Error in register controller: {ControllerName}. Exception: {ExceptionMessage}", nameof(AppointmentController), ex.Message);
+                logger.LogError("Error in register controller: {HomeController}. Exception: {ExceptionMessage}", nameof(AppointmentController), ex.Message);
                 return StatusCode(500, "Internal server error. Please try again later.");
             }
 
@@ -58,6 +58,30 @@ namespace AppointMeWeb.Areas.UserArea.Controllers
             string userId = User.Id();
             var appointments = await appointmentService.GetUserAppointmentsAsync(userId);
             return Json(appointments.ForRate);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> CancelAppointment(int appointmentId)
+        {
+            string userId = User.Id();
+            try
+            {    
+                bool isCanceled = await appointmentService.CancelAppointmentAsync<string>(userId, appointmentId);
+
+                if (isCanceled)
+                {
+                    return Json(new { success = true, message = "Appointment canceled successfully." });
+                }
+                else
+                {
+                    return Json(new { success = false, message = "Unable to cancel appointment." });
+                }
+            }
+            catch (Exception ex)
+            {
+                logger.LogError("Error in CancelApp action: {ControllerName}. Exception: {ExceptionMessage}", nameof(HomeController), ex.Message);
+                return StatusCode(500, "An error occurred while canceling the appointment.");
+            }
         }
     }
 }

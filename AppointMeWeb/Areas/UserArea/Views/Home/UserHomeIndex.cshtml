@@ -116,14 +116,36 @@
 
 
     function cancelAppointment(appointmentId) {
-        console.log("Cancel appointment with ID:", appointmentId);
-        alert(`Appointment ${appointmentId} has been canceled.`);
-    }
+        const token = $('input[name="__RequestVerificationToken"]').val();
+
+        $.ajax({
+                url: '@Url.Action("CancelAppointment", "Home", new { area = "UserArea" })',
+            type: 'POST',
+            data: {
+                appointmentId: appointmentId,
+                __RequestVerificationToken: token // Anti-forgery token
+                },
+                success: function(response) {
+                    if (response.success) {
+                        alert(response.message);
+                        loadAppointments('active');
+                    } else {
+                        alert(response.message);
+                    }
+                },
+                error: function() {
+                    alert("An error occurred while trying to cancel the appointment.");
+                }
+            });
+        }
+
 
     function rateAppointment(appointmentId) {
         console.log("Rate appointment with ID:", appointmentId);
         alert(`Rate appointment ${appointmentId}.`);
     }
+
+
 </script>
 
 
