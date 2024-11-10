@@ -6,6 +6,8 @@ namespace AppointMeWeb.Core.Contracts
 {
     public interface IFactory
     {
+        Task<bool> AddRatingAsync(string userId, int appointmentId);
+
         /// <summary>
         /// Creates a new instance of <see cref="ApplicationUser"/> based on the provided registration form model.
         /// </summary>

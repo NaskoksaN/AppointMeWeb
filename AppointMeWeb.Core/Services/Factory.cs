@@ -17,6 +17,11 @@ namespace AppointMeWeb.Core.Services
             this.sqlRepository = _sqlRepository;
         }
 
+        public Task<bool> AddRatingAsync(string userId, int appointmentId)
+        {
+            throw new NotImplementedException();
+        }
+
         /// <summary>
         /// Creates a new instance of <see cref="ApplicationUser"/> based on the provided registration form model.
         /// </summary>
