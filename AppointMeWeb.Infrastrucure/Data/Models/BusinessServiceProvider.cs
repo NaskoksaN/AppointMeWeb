@@ -46,7 +46,8 @@ namespace AppointMeWeb.Infrastrucure.Data.Models
 
         [Required]
         [Comment("Duration of each appointment")]
-        public TimeSpan AppointmentDuration { get; set; } = TimeSpan.FromMinutes(30);
+        public TimeSpan AppointmentDuration { get; set; } 
+                                = TimeSpan.FromMinutes(BusinessServiceStandartAppointmentTime);
 
         [Required]
         [Comment("BusinessProvier activity")]
@@ -60,6 +61,7 @@ namespace AppointMeWeb.Infrastrucure.Data.Models
 
         public ICollection<Appointment> Appointments { get; set; } = [];
         public ICollection<WorkingSchedule> WorkingSchedules { get; set; } = [];
+        public ICollection<Rating> Ratings { get; set; } = [];
     }
 }
 
