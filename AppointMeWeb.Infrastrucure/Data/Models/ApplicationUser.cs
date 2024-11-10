@@ -44,6 +44,7 @@ namespace AppointMeWeb.Infrastrucure.Data.Models
         public BusinessServiceProvider? BusinessServiceProvider { get; set; }
 
         public ICollection<Appointment> Appointments { get; set; } = [];
+        public ICollection<Rating> Ratings { get; set; } = [];
 
     }
 }

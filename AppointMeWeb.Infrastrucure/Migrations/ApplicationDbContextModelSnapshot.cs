@@ -242,6 +242,43 @@ namespace AppointMeWeb.Infrastrucure.Migrations
                         });
                 });
 
+            modelBuilder.Entity("AppointMeWeb.Infrastrucure.Data.Models.Rating", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasComment("Rating Id");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("ApplicationUserId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<int>("BusinessId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Comment")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)")
+                        .HasComment("User comment");
+
+                    b.Property<int>("Evaluation")
+                        .HasColumnType("int")
+                        .HasComment("User evaluation for service");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ApplicationUserId");
+
+                    b.HasIndex("BusinessId");
+
+                    b.ToTable("Ratings", t =>
+                        {
+                            t.HasComment("User business rating");
+                        });
+                });
+
             modelBuilder.Entity("AppointMeWeb.Infrastrucure.Data.Models.WorkingSchedule", b =>
                 {
                     b.Property<int>("Id")
@@ -493,6 +530,25 @@ namespace AppointMeWeb.Infrastrucure.Migrations
                     b.Navigation("ApplicationUser");
                 });
 
+            modelBuilder.Entity("AppointMeWeb.Infrastrucure.Data.Models.Rating", b =>
+                {
+                    b.HasOne("AppointMeWeb.Infrastrucure.Data.Models.ApplicationUser", "ApplicationUser")
+                        .WithMany("Ratings")
+                        .HasForeignKey("ApplicationUserId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
+                    b.HasOne("AppointMeWeb.Infrastrucure.Data.Models.BusinessServiceProvider", "BusinessServiceProvider")
+                        .WithMany("Ratings")
+                        .HasForeignKey("BusinessId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
+                    b.Navigation("ApplicationUser");
+
+                    b.Navigation("BusinessServiceProvider");
+                });
+
             modelBuilder.Entity("AppointMeWeb.Infrastrucure.Data.Models.WorkingSchedule", b =>
                 {
                     b.HasOne("AppointMeWeb.Infrastrucure.Data.Models.BusinessServiceProvider", "BusinessServiceProvider")
@@ -558,11 +614,15 @@ namespace AppointMeWeb.Infrastrucure.Migrations
             modelBuilder.Entity("AppointMeWeb.Infrastrucure.Data.Models.ApplicationUser", b =>
                 {
                     b.Navigation("Appointments");
+
+                    b.Navigation("Ratings");
                 });
 
             modelBuilder.Entity("AppointMeWeb.Infrastrucure.Data.Models.BusinessServiceProvider", b =>
                 {
                     b.Navigation("Appointments");
+
+                    b.Navigation("Ratings");
 
                     b.Navigation("WorkingSchedules");
                 });
