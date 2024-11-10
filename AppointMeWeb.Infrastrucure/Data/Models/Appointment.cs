@@ -47,6 +47,9 @@ namespace AppointMeWeb.Infrastrucure.Data.Models
         [Comment("User Identifier")]
         public string UserId { get; set; } = string.Empty;
 
+        [Comment("User comment")]
+        public int? RatingId {  get; set; }
+
         [Required]
         [ForeignKey(nameof(UserId))]
         public ApplicationUser ApplicationUser { get; set; }=null!;
@@ -54,6 +57,10 @@ namespace AppointMeWeb.Infrastrucure.Data.Models
         [Required]
         [ForeignKey(nameof(BusinessServiceProviderId))]
         public BusinessServiceProvider BusinessServiceProvider { get; set; } = null!;
-        public ICollection<Rating> Ratings { get; set; } = [];
+
+        [ForeignKey(nameof(RatingId))]
+        public Rating? Rating { get; set; }
+
+        
     }
 }

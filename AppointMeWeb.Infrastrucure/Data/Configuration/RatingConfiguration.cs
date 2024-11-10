@@ -11,8 +11,8 @@ namespace AppointMeWeb.Infrastrucure.Data.Configuration
             builder.HasOne(u => u.ApplicationUser)
                    .WithMany(r => r.Ratings)
                    .OnDelete(DeleteBehavior.NoAction);
-            builder.HasOne(u=> u.Appointment)
-                   .WithMany(b=> b.Ratings)
+            builder.HasOne(u => u.Appointment)
+                   .WithOne(b => b.Rating)
                    .OnDelete(DeleteBehavior.NoAction);
         }
     }
