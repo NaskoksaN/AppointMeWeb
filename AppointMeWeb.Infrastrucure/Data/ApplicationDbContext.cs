@@ -28,27 +28,19 @@ namespace AppointMeWeb.Infrastrucure.Data
         }
         protected override void OnModelCreating(ModelBuilder builder)
         {
-            builder.Entity<Appointment>()
-                .HasOne(u => u.ApplicationUser)
-                .WithMany(a => a.Appointments)
-                .OnDelete(DeleteBehavior.NoAction);
-
-            builder.Entity<Appointment>()
-               .HasOne(u => u.BusinessServiceProvider)
-               .WithMany(a => a.Appointments)
-               .OnDelete(DeleteBehavior.NoAction);
+            builder.ApplyConfiguration(new AppointmentConfiguration());
+            builder.ApplyConfiguration(new RatingConfiguration());
 
             if (seedDb)
             {
                 builder.ApplyConfiguration(new IdentityRoleConfiguration());
             }
             
-            
-
             base.OnModelCreating(builder);
         }
         public DbSet<BusinessServiceProvider> BusinessServiceProviders { get; set; }
         public DbSet<WorkingSchedule> WorkingSchedules { get; set; }
         public DbSet<Appointment> Appointments { get; set; }
+        public DbSet<Rating> Ratings { get; set; }
     }
 }
