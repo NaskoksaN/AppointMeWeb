@@ -54,5 +54,6 @@ namespace AppointMeWeb.Infrastrucure.Data.Models
         [Required]
         [ForeignKey(nameof(BusinessServiceProviderId))]
         public BusinessServiceProvider BusinessServiceProvider { get; set; } = null!;
+        public ICollection<Rating> Ratings { get; set; } = [];
     }
 }

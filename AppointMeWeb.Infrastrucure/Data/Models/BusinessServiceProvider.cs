@@ -61,7 +61,7 @@ namespace AppointMeWeb.Infrastrucure.Data.Models
 
         public ICollection<Appointment> Appointments { get; set; } = [];
         public ICollection<WorkingSchedule> WorkingSchedules { get; set; } = [];
-        public ICollection<Rating> Ratings { get; set; } = [];
+       
     }
 }
 

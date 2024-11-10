@@ -2,6 +2,8 @@
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
+using static AppointMeWeb.Infrastrucure.Constants.DataConstants;
+
 namespace AppointMeWeb.Infrastrucure.Data.Models
 {
     [Comment("User business rating")]
@@ -16,18 +18,21 @@ namespace AppointMeWeb.Infrastrucure.Data.Models
         public int Evaluation { get; set; }
         [Required]
         [Comment("User comment")]
-        public string Comment {  get; set; }=string.Empty;
+        [MaxLength(AppointmentCommentMaxLength)]
+        public string AppointmentComment {  get; set; }=string.Empty;
 
         [Required]
         public string ApplicationUserId { get; set; } = string.Empty;
         [Required]
+        [Comment("Associated user for this rating")]
         [ForeignKey(nameof(ApplicationUserId))]
         public ApplicationUser ApplicationUser { get; set; } = null!;
 
         [Required]
-        public int BusinessId {  get; set; }
+        public int AppointmentId {  get; set; }
         [Required]
-        [ForeignKey(nameof(BusinessId))]
-        public BusinessServiceProvider BusinessServiceProvider { get; set; } = null!;
+        [Comment("Associated appointment for this rating")]
+        [ForeignKey(nameof(AppointmentId))]
+        public Appointment Appointment { get; set; } = null!;
     }
 }
