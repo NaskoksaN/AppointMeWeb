@@ -255,13 +255,14 @@ namespace AppointMeWeb.Infrastrucure.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(450)");
 
-                    b.Property<int>("BusinessId")
-                        .HasColumnType("int");
-
-                    b.Property<string>("Comment")
+                    b.Property<string>("AppointmentComment")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)")
+                        .HasMaxLength(300)
+                        .HasColumnType("nvarchar(300)")
                         .HasComment("User comment");
+
+                    b.Property<int>("AppointmentId")
+                        .HasColumnType("int");
 
                     b.Property<int>("Evaluation")
                         .HasColumnType("int")
@@ -271,7 +272,7 @@ namespace AppointMeWeb.Infrastrucure.Migrations
 
                     b.HasIndex("ApplicationUserId");
 
-                    b.HasIndex("BusinessId");
+                    b.HasIndex("AppointmentId");
 
                     b.ToTable("Ratings", t =>
                         {
@@ -538,15 +539,15 @@ namespace AppointMeWeb.Infrastrucure.Migrations
                         .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
-                    b.HasOne("AppointMeWeb.Infrastrucure.Data.Models.BusinessServiceProvider", "BusinessServiceProvider")
+                    b.HasOne("AppointMeWeb.Infrastrucure.Data.Models.Appointment", "Appointment")
                         .WithMany("Ratings")
-                        .HasForeignKey("BusinessId")
+                        .HasForeignKey("AppointmentId")
                         .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
                     b.Navigation("ApplicationUser");
 
-                    b.Navigation("BusinessServiceProvider");
+                    b.Navigation("Appointment");
                 });
 
             modelBuilder.Entity("AppointMeWeb.Infrastrucure.Data.Models.WorkingSchedule", b =>
@@ -618,11 +619,14 @@ namespace AppointMeWeb.Infrastrucure.Migrations
                     b.Navigation("Ratings");
                 });
 
+            modelBuilder.Entity("AppointMeWeb.Infrastrucure.Data.Models.Appointment", b =>
+                {
+                    b.Navigation("Ratings");
+                });
+
             modelBuilder.Entity("AppointMeWeb.Infrastrucure.Data.Models.BusinessServiceProvider", b =>
                 {
                     b.Navigation("Appointments");
-
-                    b.Navigation("Ratings");
 
                     b.Navigation("WorkingSchedules");
                 });
