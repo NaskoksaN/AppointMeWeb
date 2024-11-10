@@ -1,6 +1,7 @@
 ﻿using AppointMeWeb.Core.Contracts;
 using AppointMeWeb.Core.Models.ApplicationUser;
 using AppointMeWeb.Core.Models.BusinessProvider;
+using AppointMeWeb.Core.Models.RatingModels;
 using AppointMeWeb.Infrastrucure.Data.Common;
 using AppointMeWeb.Infrastrucure.Data.Models;
 using Microsoft.EntityFrameworkCore;
@@ -11,15 +12,38 @@ namespace AppointMeWeb.Core.Services
     {
         private readonly IRepository sqlRepository;
 
-        public Factory(IRepository _sqlRepository
-            )
+        public Factory(IRepository _sqlRepository)
         {
             this.sqlRepository = _sqlRepository;
+           
         }
 
-        public Task<bool> AddRatingAsync(string userId, int appointmentId)
+        public async Task<bool> AddRatingAsync(int appointmentId, string userId, RatingFormModels model)
         {
-            throw new NotImplementedException();
+            try
+            {
+                Appointment? currentAppointment = await sqlRepository
+                    .All<Appointment>()
+                    .Where(a => a.Id == appointmentId 
+                             && a.ApplicationUser.Id==userId)
+                    .FirstOrDefaultAsync() 
+                    ?? throw new NullReferenceException($"Appointment with ID {appointmentId} not found.");
+                
+                Rating rating = new Rating()
+                {
+                    Evaluation = (int)model.RatingEvaluation,
+                    AppointmentComment=model.Comment,
+                    ApplicationUserId = userId,
+                    AppointmentId=appointmentId
+                };
+                await sqlRepository.AddAsync(rating);
+                await sqlRepository.SaveChangesAsync();
+                return true;
+            }
+            catch (Exception ex)
+            {
+                throw new ApplicationException("Database failed to save info", ex);
+            }
         }
 
         /// <summary>
