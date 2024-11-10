@@ -11,14 +11,17 @@ namespace AppointMeWeb.Areas.UserArea.Controllers
         private readonly ILogger<HomeController> logger;
         private readonly IBusinessService businessService;
         private readonly IAppointmentService appointmentService;
+        private readonly IFactory factoryService;
 
         public HomeController(ILogger<HomeController> _logger
                 , IBusinessService _businessService
-                , IAppointmentService _appointmentService)
+                , IAppointmentService _appointmentService
+                , IFactory _factoryService)
         {
             this.logger = _logger;
             this.businessService = _businessService;
             this.appointmentService = _appointmentService;
+            this.factoryService = _factoryService;
         }
 
         [HttpGet]
@@ -82,6 +85,30 @@ namespace AppointMeWeb.Areas.UserArea.Controllers
                 logger.LogError("Error in CancelApp action: {ControllerName}. Exception: {ExceptionMessage}", nameof(HomeController), ex.Message);
                 return StatusCode(500, "An error occurred while canceling the appointment.");
             }
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> SubmitRating(int appointmentId)
+        {
+            string userId = User.Id();
+            try
+            {
+                bool iscreatedComment = await factoryService.AddRatingAsync(userId, appointmentId);
+                if (iscreatedComment)
+                {
+                    return Json(new { success = true, message = "Rating add successfully." });
+                }
+                else
+                {
+                    return Json(new { success = false, message = "Unable to add rating" });
+                }
+            }
+            catch (Exception ex)
+            {
+                logger.LogError("Error in SubmitRating  action: {ControllerName}. Exception: {ExceptionMessage}", nameof(HomeController), ex.Message);
+                return StatusCode(500, "An error occurred while rating the appointment.");
+            }
+
         }
     }
 }
