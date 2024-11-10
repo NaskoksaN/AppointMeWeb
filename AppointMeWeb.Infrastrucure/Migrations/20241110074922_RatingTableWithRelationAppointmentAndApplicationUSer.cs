@@ -5,7 +5,7 @@
 namespace AppointMeWeb.Infrastrucure.Migrations
 {
     /// <inheritdoc />
-    public partial class RatingTable : Migration
+    public partial class RatingTableWithRelationAppointmentAndApplicationUSer : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -17,22 +17,22 @@ namespace AppointMeWeb.Infrastrucure.Migrations
                     Id = table.Column<int>(type: "int", nullable: false, comment: "Rating Id")
                         .Annotation("SqlServer:Identity", "1, 1"),
                     Evaluation = table.Column<int>(type: "int", nullable: false, comment: "User evaluation for service"),
-                    Comment = table.Column<string>(type: "nvarchar(max)", nullable: false, comment: "User comment"),
+                    AppointmentComment = table.Column<string>(type: "nvarchar(300)", maxLength: 300, nullable: false, comment: "User comment"),
                     ApplicationUserId = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    BusinessId = table.Column<int>(type: "int", nullable: false)
+                    AppointmentId = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Ratings", x => x.Id);
                     table.ForeignKey(
+                        name: "FK_Ratings_Appointments_AppointmentId",
+                        column: x => x.AppointmentId,
+                        principalTable: "Appointments",
+                        principalColumn: "Id");
+                    table.ForeignKey(
                         name: "FK_Ratings_AspNetUsers_ApplicationUserId",
                         column: x => x.ApplicationUserId,
                         principalTable: "AspNetUsers",
-                        principalColumn: "Id");
-                    table.ForeignKey(
-                        name: "FK_Ratings_BusinessServiceProviders_BusinessId",
-                        column: x => x.BusinessId,
-                        principalTable: "BusinessServiceProviders",
                         principalColumn: "Id");
                 },
                 comment: "User business rating");
@@ -43,9 +43,9 @@ namespace AppointMeWeb.Infrastrucure.Migrations
                 column: "ApplicationUserId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Ratings_BusinessId",
+                name: "IX_Ratings_AppointmentId",
                 table: "Ratings",
-                column: "BusinessId");
+                column: "AppointmentId");
         }
 
         /// <inheritdoc />
