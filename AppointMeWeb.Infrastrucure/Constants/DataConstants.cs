@@ -34,6 +34,9 @@
         public const string BusinessRole = "Business";
         public const string AdminRole = "Admin";
 
+        public const int AppointmentCommentMaxLength = 300;
+        public const int AppointmentCommentMinLength = 2;
+
         public const int BusinessServiceStandartAppointmentTime = 30;
         
     }
