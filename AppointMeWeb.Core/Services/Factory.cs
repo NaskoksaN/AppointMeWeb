@@ -18,23 +18,23 @@ namespace AppointMeWeb.Core.Services
            
         }
 
-        public async Task<bool> AddRatingAsync(int appointmentId, string userId, RatingFormModels model)
+        public async Task<bool> AddRatingAsync(string userId, RatingFormModels model)
         {
             try
             {
                 Appointment? currentAppointment = await sqlRepository
                     .All<Appointment>()
-                    .Where(a => a.Id == appointmentId 
+                    .Where(a => a.Id == model.AppointmentId
                              && a.ApplicationUser.Id==userId)
                     .FirstOrDefaultAsync() 
-                    ?? throw new NullReferenceException($"Appointment with ID {appointmentId} not found.");
+                    ?? throw new NullReferenceException($"Appointment with ID {model.AppointmentId} not found.");
                 
                 Rating rating = new Rating()
                 {
-                    Evaluation = (int)model.RatingEvaluation,
+                    Evaluation = (int)model.Rating,
                     AppointmentComment=model.Comment,
                     ApplicationUserId = userId,
-                    AppointmentId=appointmentId
+                    AppointmentId=model.AppointmentId
                 };
                 await sqlRepository.AddAsync(rating);
                 await sqlRepository.SaveChangesAsync();
