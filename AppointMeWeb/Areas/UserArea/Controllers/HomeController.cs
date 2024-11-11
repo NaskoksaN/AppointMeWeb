@@ -1,4 +1,5 @@
 ﻿using AppointMeWeb.Core.Contracts;
+using AppointMeWeb.Core.Models.RatingModels;
 using AppointMeWeb.Extensions;
 using Microsoft.AspNetCore.Mvc;
 
@@ -88,13 +89,18 @@ namespace AppointMeWeb.Areas.UserArea.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> SubmitRating(int appointmentId)
+        public async Task<IActionResult> SubmitRating([FromBody] RatingFormModels model)
         {
+           
+            if (!ModelState.IsValid)
+            {
+                return Json(new { success = false, message = "Invalid input." });
+            }
             string userId = User.Id();
             try
             {
-                bool iscreatedComment = await factoryService.AddRatingAsync(userId, appointmentId);
-                if (iscreatedComment)
+                bool isCreatedComment = await factoryService.AddRatingAsync(userId, model);
+                if (isCreatedComment)
                 {
                     return Json(new { success = true, message = "Rating add successfully." });
                 }
