@@ -95,4 +95,8 @@ header {
     outline: none;
 }
 
+.selected-star {
+    color: darkorange;
+}
+
 
