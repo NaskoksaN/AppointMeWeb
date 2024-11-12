@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace AppointMeWeb.Infrastrucure.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20241110074922_RatingTableWithRelationAppointmentAndApplicationUSer")]
-    partial class RatingTableWithRelationAppointmentAndApplicationUSer
+    [Migration("20241110091054_ratingTableWithAppoinmentAndUserAssociated")]
+    partial class ratingTableWithAppoinmentAndUserAssociated
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -155,6 +155,10 @@ namespace AppointMeWeb.Infrastrucure.Migrations
                         .HasColumnType("nvarchar(150)")
                         .HasComment("Message to BusinessServiceProvider");
 
+                    b.Property<int?>("RatingId")
+                        .HasColumnType("int")
+                        .HasComment("User comment");
+
                     b.Property<TimeSpan>("StartTime")
                         .HasColumnType("time")
                         .HasComment("Start of appointment");
@@ -275,7 +279,8 @@ namespace AppointMeWeb.Infrastrucure.Migrations
 
                     b.HasIndex("ApplicationUserId");
 
-                    b.HasIndex("AppointmentId");
+                    b.HasIndex("AppointmentId")
+                        .IsUnique();
 
                     b.ToTable("Ratings", t =>
                         {
@@ -543,8 +548,8 @@ namespace AppointMeWeb.Infrastrucure.Migrations
                         .IsRequired();
 
                     b.HasOne("AppointMeWeb.Infrastrucure.Data.Models.Appointment", "Appointment")
-                        .WithMany("Ratings")
-                        .HasForeignKey("AppointmentId")
+                        .WithOne("Rating")
+                        .HasForeignKey("AppointMeWeb.Infrastrucure.Data.Models.Rating", "AppointmentId")
                         .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
@@ -624,7 +629,7 @@ namespace AppointMeWeb.Infrastrucure.Migrations
 
             modelBuilder.Entity("AppointMeWeb.Infrastrucure.Data.Models.Appointment", b =>
                 {
-                    b.Navigation("Ratings");
+                    b.Navigation("Rating");
                 });
 
             modelBuilder.Entity("AppointMeWeb.Infrastrucure.Data.Models.BusinessServiceProvider", b =>
