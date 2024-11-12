@@ -5,11 +5,18 @@
 namespace AppointMeWeb.Infrastrucure.Migrations
 {
     /// <inheritdoc />
-    public partial class RatingTableWithRelationAppointmentAndApplicationUSer : Migration
+    public partial class ratingTableWithAppoinmentAndUserAssociated : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
+            migrationBuilder.AddColumn<int>(
+                name: "RatingId",
+                table: "Appointments",
+                type: "int",
+                nullable: true,
+                comment: "User comment");
+
             migrationBuilder.CreateTable(
                 name: "Ratings",
                 columns: table => new
@@ -45,7 +52,8 @@ namespace AppointMeWeb.Infrastrucure.Migrations
             migrationBuilder.CreateIndex(
                 name: "IX_Ratings_AppointmentId",
                 table: "Ratings",
-                column: "AppointmentId");
+                column: "AppointmentId",
+                unique: true);
         }
 
         /// <inheritdoc />
@@ -53,6 +61,10 @@ namespace AppointMeWeb.Infrastrucure.Migrations
         {
             migrationBuilder.DropTable(
                 name: "Ratings");
+
+            migrationBuilder.DropColumn(
+                name: "RatingId",
+                table: "Appointments");
         }
     }
 }
