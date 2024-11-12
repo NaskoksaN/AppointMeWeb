@@ -95,8 +95,8 @@ header {
     outline: none;
 }
 
-.selected-star {
-    color: darkorange;
+.star {
+    cursor: pointer; 
 }
 
 
