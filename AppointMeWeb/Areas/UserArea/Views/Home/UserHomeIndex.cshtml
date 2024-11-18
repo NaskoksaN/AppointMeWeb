@@ -221,30 +221,33 @@
         const comment = document.getElementById('comment').value;
         const appointmentId = parseInt(document.getElementById('appointmentId').value, 10);
         const token = $('input[name="__RequestVerificationToken"]').val();
-        
+
         if (rating < 1 || rating > 5 || comment.length < 2 || comment.length > 300) {
             document.getElementById('commentError').classList.remove('d-none');
             return;
         } else {
             document.getElementById('commentError').classList.add('d-none');
         }
+
         $.ajax({
             url: '@Url.Action("SubmitRating", "Home", new { area = "UserArea" })',
             type: 'POST',
             headers: {
                 'Accept': 'application/json',
                 'Content-Type': 'application/json',
-                "RequestVerificationToken": token  
+                "RequestVerificationToken": token
             },
             data: JSON.stringify({
                 appointmentId: appointmentId,
                 rating: rating,
                 comment: comment,
-                __RequestVerificationToken: token  // Anti-forgery token
+                __RequestVerificationToken: token 
             }),
             success: function (response) {
                 if (response.success) {
                     alert('Your rating has been submitted!');
+                    // Reset stars and comment
+                    resetRatingForm();
                     const ratingModal = bootstrap.Modal.getInstance(document.getElementById('ratingModal'));
                     ratingModal.hide();
                     loadAppointments('forRate');
@@ -257,6 +260,34 @@
             }
         });
     }
+    
+    // Function to reset the rating form
+    function resetRatingForm() {
+        document.getElementById('ratingValue').value = '';
+        document.getElementById('comment').value = '';
+        document.getElementById('appointmentId').value = '';
+
+        document.querySelectorAll('.star').forEach(star => {
+            star.classList.remove('text-warning');
+            star.classList.add('text-muted');
+        });
+    }
+
+    
+    document.addEventListener('DOMContentLoaded', () => {
+        const ratingModalElement = document.getElementById('ratingModal');
+        const ratingModal = new bootstrap.Modal(ratingModalElement);
+
+       
+        ratingModalElement.addEventListener('hidden.bs.modal', function () {
+            resetRatingForm(); 
+        });
+
+        
+        ratingModalElement.addEventListener('shown.bs.modal', function () {
+            resetRatingForm(); 
+        });
+    });
 </script>
 
 
