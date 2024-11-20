@@ -94,6 +94,7 @@ namespace AppointMeWeb.Areas.UserArea.Controllers
            
             if (!ModelState.IsValid)
             {
+                var errors = ModelState.Values.SelectMany(v => v.Errors).Select(e => e.ErrorMessage);
                 return Json(new { success = false, message = "Invalid input." });
             }
             string userId = User.Id();
