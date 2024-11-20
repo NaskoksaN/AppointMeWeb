@@ -156,7 +156,7 @@ namespace AppointMeWeb.Core.Services
             DateOnly sevenDaysAgo = today.AddDays(-period.Days); // Adjusted for clarity
 
             IEnumerable<UserHomeIndexViewModel> models = await sqlService.AllReadOnly<Appointment>()
-                .Where(a => a.UserId == userId && a.Day >= sevenDaysAgo)
+                .Where(a => a.UserId == userId && a.Day >= sevenDaysAgo && a.RatingId==null)
                 .Select(a => new UserHomeIndexViewModel()
                 {
                     AppointmentId = a.Id,
