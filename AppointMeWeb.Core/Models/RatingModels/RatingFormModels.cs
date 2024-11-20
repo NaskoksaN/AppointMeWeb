@@ -13,7 +13,7 @@ namespace AppointMeWeb.Core.Models.RatingModels
         public int AppointmentId {  get; set; }
        
         [Required]
-        public int Rating {  get; set; }
+        public int RatingValue {  get; set; }
 
         [Required]
         [StringLength(AppointmentCommentMaxLength,
