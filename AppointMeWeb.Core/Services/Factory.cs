@@ -31,13 +31,18 @@ namespace AppointMeWeb.Core.Services
                 
                 Rating rating = new Rating()
                 {
-                    Evaluation = (int)model.Rating,
+                    Evaluation = (int)model.RatingValue,
                     AppointmentComment=model.Comment,
                     ApplicationUserId = userId,
                     AppointmentId=model.AppointmentId
                 };
                 await sqlRepository.AddAsync(rating);
                 await sqlRepository.SaveChangesAsync();
+
+                currentAppointment.RatingId = rating.Id; 
+                sqlRepository.Update(currentAppointment);
+                await sqlRepository.SaveChangesAsync();
+
                 return true;
             }
             catch (Exception ex)
