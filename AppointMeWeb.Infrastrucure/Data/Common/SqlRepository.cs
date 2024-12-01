@@ -166,5 +166,10 @@ namespace AppointMeWeb.Infrastrucure.Data.Common
         {
             this.DbSet<T>().UpdateRange(entities);
         }
+
+        public IQueryable<T> Include<T>(IQueryable<T> query, Expression<Func<T, object>> includeExpression) where T : class
+        {
+            return query.Include(includeExpression);
+        }
     }
 }
