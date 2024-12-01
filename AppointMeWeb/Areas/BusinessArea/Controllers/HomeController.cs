@@ -1,5 +1,6 @@
 ﻿using AppointMeWeb.Areas.UserArea.Controllers;
 using AppointMeWeb.Core.Contracts;
+using AppointMeWeb.Core.Models.BusinessProvider;
 using AppointMeWeb.Core.Models.HomeModels;
 using AppointMeWeb.Extensions;
 using Microsoft.AspNetCore.Mvc;
@@ -9,21 +10,24 @@ namespace AppointMeWeb.Areas.BusinessArea.Controllers
     public class HomeController : BaseController
     {
         
-        private readonly IAppointmentService appointmentService;
+        private readonly IBusinessService businessService;
         private readonly ILogger<HomeController> logger;
 
-        public HomeController(IAppointmentService _appointmentService,
+        public HomeController(IBusinessService _businessService,
             ILogger<HomeController> _logger)
         {
            
-            this.appointmentService = _appointmentService;
+            this.businessService = _businessService;
             this.logger = _logger;
         }
 
         public async Task<IActionResult> BusinessHomeIndex()
         {
-            return View();
+            string userId = User.Id();
 
+            BusinessStatisticsViewModel model = await businessService.GetBusinessStatisticsAsync(userId);
+
+            return View(model);
         }
     }
 }
