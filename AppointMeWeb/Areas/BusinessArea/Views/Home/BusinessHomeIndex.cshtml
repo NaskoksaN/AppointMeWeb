@@ -21,7 +21,27 @@
                         <div class="card shadow mb-4">
                             <div class="card-body text-center">
                                 <h5>Average Rating</h5>
-                                <p id="averageRating" class="display-6">@Model.AverageRating</p>
+                                <p id="totalAppointments" class="display-6">@Model.AverageRating</p>
+                                <div class="stars">
+                                    @for (int i = 1; i <= 5; i++)
+                                    {
+                                        var isFilled = i <= Model.AverageRating;
+                                        var isHalfFilled = (i == Math.Ceiling(Model.AverageRating) && Model.AverageRating % 1 != 0);
+
+                                        if (isFilled)
+                                        {
+                                            <i class="fa fa-star"></i>  <!-- Full Star -->
+                                        }
+                                        else if (isHalfFilled)
+                                        {
+                                            <i class="fa fa-star-half-alt"></i>  <!-- Half Star -->
+                                        }
+                                        else
+                                        {
+                                            <i class="fa fa-star-o"></i>  <!-- Empty Star -->
+                                        }
+                                    }
+                                </div>
                                 <p>Average client satisfaction</p>
                             </div>
                         </div>
@@ -42,64 +62,3 @@
     </div>
 </div>
 
-<script>
-    // Load ratings from the last 7 days when button is clicked
-    function loadRecentRatings() {
-        const ratingsResult = document.getElementById('ratingsResult');
-        ratingsResult.style.display = 'block';
-        ratingsResult.innerHTML = '<p class="text-center">Loading ratings from the last 7 days...</p>';
-
-        $.ajax({
-            url: '@Url.Action("GetRatingsLast7Days", "BusinessHome", new { area = "BusinessArea" })',
-            type: 'GET',
-            success: function (data) {
-                displayRatings(data);
-            },
-            error: function () {
-                ratingsResult.innerHTML = '<p class="text-center text-danger">Error loading ratings.</p>';
-            }
-        });
-    }
-
-    // Load ratings for a custom date range
-    function loadRatingsForPeriod() {
-        const ratingsResult = document.getElementById('ratingsResult');
-        ratingsResult.style.display = 'block';
-        ratingsResult.innerHTML = '<p class="text-center">Loading ratings for selected period...</p>';
-
-        $.ajax({
-            url: '@Url.Action("GetRatingsForPeriod", "BusinessHome", new { area = "BusinessArea" })',
-            type: 'GET',
-            success: function (data) {
-                displayRatings(data);
-            },
-            error: function () {
-                ratingsResult.innerHTML = '<p class="text-center text-danger">Error loading ratings.</p>';
-            }
-        });
-    }
-
-    // Display ratings in the ratingsResult div
-    function displayRatings(ratings) {
-        const ratingsResult = document.getElementById('ratingsResult');
-        ratingsResult.innerHTML = '';
-
-        if (ratings.length === 0) {
-            ratingsResult.innerHTML = '<p class="text-center">No ratings found for the selected period.</p>';
-            return;
-        }
-
-        ratings.forEach(rating => {
-            const ratingDiv = document.createElement('div');
-            ratingDiv.className = 'card mb-2';
-            ratingDiv.innerHTML = `
-                        <div class="card-body">
-                            <h6>${rating.clientName}</h6>
-                            <p>Rating: ${rating.stars}⭐</p>
-                            <p>${rating.feedback}</p>
-                        </div>
-                    `;
-            ratingsResult.appendChild(ratingDiv);
-        });
-    }
-</script>
