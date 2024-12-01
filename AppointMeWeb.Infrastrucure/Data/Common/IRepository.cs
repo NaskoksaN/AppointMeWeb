@@ -91,5 +91,8 @@ namespace AppointMeWeb.Infrastrucure.Data.Common
         /// </summary>
         /// <returns>Erro code</returns>
         Task<int> SaveChangesAsync();
+
+        IQueryable<T> Include<T>(IQueryable<T> query, Expression<Func<T, object>> includeExpression) where T : class;
+       
     }
 }
