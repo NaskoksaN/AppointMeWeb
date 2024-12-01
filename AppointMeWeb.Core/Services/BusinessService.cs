@@ -86,6 +86,7 @@ namespace AppointMeWeb.Core.Services
 
         public List<ServiceInfoModels> BusinessInfo() => businessInfo;
 
+       
         public async Task<BusinessQueryServiceModel> GetAllBusinessAsQueryAsync(
                         string? category = null, 
                         string? searchingTown = null, 
@@ -186,6 +187,7 @@ namespace AppointMeWeb.Core.Services
             }
         }
 
+              
         public async Task<BusinessServiceProvider>? GetBusinessByIdAsync(int businessId)
         {
             try
@@ -215,6 +217,67 @@ namespace AppointMeWeb.Core.Services
             }
 
             return business.Id;
+        }
+
+        /// <summary>
+        /// Retrieves business statistics for a specific user, including average rating, 
+        /// total monthly appointments, and new clients for the current month.
+        /// </summary>
+        /// <param name="userId">The ID of the user associated with the business.</param>
+        /// <returns>
+        /// A <see cref="BusinessStatisticsViewModel"/> containing the following data:
+        /// - AverageRating: The average rating of all confirmed appointments up to yesterday.
+        /// - TotalMonthlyAppointments: The count of confirmed appointments from the beginning of the month to yesterday.
+        /// - NewClientsThisMonth: The count of unique clients who have made their first appointment with the business this month.
+        /// </returns>
+        /// <remarks>
+        /// - If today is the first day of the month, only the average rating is calculated, and other metrics are skipped.
+        /// - The method uses <see cref="DateOnly"/> for date calculations to ensure accuracy without time components.
+        /// - LINQ queries are used to filter and calculate the required data efficiently.
+        /// </remarks>
+        public async Task<BusinessStatisticsViewModel> GetBusinessStatisticsAsync(string userId)
+        {
+            try
+            {
+
+
+                int businessId = await GetBusinessIdFromUserIdAsync(userId);
+                BusinessStatisticsViewModel model = new();
+                DateOnly today = DateOnly.FromDateTime(DateTime.Now);
+                DateOnly yesterday = today.AddDays(-1);
+
+                var query = sqlService
+                    .AllReadOnly<Appointment>()
+                    .Where(a => a.BusinessServiceProviderId == businessId
+                                && a.Status == AppointmentStatus.Confirmed
+                                && a.Day <= yesterday);
+
+                int totalApp = await query.Where(a => a.RatingId != null).CountAsync();
+                int sumOfRating = await query.Where(a => a.RatingId != null).SumAsync(a => a.Rating.Evaluation);
+                model.AverageRating = totalApp == 0 || sumOfRating == 0 ? 0 : (double)sumOfRating / totalApp;
+
+                if (today.Day == 1)
+                {
+                    return model;
+                }
+
+                DateOnly beginningOfMonth = new DateOnly(DateTime.Now.Year, DateTime.Now.Month, 1);
+
+                int tempTotalMonthly = await query.Where(a => a.Day >= beginningOfMonth).CountAsync();
+                model.TotalMonthlyAppointments = tempTotalMonthly;
+                var thisMonthAppointments = query
+                                .Where(a => a.Day >= beginningOfMonth && a.Day <= yesterday);
+                int tempNewClients = thisMonthAppointments
+                    .Select(a => a.UserId)
+                    .Distinct()
+                    .Count(userId => query.Count(a => a.UserId == userId) == 1);
+                model.NewClientsThisMonth = tempNewClients;
+                return model;
+            }
+            catch (Exception ex)
+            {
+                throw new InvalidOperationException("An error occurred while counting appointments or calculating statistics.", ex);
+            }
         }
 
         /// <summary>
@@ -258,5 +321,6 @@ namespace AppointMeWeb.Core.Services
             return schedule.ExistedSchedule;
         }
 
+       
     }
 }
