@@ -44,5 +44,6 @@ namespace AppointMeWeb.Core.Contracts
             int businessPerPage = 1,
             AlphabeticSort sorting= AlphabeticSort.Ascending);
         Task<int> GetBusinessIdFromUserIdAsync(string userId);
+        Task<BusinessStatisticsViewModel> GetBusinessStatisticsAsync(string userId);
     }
 }
