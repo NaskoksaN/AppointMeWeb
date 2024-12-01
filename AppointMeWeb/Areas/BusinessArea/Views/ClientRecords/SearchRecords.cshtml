@@ -1,0 +1,57 @@
+﻿@model ClientRecordFormModel
+
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-4">
+            <div class="card shadow">
+                <div class="card-body">
+                    <h6 class="card-title text-center title-message">
+                        Search Client Records
+                    </h6>
+                    <form asp-action="SearchRecords" method="post">
+                        <div class="form-group">
+                            <label for="SearchByEmail">Search by Email:</label>
+                            <input asp-for="SearchByEmail"
+                                   class="form-control"
+                                   placeholder="Enter email"
+                                   required />
+                            <span class="text-danger validation-message" asp-validation-for="SearchByEmail"></span>
+                        </div>
+
+                        <div class="mt-4 text-center">
+                            <!-- Adjusted margin for spacing -->
+                            <button type="submit" class="btn btn-primary">Search</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}
+
+
+
+
+
+@* @model ClientRecordFormModel
+
+<div class="container mt-5">
+    <form asp-action="SearchRecords" method="post">
+        <div class="form-group">
+            <div class="col-4">
+                <label for="SearchByEmail">Search by Email</label>
+                <input asp-for="SearchByEmail" class="form-control" style="width: 100%;" placeholder="Enter email" />
+                <span class="text-danger validation-message" asp-validation-for="@Model.SearchByEmail"></span>
+            </div>
+        </div>
+        <button type="submit" class="btn btn-primary mt-2">Search</button>
+    </form>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+} *@

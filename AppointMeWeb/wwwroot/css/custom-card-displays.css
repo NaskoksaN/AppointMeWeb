@@ -1,0 +1,48 @@
+﻿
+.container.mt-5 {
+    padding: 0.5em 1em 4em 1em !important;
+    margin: 0 !important;
+}
+
+.card {
+    border-radius: 0.5rem;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+}
+
+.day-card {
+    background-color: #f9f9f9;
+    border: 1px solid #e0e0e0;
+    transition: transform 0.2s;
+}
+
+    .day-card:hover {
+        transform: scale(1.05);
+    }
+
+.appointment-duration .form-control {
+    margin-bottom: 10px;
+    transition: transform 0.3s ease;
+}
+
+    .appointment-duration .form-control:hover {
+        transform: scale(1.05);
+    }
+
+.title-message {
+    background-color: #f9f9f9;
+    color: #273E51;
+    padding: 1em 1.5em;
+    border-radius: 8px;
+    margin-bottom: 1.5em;
+    line-height: 1.5;
+    font-weight: bold;
+    font-size: 1.5rem;
+    transition: box-shadow 0.3s ease, transform 0.3s ease;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.custom-alert {
+    background-color: #d3d3d3; 
+    color: #000000; 
+    border-color: #b0b0b0; 
+}

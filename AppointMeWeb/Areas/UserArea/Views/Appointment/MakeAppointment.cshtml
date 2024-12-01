@@ -1,0 +1,235 @@
+﻿@model AppointmentViewModel
+
+
+@{
+    ViewData["Title"] = "Book Your Appointment in the Coming 30 Days";
+    var tempDate = DateOnly.FromDateTime(DateTime.Now.AddDays(1));
+
+}
+
+<div class="container mt-5">
+    <div class="card shadow">
+        <div class="card-body">
+               <h5 class="text-center title-message">@ViewData["Title"]</h5>
+               <div class="row d-flex align-items-stretch">
+                @foreach (var date in Model.NextThirtyDays)
+                {
+                    var workingTime = Model.WorkingHours[date];
+                    var tooltipText = Model.TooltipTexts[date];
+
+                           <div class="col-md-2 mb-2 d-flex">
+                               <a href="javascript:void(0);"
+                                  class="btn btn-primary btn-block select-date shadow-sm border-0 w-100 d-flex justify-content-center align-items-center"
+                                  style="background-color:#FF7F50"
+                                  onmouseover="this.style.backgroundColor='#273E51'; this.style.color='white';"
+                                  onmouseout="this.style.backgroundColor='#FF7F50'; this.style.color='white';"
+                                  data-date="@date.ToString(DateFormat)"
+                                  data-businessid="@Model.BusinessId"
+                                  data-slots="@JsonSerializer.Serialize(Model.AvailableSlots[date])"
+                                  title="@($"{workingTime} {tooltipText}")"
+                                  data-toggle="tooltip"
+                                  data-placement="top">
+                            @date.ToString(DayDateFormat)
+                               </a>
+                           </div>
+                }
+               </div>
+                <form asp-area="UserArea" asp-controller="Appointment" asp-action="GetSlots" method="post">
+                    <div id="slotContainer" class="mt-5">
+                        <input type="hidden" name="BusinessId" id="businessId" value="@Model.BusinessId" />
+                        <input type="hidden" name="Date" id="selectedDate" value="@tempDate.ToString(DateFormat)" />
+                        <input type="hidden" name="__RequestVerificationToken" value="@Html.AntiForgeryToken()">
+                        <div id="availableSlots">
+                            <partial name="_AvailableSlots" model="new AvailableSlotsFormModel()
+                                            { BusinessId = Model.BusinessId,
+                                              Date = tempDate,
+                                              Slots = Model.AvailableSlots[tempDate] }" />
+                        </div>
+                    </div>
+                </form>
+        </div>
+    </div>
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+
+        var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-toggle="tooltip"]'));
+        tooltipTriggerList.forEach(function (tooltipTriggerEl) {
+            new bootstrap.Tooltip(tooltipTriggerEl);
+        });
+
+        // fetch dynamic date of appointment with available slots
+        document.querySelectorAll('.select-date').forEach(function (dateElement) {
+            dateElement.addEventListener('click', function () {
+                var selectedDate = this.getAttribute('data-date');
+                var businessId = this.getAttribute('data-businessid');
+                var slotsJson = this.getAttribute('data-slots');
+                var slots = JSON.parse(slotsJson || "[]");
+
+                document.getElementById('selectedDate').value = selectedDate;
+
+                var model = {
+                    BusinessId: businessId,
+                    Date: selectedDate,
+                    Slots: slots
+                };
+
+                const fetchUrl = '/UserArea/Appointment/GetSlots';
+
+                const tokenInput = document.querySelector('input[name="__RequestVerificationToken"]');
+                const token = tokenInput ? tokenInput.value : '';
+                if (!token) {
+                    console.error('Request verification token is not available.');
+                    return;
+                }
+
+                fetch(fetchUrl, {
+                    method: 'POST',
+                    headers: {
+                        'Accept': 'application/json',
+                        'Content-Type': 'application/json',
+                        "RequestVerificationToken": token
+                    },
+                    body: JSON.stringify(model)
+                })
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Network response was not ok: ' + response.statusText);
+                    }
+                    return response.text();
+                })
+                .then(html => {
+                    document.getElementById('availableSlots').innerHTML = html;
+                })
+                .catch(error => console.error('Error fetching slots:', error));
+            });
+        });
+    });
+</script>
+
+
+
+
+@* <div class="container mt-4" style="background-color:#F7F7F7;">
+    <h2 class="mb-4 text-center">@ViewData["Title"]</h2>
+    <div class="row d-flex align-items-stretch">
+        @foreach (var date in Model.NextThirtyDays)
+        {
+            var workingTime = Model.WorkingHours[date];
+            var tooltipText = Model.TooltipTexts[date];
+
+                    <div class="col-md-2 mb-2 d-flex">
+                        <a href="javascript:void(0);"
+                           class="btn btn-primary btn-block select-date shadow-sm border-0 w-100 d-flex justify-content-center align-items-center"
+                           style="background-color:#FF7F50"
+                           onmouseover="this.style.backgroundColor='#273E51'; this.style.color='white';"
+                           onmouseout="this.style.backgroundColor='#FF7F50'; this.style.color='white';"
+                           data-date="@date.ToString(DateFormat)"
+                           data-businessid="@Model.BusinessId"
+                           data-slots="@JsonSerializer.Serialize(Model.AvailableSlots[date])"
+                           title="@($"{workingTime} {tooltipText}")"
+                           data-toggle="tooltip"
+                           data-placement="top">
+                    @date.ToString(DayDateFormat)
+                        </a>
+                    </div>
+        }
+    </div>
+</div>
+    <div class="book-slot mt-5">
+        <form asp-area="UserArea" asp-controller="Appointment" asp-action="GetSlots" method="post">
+            <div id="slotContainer" class="mt-5">
+                <input type="hidden" name="BusinessId" id="businessId" value="@Model.BusinessId" />
+                <input type="hidden" name="Date" id="selectedDate"  value="@tempDate.ToString(DateFormat)" />
+                <input type="hidden" name="__RequestVerificationToken" value="@Html.AntiForgeryToken()">
+                <div id="availableSlots">
+                    <partial name="_AvailableSlots" model="new AvailableSlotsFormModel()
+                                    { BusinessId = Model.BusinessId,
+                                      Date = tempDate,
+                                      Slots=Model.AvailableSlots[tempDate] }" />
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+
+<style>
+    .tooltip {
+        /* max-width: 40ch;  */
+        padding: 8px;
+        font-size: 16px;
+    }
+
+    .tooltip-inner {
+        max-width: 35ch;
+        /* background-color: #333;
+            color: #fff;  */
+        border-radius: 4px;
+        line-height: 1.4;
+    }
+</style>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+
+        var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-toggle="tooltip"]'));
+        tooltipTriggerList.forEach(function (tooltipTriggerEl) {
+            new bootstrap.Tooltip(tooltipTriggerEl);
+        });
+
+        // fetch dynamic date of appointment with available slots
+        document.querySelectorAll('.select-date').forEach(function (dateElement) {
+            dateElement.addEventListener('click', function () {
+                var selectedDate = this.getAttribute('data-date');
+                console.log(selectedDate);
+                var businessId = this.getAttribute('data-businessid');
+                var slotsJson = this.getAttribute('data-slots');
+                var slots = JSON.parse(slotsJson || "[]");
+
+                document.getElementById('selectedDate').value = selectedDate;
+
+                var model = {
+                    BusinessId: businessId,
+                    Date: selectedDate,
+                    Slots: slots
+                };
+
+                //console.log("Model to send:", model);
+                const fetchUrl = '/UserArea/Appointment/GetSlots';
+
+                const tokenInput = document.querySelector('input[name="__RequestVerificationToken"]');
+                const token = tokenInput ? tokenInput.value : '';
+                if (!token) {
+                    console.error('Request verification token is not available.');
+                    return;
+                }
+
+                fetch(fetchUrl, {
+                    method: 'POST',
+                    headers: {
+                        'Accept': 'application/json',
+                        'Content-Type': 'application/json',
+                        "RequestVerificationToken": token
+                    },
+                    body: JSON.stringify(model)
+                })
+                    .then(response => {
+                        if (!response.ok) {
+                            throw new Error('Network response was not ok: ' + response.statusText);
+                        }
+                        return response.text();
+                    })
+                    .then(html => {
+                        document.getElementById('availableSlots').innerHTML = html;
+                    })
+                    .catch(error => console.error('Error fetching slots:', error));
+            });
+        });
+    });
+
+</script>
+ *@
+
+

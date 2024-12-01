@@ -1,0 +1,63 @@
+﻿@model MyProfileViewModel
+
+<head>
+    <link rel="stylesheet" href="~/css/MyProfile.css" asp-append-version="true" />
+</head>
+
+<div class="container mt-4">
+    <div class="row justify-content-center">
+        <div class="col-md-4">
+            <div class="card shadow-lg">
+                <div class="card-body">
+                    
+                    <ul class="nav nav-tabs" id="myTab" role="tablist">
+                        <li class="nav-item" role="presentation">
+                            <a class="nav-link @(Model.ActiveTab == "login" ? "active" : "")" id="login-tab" data-bs-toggle="tab" href="#login" role="tab" aria-controls="login" aria-selected="true">Login</a>
+                        </li>
+                        <li class="nav-item" role="presentation">
+                            <a class="nav-link @(Model.ActiveTab == "register" ? "active" : "")" id="register-tab" data-bs-toggle="tab" href="#register" role="tab" aria-controls="register" aria-selected="false">Register</a>
+                        </li>
+                    </ul>
+                    <div class="tab-content" id="myTabContent">
+                        <div class="tab-pane fade @(Model.ActiveTab == "login" ? "show active" : "")" id="login" role="tabpanel" aria-labelledby="login-tab">
+                            <partial name="_CustomLoginPartial" model="Model.LoginFormModel" />
+                        </div>
+
+                        <div class="tab-pane fade @(Model.ActiveTab == "register" ? "show active" : "")" id="register" role="tabpanel" aria-labelledby="register-tab">
+                            <partial name="_CustomRegisterPartial" model="Model.RegisterFormModel" />
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+
+    <script>
+        function Check() {
+            const checkBox = document.getElementById("registerAsBusinessProvider");
+            const businessDiv = document.getElementById("businessProviderFields");
+
+            if (checkBox.checked) {
+                businessDiv.style.display = 'block';
+                document
+                    .querySelectorAll('#businessProviderFields .form-control')
+                    .forEach(input => {
+                        input.setAttribute('required', 'true');
+                    });
+            } else {
+                businessDiv.style.display = 'none';
+                document
+                    .querySelectorAll('#businessProviderFields .form-control')
+                    .forEach(input => {
+                        input.removeAttribute('required');
+                    });
+            }
+        }
+    </script>
+}
+

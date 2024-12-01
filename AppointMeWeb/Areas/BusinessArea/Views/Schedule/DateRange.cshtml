@@ -1,0 +1,49 @@
+﻿@model DateRange
+
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-4">
+            <div class="card shadow">
+                <div class="card-body">
+                    <h6 class="card-title text-center title-message">
+                        Choose a period between 1 and 30 days.
+                    </h6>
+                    <form asp-action="DateRange" method="post">
+                        <div class="form-group">
+                            <label for="startDate">Start Date:</label>
+                            <input type="date"
+                                   id="startDate"
+                                   name="StartDate"
+                                   class="form-control"
+                                   value="@Model.StartDate.ToString("yyyy-MM-dd")"
+                                   required />
+                            <span asp-validation-for="StartDate" class="text-danger"></span>
+                        </div>
+
+                        <div class="form-group mt-3">
+                            <label for="endDate">End Date:</label>
+                            <input type="date"
+                                   id="endDate"
+                                   name="EndDate"
+                                   class="form-control"
+                                   value="@Model.EndDate.ToString("yyyy-MM-dd")"
+                                   required />
+                            <span asp-validation-for="EndDate" class="text-danger"></span>
+                        </div>
+
+                        <div class="mt-4 text-center">
+                            <button type="submit" class="btn">Submit</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}
+
+
+

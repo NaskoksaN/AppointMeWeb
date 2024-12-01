@@ -1,6 +1,14 @@
-﻿using AppointMeWeb.Data;
+﻿
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+
+using AppointMeWeb.Infrastrucure.Data.Models;
+using AppointMeWeb.Infrastrucure.Data;
+using AppointMeWeb.Core.Contracts;
+using AppointMeWeb.Core.Services;
+using AppointMeWeb.Infrastrucure.Data.Common;
+using static AppointMeWeb.Infrastrucure.Constants.DataConstants;
+using Microsoft.AspNetCore.Mvc.Infrastructure;
 
 namespace Microsoft.Extensions.DependencyInjection
 {
@@ -8,13 +16,22 @@ namespace Microsoft.Extensions.DependencyInjection
     {
         public static IServiceCollection AddApplicationService(this IServiceCollection services)
         {
+            services.AddScoped<ICustomUserService, CustomUserService>();
+            services.AddScoped<IFactory, Factory> ();
+            services.AddScoped<IRepository, SqlRepository>();
+            services.AddScoped<IBusinessService, BusinessService>();
+            services.AddScoped<IHelperService, HelperService>();
+            services.AddScoped<IAppointmentService, AppointmentService>();
+
+            services.AddSingleton<IActionContextAccessor, ActionContextAccessor>();
+            
             return services;
         }
 
         public static IServiceCollection AddApplicationIdentity(this IServiceCollection services, IConfiguration config)
         {
             services
-                .AddDefaultIdentity<IdentityUser>(options => {
+                .AddDefaultIdentity<ApplicationUser>(options => {
                     options.SignIn.RequireConfirmedAccount = true;
 
                     options.Password.RequireNonAlphanumeric=false;
@@ -22,7 +39,24 @@ namespace Microsoft.Extensions.DependencyInjection
                     options.Password.RequireUppercase=false;
                     options.Password.RequireDigit=false;
                 })
+                .AddRoles<IdentityRole<string>>()
                  .AddEntityFrameworkStores<ApplicationDbContext>();
+
+            services.AddAuthorization(options =>
+            {
+                options.AddPolicy(AdminRole, policy =>
+                {
+                    policy.RequireRole(AdminRole);
+                    policy.RequireRole(BusinessRole);
+                    policy.RequireRole(WebUserRole);
+                });
+            });
+
+            services.ConfigureApplicationCookie(options =>
+            {
+                options.LoginPath = $"/User/Login";
+                options.LogoutPath = $"/User/Logout";
+            });
 
             return services;
         }
@@ -34,6 +68,7 @@ namespace Microsoft.Extensions.DependencyInjection
             services
                 .AddDbContext<ApplicationDbContext>(options =>
                     options.UseSqlServer(connectionString));
+
             services.AddDatabaseDeveloperPageExceptionFilter();
 
             return services;

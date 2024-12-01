@@ -1,0 +1,38 @@
+﻿@model LoginFormModel
+
+<form asp-controller="User" asp-action="Login" method="post" class="shadow p-2">
+    @if (TempData["ErrorMessage"] != null)
+    {
+        <div class="alert alert-danger">@TempData["ErrorMessage"]</div>
+    }
+    <div class="mb-3 w-100">
+        <div class="input-group">
+            <span class="input-group-text">
+                <i class="fa-solid fa-envelope"></i>
+            </span>
+            <div class="form-floating flex-grow-1">
+                <input asp-for="@Model.Email" class="form-control" autocomplete="username" aria-required="true" />
+                <label asp-for="@Model.Email"></label>
+            </div>
+        </div>
+        <span asp-validation-for="@Model.Email" class="small text-danger"></span>
+    </div>
+    <div class="mb-3">
+        <div class="input-group">
+            <span class="input-group-text">
+                <i class="fa-solid fa-key"></i>
+            </span>
+            <div class="form-floating flex-grow-1">
+                <input asp-for="@Model.Password" class="form-control" autocomplete="new-password" aria-required="true" />
+                <label asp-for="@Model.Password"></label>
+            </div>
+        </div>
+        <span asp-validation-for="@Model.Password" class="small text-danger"></span>
+    </div>
+
+    <button type="submit" class="btn btn-primary btn-lg w-100">Login</button>
+</form>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

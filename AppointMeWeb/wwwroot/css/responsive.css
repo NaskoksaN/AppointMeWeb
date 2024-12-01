@@ -1,0 +1,18 @@
+﻿@media (max-width: 800px) {
+    .navbar-nav {
+        flex-direction: column !important;
+        align-items: flex-start;
+    }
+
+        .navbar-nav .nav-item {
+            margin-bottom: 0.5rem;
+        }
+
+    .navbar-collapse {
+        flex-direction: column !important;
+    }
+
+        .navbar-collapse .d-sm-inline-flex {
+            flex-direction: column !important;
+        }
+}

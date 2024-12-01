@@ -1,28 +1,64 @@
+using AppointMeWeb.Core.Contracts;
+using AppointMeWeb.Core.Models.BusinessProvider;
+using AppointMeWeb.Extensions;
 using AppointMeWeb.Models;
 using Microsoft.AspNetCore.Mvc;
 using System.Diagnostics;
+
 
 namespace AppointMeWeb.Controllers
 {
     public class HomeController : Controller
     {
-        private readonly ILogger<HomeController> _logger;
+        private readonly ILogger<HomeController> logger;
+        private readonly IBusinessService businessService;
 
-        public HomeController(ILogger<HomeController> logger)
+        public HomeController(ILogger<HomeController> _logger
+                , IBusinessService _businessService)
         {
-            _logger = logger;
+            this.logger = _logger;
+            this.businessService = _businessService;
         }
 
-        public IActionResult Index()
+        [HttpGet]
+        public async Task<IActionResult> Index()
         {
-            return View();
-        }
 
-        public IActionResult Privacy()
+            if (User.Identity != null && User.Identity.IsAuthenticated) 
+            {
+                if (User.IsBusinessProvider()) 
+                {
+                    return RedirectToAction("BusinessHomeIndex", "Home", new { area = "BusinessArea" });
+                }
+                else if (User.IsAdmin()) 
+                {
+                    return RedirectToAction("AdminHomeIndex", "Home", new { area = "AdminArea" });
+                }
+                else if (User.IsUser()) 
+                {
+                    return RedirectToAction("UserHomeIndex", "Home", new { area = "UserArea" });
+                }
+            }
+
+            try
+            {
+                IEnumerable<BusinessViewModel> model = await businessService.GetAllBusinessAsync();
+                return View(model);
+            }
+            catch (Exception ex)
+            {
+                logger.LogError("Error in register controller: {ExceptionMessage}", ex.Message);
+                return View();
+            }
+            
+        }
+        [HttpGet]
+        public IActionResult Services()
         {
-            return View();
-        }
+            var model = businessService.BusinessInfo();
+            return View(model);
 
+        }
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Error()
         {

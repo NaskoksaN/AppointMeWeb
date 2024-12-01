@@ -1,0 +1,18 @@
+﻿@model IEnumerable<BusinessAppointmentViewModel>
+
+@{
+    var tomorrow = DateTime.Now.AddDays(1);
+    ViewData["Title"] = $"Appointments for tomorrow: {tomorrow.ToString("dddd")}, {tomorrow.ToString("MMMM dd, yyyy")}";
+}
+
+<div class="container mt-5">
+    <div class="card shadow">
+        <div class="card-body">
+            <h5 class="text-center title-message">@ViewData["Title"]</h5>
+            <div class="row">
+                <partial name="_AppointmentCard" model="Model" />
+            </div>
+        </div>
+    </div>
+</div>
+

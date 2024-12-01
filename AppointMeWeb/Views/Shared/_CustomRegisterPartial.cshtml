@@ -1,0 +1,195 @@
+﻿@model RegisterFormModel
+
+
+<form id="registerForm" asp-action="Register" method="post"  class="shadow p-2">
+    <h6 class="text-center py-3">Create a new account.</h6>
+    <div asp-validation-summary="ModelOnly" class="small text-danger"></div>
+    
+    <div class="mb-2 w-100">
+        <div class="input-group">
+            <span class="input-group-text">
+                <i class="fa-solid fa-person"></i>
+            </span>
+            <div class="form-floating flex-grow-1">
+                <input asp-for="@Model.FirstName" class="form-control" />
+                <label asp-for="@Model.FirstName"></label>
+            </div>
+        </div>
+        <span asp-validation-for="@Model.FirstName" class="small text-danger"></span>
+    </div>
+    
+    <div class="mb-2 w-100">
+        <div class="input-group">
+            <span class="input-group-text">
+                <i class="fa-solid fa-person"></i>
+            </span>
+            <div class="form-floating flex-grow-1">
+                <input asp-for="@Model.LastName" class="form-control" />
+                <label asp-for="@Model.LastName"></label>
+            </div>
+        </div>
+        <span asp-validation-for="@Model.LastName" class="small text-danger"></span>
+    </div>
+    <div class="mb-2 w-100">
+        <div class="input-group">
+            <span class="input-group-text">
+                <i class="fa-regular fa-calendar-days"></i>
+            </span>
+            <div class="form-floating flex-grow-1">
+                <input asp-for="DOB" class="form-control" type="date"
+                       value="@DateOnly.FromDateTime(DateTime.Today).ToString("yyyy-MM-dd")"
+                       max="@DateOnly.FromDateTime(DateTime.Today).ToString("yyyy-MM-dd")" required/>
+                <label asp-for="DOB"></label>
+                
+            </div>
+        </div>
+        <span asp-validation-for="DOB" class="small text-danger"></span>
+    </div>
+    <div class="mb-2 w-100">
+        <div class="input-group">
+            <span class="input-group-text">
+                <i class="fa-solid fa-phone"></i>
+            </span>
+            <div class="form-floating flex-grow-1">
+                <input asp-for="@Model.PhoneNumber" class="form-control" />
+                <label asp-for="@Model.PhoneNumber"></label>
+            </div>
+        </div>
+        <span asp-validation-for="@Model.PhoneNumber" class="small text-danger"></span>
+    </div>
+    
+    <div class="mb-2 w-100">
+        <div class="input-group">
+            <span class="input-group-text">
+                <i class="fa-solid fa-envelope"></i>
+            </span>
+            <div class="form-floating flex-grow-1">
+                <input asp-for="@Model.Email" class="form-control" autocomplete="username" aria-required="true" />
+                <label asp-for="@Model.Email"></label>
+            </div>
+        </div>
+        <span asp-validation-for="@Model.Email" class="small text-danger"></span>
+    </div>
+    
+    <div class="mb-2 w-100">
+        <div class="input-group">
+            <span class="input-group-text">
+                <i class="fa-solid fa-key"></i>
+            </span>
+            <div class="form-floating flex-grow-1">
+                <input asp-for="@Model.Password" class="form-control" autocomplete="new-password" aria-required="true" />
+                <label asp-for="@Model.Password"></label>
+            </div>
+        </div>
+        <span asp-validation-for="@Model.Password" class="small text-danger"></span>
+    </div>
+   
+    <div class="mb-2 w-100">
+        <div class="input-group">
+            <span class="input-group-text">
+                <i class="fa-solid fa-key"></i>
+            </span>
+            <div class="form-floating flex-grow-1">
+                <input asp-for="@Model.ConfirmPassword" class="form-control" autocomplete="new-password" aria-required="true" />
+                <label asp-for="@Model.ConfirmPassword"></label>
+            </div>
+        </div>
+        <span asp-validation-for="@Model.ConfirmPassword" class="small text-danger"></span>
+    </div>
+
+    <div class="form-check mb-2">
+        <input asp-for="IsBusinessProvider"  type="checkbox" class="form-check-input" id="registerAsBusinessProvider" onclick="Check()" />
+        <label class="form-check-label" for="registerAsBusinessProvider">Register as Business Provider</label>
+    </div>
+
+    <div id="businessProviderFields" class="business-provider-fields w-100" style="display: none;">
+        <h6 class="text-center py-3">Business Provider Registration</h6>
+        <div class="mb-2 w-100">
+            <div class="input-group">
+                <span class="input-group-text">
+                    <i class="fa-solid fa-registered"></i>
+                </span>
+                <div class="form-floating flex-grow-1">
+                    <input asp-for="@Model.Name" class="form-control" />
+                    <label asp-for="@Model.Name"></label>
+                </div>
+            </div>
+            <span asp-validation-for="@Model.Name" class="small text-danger"></span>
+        </div>
+        <div class="mb-2 w-100">
+            <div class="input-group">
+                <span class="input-group-text">
+                    <i class="fa-solid fa-pen-to-square"></i>
+                </span>
+                <div class="form-floating flex-grow-1">
+                    <input asp-for="@Model.Description" class="form-control" />
+                    <label asp-for="@Model.Description"></label>
+                </div>
+            </div>
+            <span asp-validation-for="@Model.Description" class="small text-danger"></span>
+        </div>
+        <div class="mb-2 w-100">
+            <div class="input-group">
+                <span class="input-group-text">
+                    <i class="fa-solid fa-city"></i>
+                </span>
+                <div class="form-floating flex-grow-1">
+                    <input asp-for="@Model.Town" class="form-control" />
+                    <label asp-for="@Model.Town"></label>
+                </div>
+            </div>
+            <span asp-validation-for="@Model.Town" class="small text-danger"></span>
+        </div>
+        <div class="mb-2 w-100">
+            <div class="input-group">
+                <span class="input-group-text">
+                    <i class="fa-solid fa-address-book"></i>
+                </span>
+                <div class="form-floating flex-grow-1">
+                    <input asp-for="@Model.Address" class="form-control" />
+                    <label asp-for="@Model.Address"></label>
+                </div>
+            </div>
+            <span asp-validation-for="@Model.Address" class="small text-danger"></span>
+        </div>
+        <div class="mb-2 w-100">
+            <div class="input-group">
+                <span class="input-group-text">
+                    <i class="fa-regular fa-paper-plane"></i>
+                </span>
+                <div class="form-floating flex-grow-1">
+                    <input asp-for="@Model.Url" class="form-control" />
+                    <label asp-for="@Model.Url"></label>
+                </div>
+            </div>
+            <span asp-validation-for="@Model.Url" class="small text-danger"></span>
+        </div>
+        <div class="mb-2 w-100">
+            <div class="input-group">
+                <span class="input-group-text">
+                    <i class="fa-solid fa-briefcase"></i>
+                </span>
+                <div class="form-floating flex-grow-1">
+                    <select asp-for="@Model.BusinessType" class="form-select">
+                        <option value="">Please select a business type</option>
+                        @foreach (var type in Enum.GetValues(typeof(AppointMeWeb.Infrastrucure.Data.Enum.BusinessType)))
+                        {
+                            <option value="@type">@type</option>
+                        }
+                    </select>
+                    <label asp-for="@Model.BusinessType"></label>
+                </div>
+            </div>
+            <span asp-validation-for="@Model.BusinessType" class="small text-danger"></span>
+        </div>
+    </div>
+
+    <button type="submit" class="w-100 btn btn-lg btn-primary">Register</button>
+</form>
+
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}
+
+

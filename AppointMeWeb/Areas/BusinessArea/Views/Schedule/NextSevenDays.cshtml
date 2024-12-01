@@ -1,0 +1,17 @@
+﻿@model IEnumerable<BusinessAppointmentViewModel>
+
+@{
+    ViewData["Title"] = $"Upcoming Appointments for the Next 7 Days: {DateTime.Now.AddDays(1).ToString(NameDayOfWeek)}, {DateTime.Now.AddDays(1).ToString(DateMonthYearFormat)} - {DateTime.Now.AddDays(7).ToString(NameDayOfWeek)}, {DateTime.Now.AddDays(7).ToString(DateMonthYearFormat)}";
+}
+
+<div class="container mt-5">
+    <div class="card shadow">
+        <div class="card-body">
+            <h5 class="text-center title-message">@ViewData["Title"]</h5>
+            <div class="row">
+                <partial name="_AppointmentCard" model="Model" />
+            </div>
+        </div>
+    </div>
+</div>
+

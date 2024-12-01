@@ -1,0 +1,276 @@
+﻿@{
+    ViewData["Title"] = "Appointments";
+}
+
+<div class="container mt-5">
+    <div class="card shadow">
+        <div class="card-body">
+            <h5 class="text-center title-message">Your Appointments</h5>
+
+            <div class="text-center mb-4">
+                <button class="btn btn-primary mx-2" onclick="loadAppointments('active')">Active Appointments</button>
+                <button class="btn btn-warning mx-2" onclick="loadAppointments('canceled')">Canceled Appointments</button>
+                <button class="btn btn-success mx-2" onclick="loadAppointments('forRate')">Rateable Appointments</button>
+            </div>
+
+            <div id="appointmentsResult" class="row" style="height: 70vh; overflow-y: auto;">
+                <p class="text-center">Select an option to view appointments.</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="ratingModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="ratingModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="ratingModalLabel">Rate Appointment</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form id="ratingForm">
+                    <input type="hidden" id="appointmentId" name="AppointmentId" />
+
+                    <div class="d-flex justify-content-center mb-3">
+                        <span class="star fs-1 text-muted" data-value="1">&#9733;</span>
+                        <span class="star fs-1 text-muted" data-value="2">&#9733;</span>
+                        <span class="star fs-1 text-muted" data-value="3">&#9733;</span>
+                        <span class="star fs-1 text-muted" data-value="4">&#9733;</span>
+                        <span class="star fs-1 text-muted" data-value="5">&#9733;</span>
+                    </div>
+
+                    <input type="hidden" id="ratingValue" name="RatingValue" />
+
+                    <div class="mb-3">
+                        <label for="comment" class="form-label">Comment (2 to 300 characters)</label>
+                        <textarea id="comment" name="Comment" class="form-control" rows="4" maxlength="300" minlength="2"></textarea>
+                        <div id="commentError" class="text-danger d-none">Please enter a comment between 2 and 300 characters.</div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary" onclick="submitRating()">Submit Rating</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    // Function to load appointments
+    function loadAppointments(type) {
+        const appointmentsDiv = document.getElementById('appointmentsResult');
+        appointmentsDiv.innerHTML = '<p class="text-center">Loading appointments...</p>';
+
+        let url;
+        switch (type) {
+            case 'active':
+                url = '@Url.Action("GetActiveAppointments", "Home", new { area = "UserArea" })';
+                break;
+            case 'canceled':
+                url = '@Url.Action("GetCanceledAppointments", "Home", new { area = "UserArea" })';
+                break;
+            case 'forRate':
+                url = '@Url.Action("GetForRatingAppointments", "Home", new { area = "UserArea" })';
+                break;
+        }
+
+        $.ajax({
+            url: url,
+            type: 'GET',
+            success: function (data) {
+                displayAppointments(data, type);
+            },
+            error: function () {
+                appointmentsDiv.innerHTML = '<p class="text-center text-danger">Error loading appointments.</p>';
+            }
+        });
+    }
+
+    // Function to display appointments
+    function displayAppointments(appointments, type) {
+        const appointmentsDiv = document.getElementById('appointmentsResult');
+        appointmentsDiv.innerHTML = '';
+
+        if (appointments.length === 0) {
+            appointmentsDiv.innerHTML = '<p class="text-center">No appointments found.</p>';
+            return;
+        }
+
+        appointments.forEach(appointment => {
+            const colDiv = document.createElement('div');
+            colDiv.className = 'col-md-4 mb-4';
+
+            const cardDiv = document.createElement('div');
+            cardDiv.className = 'card day-card';
+
+            const cardBodyDiv = document.createElement('div');
+            cardBodyDiv.className = 'card-body';
+
+            const appointmentDate = new Date(appointment.appointmentDate + 'T00:00:00');
+            const startTime = new Date(appointment.appointmentDate + 'T' + appointment.startTime);
+            const endTime = new Date(appointment.appointmentDate + 'T' + appointment.endTime);
+
+            if (isNaN(appointmentDate.getTime()) || isNaN(startTime.getTime()) || isNaN(endTime.getTime())) {
+                console.error('Invalid date or time format:', appointment.appointmentDate, appointment.startTime, appointment.endTime);
+                return;
+            }
+
+            const heading = document.createElement('h5');
+            heading.textContent = appointment.businessProviderName;
+
+            const para = document.createElement('p');
+            para.innerHTML = ` 
+                <strong>Date:</strong> ${appointmentDate.toLocaleDateString()}<br />
+                <strong>Time:</strong> ${startTime.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })} - ${endTime.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+            `;
+
+            cardBodyDiv.appendChild(heading);
+            cardBodyDiv.appendChild(para);
+
+            if (type === 'active') {
+                const cancelButton = document.createElement('button');
+                cancelButton.className = 'btn btn-danger btn-sm';
+                cancelButton.textContent = 'Cancel';
+                cancelButton.onclick = () => cancelAppointment(appointment.appointmentId);
+                cardBodyDiv.appendChild(cancelButton);
+            } else if (type === 'forRate') {
+                const rateButton = document.createElement('button');
+                rateButton.className = 'btn btn-info btn-sm';
+                rateButton.textContent = 'Rate It';
+                rateButton.onclick = () => rateAppointment(appointment.appointmentId);
+                cardBodyDiv.appendChild(rateButton);
+            }
+
+            cardDiv.appendChild(cardBodyDiv);
+            colDiv.appendChild(cardDiv);
+            appointmentsDiv.appendChild(colDiv);
+        });
+    }
+
+    // Function to cancel an appointment
+    function cancelAppointment(appointmentId) {
+        let token = $('input[name="__RequestVerificationToken"]').val();
+
+        $.ajax({
+            url: '@Url.Action("CancelAppointment", "Home", new { area = "UserArea" })',
+            type: 'POST',
+            data: {
+                appointmentId: appointmentId,
+                __RequestVerificationToken: token 
+            },
+            success: function(response) {
+                if (response.success) {
+                    alert(response.message);
+                    loadAppointments('active');
+                } else {
+                    alert(response.message);
+                }
+            },
+            error: function() {
+                alert("An error occurred while trying to cancel the appointment.");
+            }
+        });
+    }
+   
+    document.getElementById('ratingModal').addEventListener('show.bs.modal', function (event) {
+        // Prevent form reset or modal content re-render
+        const form = document.getElementById('ratingForm');
+        form.reset = function() {}; // Override reset method if needed
+    });
+
+    // Function to trigger the rating modal and set the appointmentId
+    function rateAppointment(appointmentId) {
+        document.getElementById('appointmentId').value = appointmentId;
+        console.log(appointmentId);
+        document.getElementById('ratingValue').value = '';
+        document.getElementById('comment').value = '';
+
+        const ratingModal = new bootstrap.Modal(document.getElementById('ratingModal'));
+        ratingModal.show();
+    }
+
+    // Event listeners for star rating (hover and click)
+    document.querySelectorAll('.star').forEach(star => {
+        star.addEventListener('mouseover', function () {
+            const rating = this.getAttribute('data-value');
+
+            document.querySelectorAll('.star').forEach(starElement => {
+                starElement.classList.remove('text-warning');
+                starElement.classList.add('text-muted');
+            });
+
+            for (let i = 0; i < rating; i++) {
+                document.querySelectorAll('.star')[i].classList.add('text-warning');
+            }
+        });
+
+        star.addEventListener('click', function () {
+            const rating = this.getAttribute('data-value');
+            document.getElementById('ratingValue').value = rating;
+            document.querySelectorAll('.star').forEach((starElement, index) => {
+                if (index < rating) {
+                    starElement.style.setProperty('color', '#FF8C00', 'important');
+                } else {
+                    starElement.style.setProperty('color', 'initial', 'important');
+                }
+            });
+        });
+    });
+
+    // Function to submit rating
+        function submitRating() {
+        const appointmentId = document.getElementById('appointmentId').value;
+        const rating = document.getElementById('ratingValue').value;
+        const comment = document.getElementById('comment').value;
+        let token = $('input[name="__RequestVerificationToken"]').val();
+
+        if (rating < 1 || rating > 5 || comment.length < 2 || comment.length > 300) {
+            document.getElementById('commentError').classList.remove('d-none');
+            return;
+        } else {
+            document.getElementById('commentError').classList.add('d-none');
+        }
+
+        $.ajax({
+            url: '@Url.Action("SubmitRating", "Home", new { area = "UserArea" })',
+            type: 'POST',
+            headers: {
+                'RequestVerificationToken': token
+            },
+            contentType: 'application/json; charset=utf-8',
+            data: JSON.stringify({
+                AppointmentId: appointmentId,
+                RatingValue: rating,
+                Comment: comment
+            }),
+            success: function (response) {
+                if (response.success) {
+                    const ratingModal = bootstrap.Modal.getInstance(document.getElementById('ratingModal'));
+                    ratingModal.hide();
+                    resetRatingForm();
+                    loadAppointments('forRate');
+                    alert('Your rating has been submitted!');
+                } else {
+                    alert(response.message);
+                }
+            },
+            error: function () {
+                alert('An error occurred while submitting your rating.');
+            }
+        });
+    }
+
+    // Function to reset the rating form
+    function resetRatingForm() {
+        document.getElementById('ratingValue').value = '';
+        document.getElementById('comment').value = '';
+        document.getElementById('appointmentId').value = ''; 
+
+        document.querySelectorAll('.star').forEach(star => {
+            star.classList.remove('text-warning');
+            star.classList.add('text-muted');
+        });
+    }
+
+</script>

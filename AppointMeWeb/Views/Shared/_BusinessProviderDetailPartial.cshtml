@@ -1,0 +1,50 @@
+﻿@model BusinessViewModel
+
+<div class="col-sm-3 d-flex align-items-stretch">
+    <div class="card day-card mb-3">
+        <img src="" class="card-img-top" alt="@Model.Name">
+        <div class="card-body">
+            <h5 class="card-title">@Model.Name</h5>
+            <p class="card-text">Type of business: @Model.BusinessType</p>
+            <p class="card-text">Town: @Model.Town</p>
+            <p class="card-text">Description: @Model.Description</p>
+            @if (User.Identity != null && User.Identity.IsAuthenticated)
+            {
+                <div class="additional-info" style="display:none;">
+                    <p class="card-text">Phone: @Model.Phone</p>
+                    <p class="card-text">E-mail: @Model.Email</p>
+                    <p class="card-text">Address: @Model.Address</p>
+                    <p class="card-text">
+                        Visit me at: <a href="@Model.WebsiteUrl" target="_blank" rel="noopener noreferrer">@Model.WebsiteUrl</a>
+                    </p>
+                    <a class="btn btn-primary btn-sm mb-2"
+                       asp-area="UserArea"
+                       asp-controller="Appointment"
+                       asp-action="MakeAppointment"
+                       asp-route-businessId="@Model.Id">
+                        Make appointment
+                    </a>
+                </div>
+
+                <a class="btn btn-primary" onclick="ShowFullDetails(this)">View info</a>
+            }
+        </div>
+    </div>
+</div>
+
+<script>
+    function ShowFullDetails(button) {
+        const cardBody = button.closest('.card-body');
+        const divEl = cardBody.querySelector('.additional-info');
+        const isVisible = divEl.style.display === "block";
+
+        if (isVisible) {
+            divEl.style.display = "none";
+            button.textContent = "View info";
+        } else {
+            divEl.style.display = "block";
+            button.textContent = "Hide info";
+        }
+    }
+</script>
+

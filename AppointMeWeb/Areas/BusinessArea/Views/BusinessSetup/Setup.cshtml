@@ -1,0 +1,399 @@
+﻿@model BusinessProviderFormModel
+
+@{
+    ViewBag.Message = Model.ExistedSchedule?.Any() == true
+                    ? "Edit your working hours. Changes will affect future appointments"
+                    : "Setup your working hours";
+}
+
+<div class="container mt-5">
+    <div class="card shadow">
+        <div class="card-body">
+            <h5 class="text-center title-message">@ViewBag.Message</h5>
+            <form asp-action="Setup" method="post" id="workingHoursForm">
+                <div class="mb-3 appointment-duration">
+                    <label for="AppointmentDuration" class="form-label">Appointment Duration</label>
+                    <div class="col-sm-3">
+                        <select id="AppointmentDuration" name="AppointmentDuration" class="form-control" required>
+                            @foreach (var kvp in Model.Durations)
+                            {
+                                <option value="@kvp.Value">@kvp.Key</option>
+                            }
+                        </select>
+                    </div>
+                    <small class="form-text text-muted">Default is 30 minutes.</small>
+                </div>
+                <div class="row">
+                    @if (Model.ExistedSchedule?.Any() == true)
+                    {
+                        @foreach (var day in Model.ExistedSchedule)
+                        {
+                            <div class="col-sm-3">
+                                <div class="card day-card mb-3">
+                                    <div class="card-body">
+                                        <h5 class="card-title">@day.Day</h5>
+                                        <div class="mb-3">
+                                            <input type="checkbox" id="@day.Day-DayOff" class="day-off-checkbox"
+                                                   name="ExistedSchedule[@Model.ExistedSchedule.IndexOf(day)].IsDayOff"
+                                                   value="true" @(day.IsDayOff ? "checked" : "")>
+                                            <input type="hidden" name="ExistedSchedule[@Model.ExistedSchedule.IndexOf(day)].IsDayOff" value="false" />
+                                            <input type="hidden" name="ExistedSchedule[@Model.ExistedSchedule.IndexOf(day)].Day" value="@day.Day" />
+                                            <label for="@day.Day-DayOff" class="form-label">Day Off</label>
+                                        </div>
+
+                                        <div class="mb-3 working-hours" id="@day.Day-WorkingHours" style="@(day.IsDayOff ? "display:none;" : "display:block;")">
+                                            <label for="@day.Day-StartTime" class="form-label">Start Time</label>
+                                            <input type="time" class="form-control" id="@day.Day-StartTime"
+                                                   name="ExistedSchedule[@Model.ExistedSchedule.IndexOf(day)].StartTime" value="@day.StartTime">
+                                        </div>
+                                        <div class="mb-3 working-hours" id="@day.Day-WorkingHours" style="@(day.IsDayOff ? "display:none;" : "display:block;")">
+                                            <label for="@day.Day-EndTime" class="form-label">End Time</label>
+                                            <input type="time" class="form-control" id="@day.Day-EndTime"
+                                                   name="ExistedSchedule[@Model.ExistedSchedule.IndexOf(day)].EndTime" value="@day.EndTime">
+                                            <span asp-validation-for="ExistedSchedule[@Model.ExistedSchedule.IndexOf(day)].EndTime" class="text-danger"></span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        }
+                    }
+                    else
+                    {
+                        @foreach (DayOfWeek day in Model.Days)
+                        {
+                            <div class="col-sm-3">
+                                <div class="card day-card mb-3">
+                                    <div class="card-body">
+                                        <h5 class="card-title">@day</h5>
+                                        <div class="mb-3">
+                                            <input type="checkbox" id="@day-DayOff" class="day-off-checkbox"
+                                                   name="DailySchedules[@Model.Days.IndexOf(day)].IsDayOff" value="true">
+                                            <input type="hidden" name="DailySchedules[@Model.Days.IndexOf(day)].IsDayOff" value="false" />
+                                            <input type="hidden" name="DailySchedules[@Model.Days.IndexOf(day)].Day" value="@day" />
+                                            <label for="@day-DayOff" class="form-label">Day Off</label>
+                                        </div>
+                                        <div class="mb-3 working-hours" id="@day-WorkingHours">
+                                            <label for="@day-StartTime" class="form-label">Start Time</label>
+                                            <input type="time" class="form-control" id="@day-StartTime"
+                                                   name="DailySchedules[@Model.Days.IndexOf(day)].StartTime">
+                                        </div>
+                                        <div class="mb-3 working-hours" id="@day-WorkingHours">
+                                            <label for="@day-EndTime" class="form-label">End Time</label>
+                                            <input type="time" class="form-control" id="@day-EndTime"
+                                                   name="DailySchedules[@Model.Days.IndexOf(day)].EndTime">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        }
+                    }
+                    <div class="d-inline-block text-center">
+                        <button type="submit" class="btn btn-primary btn-lg mt-3">Save Working Hours</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+    <script>
+        document.querySelectorAll('.day-off-checkbox').forEach(checkbox => {
+            checkbox.addEventListener('change', function () {
+                const workingHours = this.closest('.day-card').querySelectorAll('.working-hours');
+                const startTimeInput = this.closest('.day-card').querySelector('[name*="StartTime"]');
+                const endTimeInput = this.closest('.day-card').querySelector('[name*="EndTime"]');
+
+                if (this.checked) {
+                    workingHours.forEach(field => field.style.display = 'none');
+                    if (startTimeInput) {
+                        startTimeInput.value = '';
+                    }
+                    if (endTimeInput) {
+                        endTimeInput.value = '';
+                    }
+                } else {
+                    workingHours.forEach(field => field.style.display = 'block');
+                }
+            });
+        });
+    </script>
+}
+
+
+
+@* @model BusinessProviderFormModel
+
+@{
+    ViewBag.Message = Model.ExistedSchedule?.Any() == true
+                    ? "Edit your working hours. Changes will affect future appointments"
+                    : "Setup your working hours";
+}
+
+<div class="container mt-5">
+    <h5 class="mb-4 text-center">@ViewBag.Message</h5>
+    <div class="card shadow">
+        <div class="card-body">
+            <form asp-action="Setup" method="post" id="workingHoursForm">
+                <div class="mb-3 appointment-duration">
+                    <label for="AppointmentDuration" class="form-label">Appointment Duration</label>
+                    <div class="col-sm-3">
+                        <select id="AppointmentDuration" name="AppointmentDuration" class="form-control" required>
+                            @foreach (var kvp in Model.Durations)
+                            {
+                                <option value="@kvp.Value">@kvp.Key</option>
+                            }
+                        </select>
+                    </div>
+                    <small class="form-text text-muted">Default is 30 minutes.</small>
+                </div>
+                <div class="row">
+                    @if (Model.ExistedSchedule?.Any() == true)
+                    {
+                        @foreach (var day in Model.ExistedSchedule)
+                        {
+                            <div class="col-sm-2">
+                                <div class="card day-card mb-3">
+                                    <div class="card-body">
+                                        <h5 class="card-title">@day.Day</h5>
+                                        <div class="mb-3">
+                                            <input type="checkbox" id="@day.Day-DayOff" class="day-off-checkbox"
+                                                   name="ExistedSchedule[@Model.ExistedSchedule.IndexOf(day)].IsDayOff"
+                                                   value="true" @(day.IsDayOff ? "checked" : "")>
+                                            <input type="hidden" name="ExistedSchedule[@Model.ExistedSchedule.IndexOf(day)].IsDayOff" value="false" />
+                                            <input type="hidden" name="ExistedSchedule[@Model.ExistedSchedule.IndexOf(day)].Day" value="@day.Day" />
+                                            <label for="@day.Day-DayOff" class="form-label">Day Off</label>
+                                        </div>
+
+                                        <div class="mb-3 working-hours" id="@day.Day-WorkingHours" style="@(day.IsDayOff ? "display:none;" : "display:block;")">
+                                            <label for="@day.Day-StartTime" class="form-label">Start Time</label>
+                                            <input type="time" class="form-control" id="@day.Day-StartTime"
+                                                   name="ExistedSchedule[@Model.ExistedSchedule.IndexOf(day)].StartTime" value="@day.StartTime">
+                                        </div>
+                                        <div class="mb-3 working-hours" id="@day.Day-WorkingHours" style="@(day.IsDayOff ? "display:none;" : "display:block;")">
+                                            <label for="@day.Day-EndTime" class="form-label">End Time</label>
+                                            <input type="time" class="form-control" id="@day.Day-EndTime"
+                                                   name="ExistedSchedule[@Model.ExistedSchedule.IndexOf(day)].EndTime" value="@day.EndTime">
+                                            <span asp-validation-for="ExistedSchedule[@Model.ExistedSchedule.IndexOf(day)].EndTime" class="text-danger"></span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        }
+                    }
+                    else
+                    {
+                        @foreach (DayOfWeek day in Model.Days)
+                        {
+                            <div class="col-sm-2">
+                                <div class="card day-card mb-3">
+                                    <div class="card-body">
+                                        <h5 class="card-title">@day</h5>
+                                        <div class="mb-3">
+                                            <input type="checkbox" id="@day-DayOff" class="day-off-checkbox"
+                                                   name="DailySchedules[@Model.Days.IndexOf(day)].IsDayOff" value="true">
+                                            <input type="hidden" name="DailySchedules[@Model.Days.IndexOf(day)].IsDayOff" value="false" />
+                                            <input type="hidden" name="DailySchedules[@Model.Days.IndexOf(day)].Day" value="@day" />
+                                            <label for="@day-DayOff" class="form-label">Day Off</label>
+                                        </div>
+                                        <div class="mb-3 working-hours" id="@day-WorkingHours">
+                                            <label for="@day-StartTime" class="form-label">Start Time</label>
+                                            <input type="time" class="form-control" id="@day-StartTime"
+                                                   name="DailySchedules[@Model.Days.IndexOf(day)].StartTime">
+                                        </div>
+                                        <div class="mb-3 working-hours" id="@day-WorkingHours">
+                                            <label for="@day-EndTime" class="form-label">End Time</label>
+                                            <input type="time" class="form-control" id="@day-EndTime"
+                                                   name="DailySchedules[@Model.Days.IndexOf(day)].EndTime">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        }
+                    }
+                    <div class="d-inline-block text-center">
+                        <button type="submit" class="btn btn-primary btn-lg mt-3">Save Working Hours</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<style>
+    .container.mt-5{
+        padding:0 1.5em 1em 1.5em;
+    }
+    .card {
+        border-radius: 0.5rem; 
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1); 
+    }
+
+    .day-card {
+        background-color: #f9f9f9; 
+        border: 1px solid #e0e0e0; 
+        transition: transform 0.2s; 
+    }
+
+        .day-card:hover {
+            transform: scale(1.05);
+        }
+
+    .appointment-duration .form-control {
+        margin-bottom: 10px; 
+    }
+</style>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+    <script>
+        document.querySelectorAll('.day-off-checkbox').forEach(checkbox => {
+            checkbox.addEventListener('change', function () {
+                const workingHours = this.closest('.day-card').querySelectorAll('.working-hours');
+                const startTimeInput = this.closest('.day-card').querySelector('[name*="StartTime"]');
+                const endTimeInput = this.closest('.day-card').querySelector('[name*="EndTime"]');
+
+                if (this.checked) {
+                    workingHours.forEach(field => field.style.display = 'none');
+                    if (startTimeInput) {
+                        startTimeInput.value = '';
+                    }
+                    if (endTimeInput) {
+                        endTimeInput.value = '';
+                    }
+                } else {
+                    workingHours.forEach(field => field.style.display = 'block');
+                }
+            });
+        });
+    </script>
+} *@
+
+
+@* @model BusinessProviderFormModel
+
+@{
+    ViewBag.Message = Model.ExistedSchedule?.Any() == true
+                    ? "Edit your working hours.Change will afect future appointments"
+                    : "Setup your working";
+}
+
+<div class="container mt-5">
+    <h5 class="mb-4 text-center">@ViewBag.Message</h5>
+    <form asp-action="Setup" method="post" id="workingHoursForm">
+        <div class="mb-3 appointment-duration">
+            <label for="AppointmentDuration" class="form-label">Appointment Duration</label>
+            <div class="col-sm-3">
+                <select id="AppointmentDuration" name="AppointmentDuration" class="form-control" required>
+                    @foreach (var kvp in Model.Durations)
+                    {
+                        <option value="@kvp.Value">@kvp.Key</option>
+                    }
+                </select>
+            </div>
+            <small class="form-text text-muted">Default is 30 minutes.</small>
+        </div>
+        <div class="row">
+            @if (Model.ExistedSchedule?.Any()==true)
+            {
+                @foreach (var day in Model.ExistedSchedule)
+                {
+                    <div class="col-sm-2">
+                        <div class="card day-card mb-3">
+                            <div class="card-body">
+                                <h5 class="card-title">@day.Day</h5>
+                                <div class="mb-3">
+                                    <input type="checkbox" id="@day.Day-DayOff" class="day-off-checkbox"
+                                           name="ExistedSchedule[@Model.ExistedSchedule.IndexOf(day)].IsDayOff"
+                                           value="true" @(day.IsDayOff ? "checked" : "")>
+                                    <input type="hidden" name="ExistedSchedule[@Model.ExistedSchedule.IndexOf(day)].IsDayOff" value="false" />
+                                    <input type="hidden" name="ExistedSchedule[@Model.ExistedSchedule.IndexOf(day)].Day" value="@day.Day" />
+                                    <label for="@day.Day-DayOff" class="form-label">Day Off</label>
+                                </div>
+
+                                <div class="mb-3 working-hours" id="@day.Day-EndTime" style="@(day.IsDayOff ? "display:none;" : "display:block;")">
+                                    <label for="@day.Day-StartTime" class="form-label">Start Time</label>
+                                    <input type="time" class="form-control" id="@day.Day-StartTime"
+                                           name="ExistedSchedule[@Model.ExistedSchedule.IndexOf(day)].StartTime" value="@day.StartTime">
+                                </div>
+                                <div class="mb-3 working-hours" id="@day.Day-EndTime" style="@(day.IsDayOff ? "display:none;" : "display:block;")">
+                                    <label for="@day.Day-EndTime" class="form-label">End Time</label>
+                                    <input type="time" class="form-control" id="@day.Day-EndTime"
+                                           name="ExistedSchedule[@Model.ExistedSchedule.IndexOf(day)].EndTime" value="@day.EndTime">
+                                    <span asp-validation-for="ExistedSchedule[@Model.ExistedSchedule.IndexOf(day)].EndTime" class="text-danger"></span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                }
+            }
+            else
+            {
+                @foreach (DayOfWeek day in Model.Days)
+                {
+                    <div class="col-sm-2">
+                        <div class="card day-card mb-3">
+                            <div class="card-body">
+                                <h5 class="card-title">@day</h5>
+                                <div class="mb-3">
+                                    <input type="checkbox" id="@day-DayOff" class="day-off-checkbox"
+                                           name="DailySchedules[@Model.Days.IndexOf(day)].IsDayOff" value="true">
+                                    <input type="hidden" name="DailySchedules[@Model.Days.IndexOf(day)].IsDayOff" value="false" />
+                                    <input type="hidden" name="DailySchedules[@Model.Days.IndexOf(day)].Day" value="@day" />
+                                    <label for="@day-DayOff" class="form-label">Day Off</label>
+                                </div>
+                                <div class="mb-3 working-hours" id="@day-WorkingHours">
+                                    <label for="@day-StartTime" class="form-label">Start Time</label>
+                                    <input type="time" class="form-control" id="@day-StartTime"
+                                           name="DailySchedules[@Model.Days.IndexOf(day)].StartTime">
+                                </div>
+                                <div class="mb-3 working-hours" id="@day-WorkingHours">
+                                    <label for="@day-EndTime" class="form-label">End Time</label>
+                                    <input type="time" class="form-control" id="@day-EndTime"
+                                           name="DailySchedules[@Model.Days.IndexOf(day)].EndTime">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                }
+            }
+            <div class="d-inline-block text-center">
+                <button type="submit" class="btn btn-primary btn-lg mt-3">Save Working Hours</button>
+            </div>
+        </div>
+    </form>
+</div>
+
+<style>
+    .container.mt-5{
+
+    }
+
+</style>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+    <script>
+        document.querySelectorAll('.day-off-checkbox').forEach(checkbox => {
+            checkbox.addEventListener('change', function () {
+                const workingHours = this.closest('.day-card').querySelectorAll('.working-hours');
+                const startTimeInput = this.closest('.day-card').querySelector('[name*="StartTime"]');
+                const endTimeInput = this.closest('.day-card').querySelector('[name*="EndTime"]');
+
+                if (this.checked) {
+                    workingHours.forEach(field => field.style.display = 'none');
+                    if (startTimeInput) {
+                        startTimeInput.value = '';
+                    }
+                    if (endTimeInput) {
+                        endTimeInput.value = '';
+                    }
+                } else {
+                    workingHours.forEach(field => field.style.display = 'block');
+                }
+            });
+        });
+    </script>
+}
+ *@
