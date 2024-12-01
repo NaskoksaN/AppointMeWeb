@@ -1,95 +1,43 @@
-﻿<div class="container mt-4">
-    <div class="container mt-4">
-        <div class="row">
-            <!-- Current Weekly Appointments -->
+﻿
+@model BusinessStatisticsViewModel
+
+<div class="container mt-5">
+    <div class="card shadow">
+        <div class="card-body">
             <div class="container mt-4">
-                <h2>Business Overview</h2>
                 <div class="row">
+                    <!-- Total Appointments -->
                     <div class="col-md-4">
                         <div class="card shadow mb-4">
                             <div class="card-body text-center">
                                 <h5>Total Appointments</h5>
-                                <p class="display-6">50</p>
-                                <p>Appointments booked this month</p>
+                                <p id="totalAppointments" class="display-6">@Model.TotalMonthlyAppointments</p>
+                                <p>Appointments from the start of the month</p>
                             </div>
                         </div>
                     </div>
-
+                    <!-- Average Rating -->
                     <div class="col-md-4">
                         <div class="card shadow mb-4">
                             <div class="card-body text-center">
                                 <h5>Average Rating</h5>
-                                <p class="display-6">4.6⭐</p>
-                                <p>Average client satisfaction rating</p>
+                                <p id="averageRating" class="display-6">@Model.AverageRating</p>
+                                <p>Average client satisfaction</p>
                             </div>
                         </div>
                     </div>
-
+                    <!-- New Clients This Month -->
                     <div class="col-md-4">
                         <div class="card shadow mb-4">
                             <div class="card-body text-center">
                                 <h5>New Clients This Month</h5>
-                                <p class="display-6">10</p>
-                                <p>Clients who booked for the first time</p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="row">
-                    <div class="col-md-4">
-                        <div class="card shadow mb-4">
-                            <div class="card-body text-center">
-                                <h5>Cancellations</h5>
-                                <p class="display-6">5</p>
-                                <p>Cancelled appointments this month</p>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="col-md-4">
-                        <div class="card shadow mb-4">
-                            <div class="card-body text-center">
-                                <h5>Service Satisfaction</h5>
-                                <p>Most popular service: Haircut</p>
-                                <p>Overall satisfaction: 90%</p>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="col-md-4">
-                        <div class="card shadow mb-4">
-                            <div class="card-body text-center">
-                                <h5>Client Engagement</h5>
-                                <p class="display-6">20%</p>
-                                <p>Percentage of repeat clients this month</p>
+                                <p id="newClients" class="display-6">@Model.NewClientsThisMonth</p>
+                                <p>First-time clients this month</p>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
-
-
-
-    <!-- On-Demand Rating Data Buttons -->
-    <div class="text-center mt-4">
-        <button class="btn btn-primary mx-2" onclick="loadRecentRatings()">Ratings Last 7 Days</button>
-        <button class="btn btn-secondary mx-2" onclick="loadRatingsForPeriod()">Ratings by Date Range</button>
-    </div>
-
-    <!-- Ratings Result Section (Hidden until data is loaded) -->
-    <div id="ratingsResult" class="mt-4" style="display: none;">
-        <p class="text-center">Loading ratings...</p>
-    </div>
-
-    <!-- Important Alerts Section -->
-    <div id="alerts" class="mt-4">
-        <!-- Example alert -->
-        <div class="alert alert-warning" role="alert">
-            Reminder: You have 2 appointments needing follow-up!
-        </div>
-        <div class="alert alert-info" role="alert">
-            New review received: "Fantastic service!"
         </div>
     </div>
 </div>
